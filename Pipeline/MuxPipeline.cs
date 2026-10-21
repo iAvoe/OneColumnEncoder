@@ -278,7 +278,7 @@ public static partial class MuxPipeline
         EncodingAudioMuxMode.ReEncodeOpus128 => "-c:a libopus -b:a 128k -vbr on -application audio -compression_level 10",
         // Separator: settings without bitrate limit, for quality-based unrestricted encoding
         EncodingAudioMuxMode.ReEncodeAACQ2 => "-c:a aac -aac_coder nmr -q:a 2",
-        EncodingAudioMuxMode.ReEncodeAACQ1_5 => "-c:a aac -aac_coder nmr -q:a 1.5", // 128kbps¨C192kbps
+        EncodingAudioMuxMode.ReEncodeAACQ1_5 => "-c:a aac -aac_coder nmr -q:a 1.5", // 128kbpsï¿½C192kbps
         EncodingAudioMuxMode.ReEncodeAACQ1 => "-c:a aac -aac_coder nmr -q:a 1", // 128-140k
         EncodingAudioMuxMode.ReEncodeOpusVBR => "-c:a libopus -vbr on -application audio -compression_level 10",
         _ => null
@@ -391,6 +391,7 @@ public static partial class MuxPipeline
         string extension = mode is EncodingAudioMuxMode.ReEncodeOpus320
             or EncodingAudioMuxMode.ReEncodeOpus256
             or EncodingAudioMuxMode.ReEncodeOpus128
+            or EncodingAudioMuxMode.ReEncodeOpusVBR
             ? ".ogg"
             : ".m4a";
         return Path.Combine(directory, $"{baseName}_audio_temp{extension}");

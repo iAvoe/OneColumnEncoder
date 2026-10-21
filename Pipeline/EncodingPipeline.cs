@@ -57,7 +57,11 @@ public enum EncodingAudioMuxMode
     ReEncodeAAC128,
     ReEncodeOpus320,
     ReEncodeOpus256,
-    ReEncodeOpus128
+    ReEncodeOpus128,
+    ReEncodeAACQ2,
+    ReEncodeAACQ1_5,
+    ReEncodeAACQ1,
+    ReEncodeOpusVBR
 }
 
 /// <summary>
@@ -100,7 +104,11 @@ public static class EncodingAudioMuxResolver
             or EncodingAudioMuxMode.ReEncodeAAC128
             or EncodingAudioMuxMode.ReEncodeOpus320
             or EncodingAudioMuxMode.ReEncodeOpus256
-            or EncodingAudioMuxMode.ReEncodeOpus128;
+            or EncodingAudioMuxMode.ReEncodeOpus128
+            or EncodingAudioMuxMode.ReEncodeAACQ2
+            or EncodingAudioMuxMode.ReEncodeAACQ1_5
+            or EncodingAudioMuxMode.ReEncodeAACQ1
+            or EncodingAudioMuxMode.ReEncodeOpusVBR;
 }
 
 /// <summary>

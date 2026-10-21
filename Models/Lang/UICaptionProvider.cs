@@ -134,7 +134,11 @@ public static class UICaptionProvider
                 nameof(EncodingAudioMuxMode.ReEncodeAAC128),
                 nameof(EncodingAudioMuxMode.ReEncodeOpus320),
                 nameof(EncodingAudioMuxMode.ReEncodeOpus256),
-                nameof(EncodingAudioMuxMode.ReEncodeOpus128)
+                nameof(EncodingAudioMuxMode.ReEncodeOpus128),
+                nameof(EncodingAudioMuxMode.ReEncodeAACQ2),
+                nameof(EncodingAudioMuxMode.ReEncodeAACQ1_5),
+                nameof(EncodingAudioMuxMode.ReEncodeAACQ1),
+                nameof(EncodingAudioMuxMode.ReEncodeOpusVBR)
             ];
 
             public static string GetDisplayName(string code) => code switch
@@ -147,6 +151,10 @@ public static class UICaptionProvider
                 nameof(EncodingAudioMuxMode.ReEncodeOpus320) => Lang["AudioMux.Option.OGG320"],
                 nameof(EncodingAudioMuxMode.ReEncodeOpus256) => Lang["AudioMux.Option.OGG256"],
                 nameof(EncodingAudioMuxMode.ReEncodeOpus128) => Lang["AudioMux.Option.OGG128"],
+                nameof(EncodingAudioMuxMode.ReEncodeAACQ2) => Lang["AudioMux.Option.AACQ2"],
+                nameof(EncodingAudioMuxMode.ReEncodeAACQ1_5) => Lang["AudioMux.Option.AACQ1_5"],
+                nameof(EncodingAudioMuxMode.ReEncodeAACQ1) => Lang["AudioMux.Option.AACQ1"],
+                nameof(EncodingAudioMuxMode.ReEncodeOpusVBR) => Lang["AudioMux.Option.OGGVBR"],
                 _ => code
             };
         }

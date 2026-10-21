@@ -54,6 +54,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR",
         },
         ["zh-cn"] = new()
         {
@@ -101,6 +105,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["zh-tw"] = new()
         {
@@ -148,6 +156,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["fr"] = new()
         {
@@ -195,6 +207,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["es"] = new()
         {
@@ -242,6 +258,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["ja"] = new()
         {
@@ -289,6 +309,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["ru"] = new()
         {
@@ -336,6 +360,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["de"] = new()
         {
@@ -383,6 +411,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["ko"] = new()
         {
@@ -430,6 +462,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
         ["pt-br"] = new()
         {
@@ -477,6 +513,10 @@ public class AppConfLangProvider(string languageCode) : LangProviderBase(languag
             ["AudioMux.Option.OGG320"] = "OGG 320K",
             ["AudioMux.Option.OGG256"] = "OGG 256K",
             ["AudioMux.Option.OGG128"] = "OGG 128K",
+            ["AudioMux.Option.AACQ2"] = "AAC Q2 (VBR)",
+            ["AudioMux.Option.AACQ1_5"] = "AAC Q1.5 (VBR)",
+            ["AudioMux.Option.AACQ1"] = "AAC Q1 (VBR)",
+            ["AudioMux.Option.OGGVBR"] = "OGG VBR (Auto)",
         },
     };
 
