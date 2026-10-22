@@ -52,7 +52,7 @@ public class BrowseSrcQueueCmd(
 
             if (ShowDialog(dialog) != true) return;
 
-            filePaths = GetVideoFiles(dialog.FileNames);
+            filePaths = dialog.FileNames;
             if (filePaths.Length == 0)
             {
                 new OpenWarnModalCmd(
@@ -76,6 +76,18 @@ public class BrowseSrcQueueCmd(
             }
         }
 
+        string? unsupportedMessage = SrcFilePicker.GetUnsupportedVideoFilesMessage(filePaths);
+        if (unsupportedMessage != null)
+        {
+            new OpenErrModalCmd(
+                _modalNavS,
+                UICaptionProvider.SourceInspect.ErrorTitle,
+                unsupportedMessage)
+                .Execute(null);
+            ActivateMainWindow();
+            return;
+        }
+
         SetQueueCardText(pathText, filePaths);
         Remember(_appDataM, _browseKey, pathText);
         _afterImport?.Invoke(_item, pathText, filePaths);
@@ -87,18 +99,6 @@ public class BrowseSrcQueueCmd(
         List<string> lines = [$"No usable MPLS playlists were found in: {folderPath}"];
         lines.AddRange(diagnostics.Take(8));
         return string.Join(Environment.NewLine, lines);
-    }
-
-    private static string[] GetVideoFiles(IEnumerable<string> filePaths)
-    {
-        HashSet<string> extensions = new(
-            SrcFilePickerLangProvider.VideoExtensions
-            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(extension => extension.TrimStart('*')),
-            StringComparer.OrdinalIgnoreCase);
-
-        return [.. filePaths.Where(filePath =>
-            extensions.Contains(Path.GetExtension(filePath) ?? string.Empty))];
     }
 
     private static string GetSelectedFolderPath(string[] filePaths)

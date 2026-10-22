@@ -41,7 +41,7 @@ public class BrowseSrcConcatCmd(
         if (filePaths.Length == 0) return;
 
         // Reject unsupported extensions even if the user switches the dialog to "All files".
-        string? unsupportedExtensionError = GetUnsupportedExtensionMessage(filePaths);
+        string? unsupportedExtensionError = SrcFilePicker.GetUnsupportedVideoFilesMessage(filePaths);
         if (unsupportedExtensionError != null)
         {
             new OpenErrModalCmd(
@@ -142,23 +142,6 @@ public class BrowseSrcConcatCmd(
             Environment.NewLine,
             mismatched.Select(path => $"- {Path.GetFileName(path)} ({FormatExtension(Path.GetExtension(path) ?? string.Empty)})"));
         return string.Format(UILangProvider.Current["SourceConcat.ExtensionMismatch"], expectedLabel, mismatchedList);
-    }
-
-    private static string? GetUnsupportedExtensionMessage(string[] filePaths)
-    {
-        // Normalize picker patterns like "*.mkv" to extensions like ".mkv" for lookup.
-        HashSet<string> videoExtensions = [.. SrcFilePickerLangProvider.VideoExtensions
-            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(extension => extension.TrimStart('*').ToLowerInvariant())];
-
-        string[] unsupported = [.. filePaths
-            .Where(path => !videoExtensions.Contains((Path.GetExtension(path) ?? string.Empty).ToLowerInvariant()))];
-        if (unsupported.Length == 0) return null;
-
-        string unsupportedList = string.Join(
-            Environment.NewLine,
-            unsupported.Select(path => $"- {Path.GetFileName(path)} ({FormatExtension(Path.GetExtension(path) ?? string.Empty)})"));
-        return string.Format(UILangProvider.Current["SourceConcat.ExtensionMismatch"], SrcFilePickerLangProvider.VideoExtensions, unsupportedList);
     }
 
     private static string FormatExtension(string extension) =>

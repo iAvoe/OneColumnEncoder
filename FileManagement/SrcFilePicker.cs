@@ -14,6 +14,30 @@ public static partial class SrcFilePicker
     private static SrcFilePickerLangProvider Lang =>
         new(UILangProvider.Current.LanguageCode);
 
+    private static readonly HashSet<string> VideoExtensionSet = new(
+        SrcFilePickerLangProvider.VideoExtensions
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(extension => extension.TrimStart('*')),
+        StringComparer.OrdinalIgnoreCase);
+
+    public static bool IsVideoFile(string filePath) =>
+        !string.IsNullOrWhiteSpace(filePath) &&
+        VideoExtensionSet.Contains(Path.GetExtension(filePath) ?? string.Empty);
+
+    public static string[] GetUnsupportedVideoFiles(IEnumerable<string> filePaths) =>
+        [.. filePaths.Where(filePath => !IsVideoFile(filePath))];
+
+    public static string? GetUnsupportedVideoFilesMessage(IEnumerable<string> filePaths)
+    {
+        string[] unsupportedFiles = GetUnsupportedVideoFiles(filePaths);
+        if (unsupportedFiles.Length == 0) return null;
+
+        string unsupportedList = string.Join(
+            Environment.NewLine,
+            unsupportedFiles.Select(filePath => $"- {Path.GetFileName(filePath)}"));
+        return string.Format(Lang.VideoFilesOnly, unsupportedList);
+    }
+
     public static string? GetSource(
         SrcFileKind fileKind,
         string windowTitle,

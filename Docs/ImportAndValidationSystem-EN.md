@@ -13,7 +13,7 @@ This document explains the video import and check system.
 | ffprobe | A tool that reads video parameters such as resolution, frame rate, pixel format, color, and field order. |
 | Checklist | The program checks each source item by item: metadata, progressive, bit-depth, constant frame rate, YUV420, chroma, etc. |
 | Error / Warning | Error disables the Start Encoding button. Warning only reminds you and does not disable it. |
-| Silent drop | If a file is not in the whitelist, it is not imported and no error is shown. |
+| Reject non-whitelisted | If any selected file is not in the whitelist, the whole import is rejected and an error is shown. |
 | Reference file | The baseline file in multi-file modes. Other files are compared with it. |
 | CFR / VFR | CFR is constant frame rate. VFR is variable frame rate. Many tools do not support VFR. |
 | Progressive / interlaced | Progressive is usually fine. Interlaced is an old scanning method and modern tools usually do not support it. |
@@ -44,9 +44,9 @@ This document explains the video import and check system.
 | Mode | Import method | Minimum sources | Second extension check | Cross-file strictness | Script requirement | Audio default |
 |---|---|---|---|---|---|---|
 | Single Video | Single file | 1 | None | None | Single script source | — |
-| Queue Mode | Multi-select, Blu-ray PLAYLIST | More than 0 | None; non-whitelisted files are silently dropped | Medium | Script queue folder | — |
+| Queue Mode | Multi-select, Blu-ray PLAYLIST | More than 0 | Yes; non-whitelisted files cause an error | Medium | Script queue folder | — |
 | Concat Mode | Multi-select | At least 2 | Yes; non-whitelisted files cause an error | Fairly strict | Script-embedded clip list | Re-encode as AAC 320 kbps |
-| Repart Mode | File import, chapter folder | More than 0 | None; non-whitelisted files are silently dropped | Strict | No script source required | Re-encode as AAC 320 kbps |
+| Repart Mode | File import, chapter folder | More than 0 | Yes; non-whitelisted files cause an error | Strict | No script source required | Re-encode as AAC 320 kbps |
 
 ## 4. Multi-file Modes: Whether Sources Can Be Used Together
 
@@ -83,8 +83,8 @@ This document explains the video import and check system.
 | Item | Rule |
 |---|---|
 | Import | Multi-file dialog; Blu-ray PLAYLIST supported |
-| Non-whitelisted extensions | Silently dropped |
-| Empty result | A warning is shown if nothing remains after filtering |
+| Non-whitelisted extensions | Error and abort the import |
+| Empty result | A warning is shown if no file was selected |
 | Mixed folders | May cause an error |
 | Per-file analysis | Each file is checked item by item |
 | Single-file failure | Skipped with an error shown |

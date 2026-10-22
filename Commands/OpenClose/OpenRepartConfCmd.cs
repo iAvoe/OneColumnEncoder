@@ -1,6 +1,5 @@
 using OneColumnEncoder.ChapterTool;
 using OneColumnEncoder.RepartManagement;
-using System.IO;
 
 namespace OneColumnEncoder.Commands.OpenClose;
 
@@ -75,7 +74,15 @@ public sealed class OpenRepartConfCmd(
 
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return null;
 
-        string[] filePaths = GetVideoFiles(dialog.FileNames);
+        string[] filePaths = dialog.FileNames;
+        string? unsupportedMessage = SrcFilePicker.GetUnsupportedVideoFilesMessage(filePaths);
+        if (unsupportedMessage != null)
+        {
+            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, unsupportedMessage)
+                .Execute(null);
+            return null;
+        }
+
         if (filePaths.Length == 0)
         {
             new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.SourceRequired)
@@ -97,18 +104,6 @@ public sealed class OpenRepartConfCmd(
                 result.Plan.Sources.Count,
                 result.Excluded.Count)).Execute(null);
         return result.Plan;
-    }
-
-    private static string[] GetVideoFiles(IEnumerable<string> filePaths)
-    {
-        HashSet<string> extensions = new(
-            SrcFilePickerLangProvider.VideoExtensions
-                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(extension => extension.TrimStart('*').ToLowerInvariant()),
-            StringComparer.OrdinalIgnoreCase);
-
-        return [.. filePaths.Where(filePath =>
-            extensions.Contains((Path.GetExtension(filePath) ?? string.Empty).ToLowerInvariant()))];
     }
 
     /// <summary>
