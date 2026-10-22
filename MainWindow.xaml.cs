@@ -29,6 +29,14 @@ public partial class MainWindow : AdaptiveWindow
 
     private void OnPreviewKeyDown(object sender, KeyEventArgs e) => TriggerNumaCpuCheck();
 
+    // The ScrollViewer owns the drag events for areas MainUI does not cover (e.g. the scrollbar);
+    // they are forwarded so the whole window behaves as one drop target.
+    private void OnDragOver(object sender, DragEventArgs e) => MainUIControl.ForwardDragOver(e);
+
+    private void OnDragLeave(object sender, DragEventArgs e) => MainUIControl.ForwardDragLeave(e);
+
+    private void OnDrop(object sender, DragEventArgs e) => MainUIControl.ForwardDrop(e);
+
     private void TriggerNumaCpuCheck()
     {
         if (DateTime.UtcNow - _lastNumaCpuTrigger < NumaCpuTriggerInterval)

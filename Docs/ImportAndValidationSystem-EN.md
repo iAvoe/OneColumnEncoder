@@ -38,6 +38,7 @@ This document explains the video import and check system.
 | Mode card availability | Without ffprobe, all video source cards are disabled; when certain upstream tools are selected, the multi-file mode cards are disabled | Modes are proactively disabled when tools are incomplete |
 | Pre-start checks | Queue/Repart check for missing sources and duplicate outputs; all routes have overwritten confirmation; route support is checked | Missing files, duplicate output names, or unsupported routes cause errors |
 | Script-to-video validation | Performed for Single Video/Queue; skipped for Concat/Repart | Concat scripts carry their own clip list; Repart does not require a script source |
+| Drag-and-drop import | Video files can be dropped onto the main window; 1 file goes to Single Video mode, several files go to Queue mode | Equivalent to a file dialog import; an already imported source is confirmed first |
 
 ## 3. Check Differences Across the Four Import Modes
 
@@ -183,3 +184,22 @@ In speed order:
 | Script source | Not required |
 | Script-to-video validation | Skipped |
 | Audio mux | Re-encoded as AAC 320 kbps by default |
+
+## 6. Main Window Drag-and-Drop Import
+
+The main window (MainUI) accepts video files dragged in from the file explorer; the import rules are
+equivalent to the file dialog import. The view layer (MainUI) owns the OLE drag events and the
+"you can release now" feedback, the rule layer (MainVM) owns the import decision.
+
+| Item | Rule |
+|---|---|
+| Drop area | The whole main window (including the scroll area) is a drop target |
+| 1 video dropped | Imported into Single Video mode |
+| Several videos dropped | Imported into Queue mode (multi-file mode) |
+| Folders dropped | Folders are ignored; a warning is shown when no usable file is found |
+| Extension check | Single Video mode does not re-check the extension (any file is accepted); Queue mode checks the whitelist and reports an error that aborts the import when a file is not whitelisted |
+| Target card disabled | The import is refused with a message (ffprobe missing, or the selected upstream does not support queue mode) |
+| A source is already imported | A confirmation dialog is shown; confirming replaces the source and continues, cancelling keeps the current source |
+| Hover feedback | While a payload hovers the window, a highlight overlay with the target mode (Single Video / Queue) is shown to signal that the mouse can be released |
+| After the import | Same as a file dialog import: the source analysis runs automatically |
+| Not supported | Only video files are handled; script sources still have to be imported with the file dialog |

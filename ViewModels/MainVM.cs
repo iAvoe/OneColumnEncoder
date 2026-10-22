@@ -1435,6 +1435,134 @@ public class MainVM : BaseVM
     }
     #endregion
 
+    #region Drag & Drop Source Import
+    private bool _isDropTargetHighlighted;
+    private int _dropTargetFileCount;
+
+    /// <summary>
+    /// True while a droppable payload hovers the main window.
+    /// Drives the "release to import" overlay of MainUI.
+    /// </summary>
+    public bool IsDropTargetHighlighted
+    {
+        get => _isDropTargetHighlighted;
+        set => SetProperty(ref _isDropTargetHighlighted, value);
+    }
+
+    /// <summary>
+    /// Overlay hint telling what the current drag payload will be imported as.
+    /// </summary>
+    public string DropTargetHintText => DropImportPlan.BuildTargetHint(_dropTargetFileCount);
+
+    /// <summary>
+    /// Called by MainUI while a drag payload hovers the window.
+    /// </summary>
+    public void SetDropTargetHighlight(bool isHighlighted, int fileCount = 0)
+    {
+        int count = isHighlighted ? Math.Max(fileCount, 0) : 0;
+        if (_isDropTargetHighlighted == isHighlighted && _dropTargetFileCount == count) return;
+
+        _dropTargetFileCount = count;
+        IsDropTargetHighlighted = isHighlighted;
+        OnPropertyChanged(nameof(DropTargetHintText));
+    }
+
+    /// <summary>
+    /// A drop is acceptable when it carries at least one existing file.
+    /// The extension whitelist is enforced on import, not while hovering.
+    /// </summary>
+    public bool CanAcceptDroppedFiles(IReadOnlyList<string> existingFilePaths) =>
+        !_modalNavS.IsOpen && existingFilePaths.Count > 0;
+
+    /// <summary>
+    /// Entry point for files dropped onto the main window.
+    /// One video is imported into single-file mode, several videos into queue mode.
+    /// </summary>
+    public void ImportDroppedFiles(IReadOnlyList<string> droppedPaths)
+    {
+        DropImportResult result = DropImportPlan.Create(droppedPaths);
+        if (result.Plan is not DropImportPlan plan)
+        {
+            ShowDropImportProblem(result);
+            return;
+        }
+
+        ToolItemCardVM? targetCard = plan.IsSingle ? GetSingleVideoSrcCard() : GetQueueSrcCard();
+        if (targetCard == null) return;
+
+        if (!targetCard.IsEnabled)
+        {
+            new OpenWarnModalCmd(
+                _modalNavS,
+                UICaptionProvider.SourceInspect.WarnTitle,
+                DropImportPlan.ImportDisabledMessage).Execute(null);
+            return;
+        }
+
+        if (!ConfirmReplaceImportedSource(plan)) return;
+
+        if (plan.IsSingle) ImportDroppedSingleVideo(targetCard, plan.FilePaths[0]);
+        else ImportDroppedQueueVideos(targetCard, plan);
+    }
+
+    private void ShowDropImportProblem(DropImportResult result)
+    {
+        if (result.IsError)
+            new OpenErrModalCmd(
+                _modalNavS,
+                UICaptionProvider.SourceInspect.ErrorTitle,
+                result.Message).Execute(null);
+        else
+            new OpenWarnModalCmd(
+                _modalNavS,
+                UICaptionProvider.SourceInspect.WarnTitle,
+                result.Message).Execute(null);
+    }
+
+    private ToolItemCardVM? GetSingleVideoSrcCard() =>
+        VideoSrcImportZone.FirstOrDefault(t =>
+            !IsSrcQueueItem(t) &&
+            !IsSrcConcatItem(t) &&
+            !IsSrcRepartItem(t));
+
+    private ToolItemCardVM? GetQueueSrcCard() =>
+        VideoSrcImportZone.FirstOrDefault(IsSrcQueueItem);
+
+    private bool HasImportedVideoSource()
+    {
+        if (_SrcRepart.CurrentPlan?.IsConfigured == true) return true;
+        return VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.P2TextData));
+    }
+
+    // Asks before replacing an already imported source. Cancel keeps the current source.
+    private bool ConfirmReplaceImportedSource(DropImportPlan plan)
+    {
+        if (!HasImportedVideoSource()) return true;
+
+        OpenWarnModalCmd cmd = new(_modalNavS, plan.ReplaceTitle, plan.ReplaceMessage);
+        cmd.Execute(null);
+        return cmd.DialogResult == true;
+    }
+
+    private void ImportDroppedSingleVideo(ToolItemCardVM videoSrcCard, string filePath)
+    {
+        videoSrcCard.P2TextData = filePath;
+        videoSrcCard.P1TextData = SrcFilePicker.GetPrimaryText(SrcFileKind.Video, filePath);
+        BrowseHistory.Remember(_appDataM, BrowseHistoryKeys.ForSingleSource(SrcFileKind.Video), filePath);
+        OnVideoSrcImported(videoSrcCard, SrcFileKind.Video, filePath, true);
+    }
+
+    private void ImportDroppedQueueVideos(ToolItemCardVM queueCard, DropImportPlan plan)
+    {
+        queueCard.P2TextData = plan.Directory;
+        queueCard.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(plan.FileNames);
+        queueCard.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(plan.FileNames);
+
+        BrowseHistory.Remember(_appDataM, BrowseHistoryKeys.SrcQueue, plan.Directory);
+        OnSrcQueueImported(queueCard, plan.Directory, plan.FilePaths);
+    }
+    #endregion
+
     #region Source State Queries
     private string GetCurrentVideoSrcPath()
     {
@@ -3533,6 +3661,7 @@ public class MainVM : BaseVM
         RefreshButtonCaptions();
         RefreshCardsLanguage();
         RefreshZoneLanguage();
+        OnPropertyChanged(nameof(DropTargetHintText));
     }
     private void RefreshSectionHeaders()
     {

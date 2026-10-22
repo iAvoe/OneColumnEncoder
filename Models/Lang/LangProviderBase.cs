@@ -11,6 +11,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// | `AppUsageLangProvider.cs` | 38 keys |
 /// | `AppConfLangProvider.cs` | 31 keys |
 /// | `ConfirmDialogLangProvider.cs` | 7 keys |
+/// | `DropImportLangProvider.cs` | 8 keys |
 /// | `ClipRangeSelectorLangProvider.cs` | 22 keys |
 /// | `CpuSetsLangProvider.cs` | 6 keys |
 /// | `SrcQueueLangProvider.cs` | 12 keys |

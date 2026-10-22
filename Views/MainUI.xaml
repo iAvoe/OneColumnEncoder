@@ -10,7 +10,11 @@
              xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vms:MainVM}"
-             Background="WhiteSmoke">
+             Background="WhiteSmoke"
+             AllowDrop="True"
+             DragOver="OnDragOver"
+             DragLeave="OnDragLeave"
+             Drop="OnDrop">
     <UserControl.Resources>
         <FrameworkElement x:Key="BindingProxy"
                           DataContext="{Binding}" />
@@ -1012,5 +1016,36 @@
                 Background="White"
                 Opacity="0.5"
                 IsHitTestVisible="True" />
+
+        <!-- Drag & drop indicator: tells the user that the payload can be released here -->
+        <Border Margin="6"
+                CornerRadius="10"
+                BorderThickness="4"
+                BorderBrush="{StaticResource BorderAzure}"
+                Background="#30679FAB"
+                IsHitTestVisible="False">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDropTargetHighlighted}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding DropTargetHintText}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="20"
+                       Foreground="{StaticResource GlobalPrimary}" />
+        </Border>
     </Grid>
 </UserControl>
