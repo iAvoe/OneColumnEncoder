@@ -2,19 +2,12 @@ using System.IO;
 
 namespace OneColumnEncoder.FileManagement;
 
-public enum DropImportProblem
-{
-    None,
-    NoVideoFile,
-    UnsupportedFiles
-}
-
 /// <summary>
 /// Immutable description of a drag &amp; drop import request.
 ///
 /// One existing file is routed to single-file mode, several files to queue mode.
-/// Single-file mode deliberately skips the second extension check, queue mode
-/// rejects the whole import when any file is outside the video whitelist.
+/// Both modes share the same rejection rule: an imported file is refused only
+/// when ffprobe cannot read it, so no extension pre-filter runs here either.
 /// </summary>
 public sealed class DropImportPlan
 {
@@ -66,46 +59,31 @@ public sealed class DropImportPlan
             : string.Format(Lang.ModeQueue, fileCount);
 
     /// <summary>
-    /// Classifies the dropped paths without touching any UI state.
+    /// Classifies the dropped paths without touching any UI state. Returns null and a
+    /// ready-to-show message when the payload carries no usable file.
     /// </summary>
-    public static DropImportResult Create(IEnumerable<string> droppedPaths)
+    public static DropImportPlan? TryCreate(
+        IEnumerable<string> droppedPaths,
+        out string refusalMessage)
     {
         string[] filePaths = [.. droppedPaths.Where(File.Exists)];
         if (filePaths.Length == 0)
         {
-            return new DropImportResult(
-                Plan: null,
-                Problem: DropImportProblem.NoVideoFile,
-                Message: Lang.NoVideoFile,
-                IsError: false);
+            refusalMessage = Lang.NoVideoFile;
+            return null;
         }
 
-        if (filePaths.Length > 1 && SrcFilePicker.GetUnsupportedVideoFiles(filePaths).Length > 0)
-        {
-            return new DropImportResult(
-                Plan: null,
-                Problem: DropImportProblem.UnsupportedFiles,
-                Message: SrcFilePicker.GetUnsupportedVideoFilesMessage(filePaths) ?? string.Empty,
-                IsError: true);
-        }
-
-        return new DropImportResult(
-            Plan: new DropImportPlan(filePaths),
-            Problem: DropImportProblem.None,
-            Message: string.Empty,
-            IsError: false);
+        refusalMessage = string.Empty;
+        return new DropImportPlan(filePaths);
     }
-}
 
-/// <summary>
-/// Outcome of <see cref="DropImportPlan.Create"/>: either a plan to apply, or a
-/// ready-to-show message describing why the drop was refused.
-/// </summary>
-public readonly record struct DropImportResult(
-    DropImportPlan? Plan,
-    DropImportProblem Problem,
-    string Message,
-    bool IsError)
-{
-    public bool Succeeded => Plan != null;
+    /// <summary>
+    /// Narrows the plan to the files that survived the ffprobe gate, so the card text,
+    /// folder and file list all describe what is actually imported.
+    /// </summary>
+    public DropImportPlan RestrictTo(IReadOnlyList<string> readablePaths)
+    {
+        if (FilePaths.SequenceEqual(readablePaths)) return this;
+        return new DropImportPlan([.. readablePaths]);
+    }
 }

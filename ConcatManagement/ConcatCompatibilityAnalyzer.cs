@@ -20,6 +20,7 @@ public static class ConcatCompatibilityAnalyzer
         bool hasCompleteFrameCounts = true;
         List<string> warnings = [];
         List<string> variableFrameRateWarnings = [];
+        List<string> probeFailures = [];
         bool hasResolutionMismatch = false;
         string? resolutionMismatchMessage = null;
 
@@ -35,7 +36,6 @@ public static class ConcatCompatibilityAnalyzer
             {
                 string rawJson = await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, filePath);
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
-
                 using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
                 JsonElement rawElement = rawDocument.RootElement.Clone();
 
@@ -92,14 +92,16 @@ public static class ConcatCompatibilityAnalyzer
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException(
-                    FormatAnalysisFailureMessage(filePath, ex.Message, i + 1, filePaths.Length),
-                    ex);
+                // ffprobe returned no usable data ⇒ exclude only this file and keep
+                // analyzing the rest; the caller reports the failures in one summary.
+                probeFailures.Add(FormatProbeFailure(filePath, ex.Message));
             }
         }
 
-        if (referenceRawJson == null || referencePath == null)
-            throw new InvalidOperationException(FormatAllItemsFailedMessage(filePaths.Length));
+        // ffprobe must be able to read at least two selected files; below that,
+        // the import cannot produce a meaningful concat source list.
+        if (referenceRawJson == null || referencePath == null || rawAnalyses.Count < 2)
+            throw new InvalidOperationException(BuildInsufficientSourcesMessage(probeFailures));
 
         return new(
             referenceRawJson,
@@ -108,25 +110,23 @@ public static class ConcatCompatibilityAnalyzer
             hasCompleteFrameCounts ? concatTotalFrames : -1,
             warnings,
             variableFrameRateWarnings,
+            probeFailures,
             hasResolutionMismatch,
             resolutionMismatchMessage);
     }
 
-    private static string FormatAnalysisFailureMessage(
-        string srcPath,
-        string detail,
-        int queueIndex,
-        int queueTotal)
+    // Builds a message for the case where fewer than two analyzable files remain.
+    // Leads with the import requirement, followed by one detail line per excluded file.
+    private static string BuildInsufficientSourcesMessage(IReadOnlyList<string> probeFailures)
     {
-        return string.Join(
-            Environment.NewLine,
-            string.Format(Lang.QueueItemProgress, queueIndex, queueTotal),
-            string.Format(Lang.SourceFilePath, srcPath),
-            detail);
+        List<string> lines = [FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSources"]];
+        lines.AddRange(probeFailures);
+        return string.Join(Environment.NewLine, lines);
     }
 
-    private static string FormatAllItemsFailedMessage(int count) =>
-        string.Format(Lang.AllQueueItemsFailed, count);
+    // Formats a single excluded file as "name: reason" so summaries stay compact.
+    private static string FormatProbeFailure(string filePath, string reason) =>
+        $"{Path.GetFileName(filePath)}: {reason}";
 
     private static bool? IsVariableFrameRate(JsonElement rawElement)
     {
@@ -240,6 +240,7 @@ public sealed record ConcatCompatibilityAnalysisResult(
     long ConcatTotalFrames,
     IReadOnlyList<string> Warnings,
     IReadOnlyList<string> VariableFrameRateWarnings,
+    IReadOnlyList<string> ProbeFailures,
     bool HasResolutionMismatch,
     string? ResolutionMismatchMessage);
 

@@ -605,7 +605,8 @@ public class MainVM : BaseVM
                 UpdateEncStartButtonsState();
             },
             IsConcatRouteActive,
-            GetConcatFilePaths);
+            GetConcatFilePaths,
+            OnSrcConcatAcceptedFiles);
         SampleClip = new OpenSampleClipCmd(
             modalNavS,
             appConfM,
@@ -1469,7 +1470,7 @@ public class MainVM : BaseVM
 
     /// <summary>
     /// A drop is acceptable when it carries at least one existing file.
-    /// The extension whitelist is enforced on import, not while hovering.
+    /// Rejection is ffprobe-based and happens after import, not while hovering.
     /// </summary>
     public bool CanAcceptDroppedFiles(IReadOnlyList<string> existingFilePaths) =>
         !_modalNavS.IsOpen && existingFilePaths.Count > 0;
@@ -1477,13 +1478,17 @@ public class MainVM : BaseVM
     /// <summary>
     /// Entry point for files dropped onto the main window.
     /// One video is imported into single-file mode, several videos into queue mode.
+    /// Queue drops pass the ffprobe readability gate before any state is applied.
     /// </summary>
-    public void ImportDroppedFiles(IReadOnlyList<string> droppedPaths)
+    public async void ImportDroppedFiles(IReadOnlyList<string> droppedPaths)
     {
-        DropImportResult result = DropImportPlan.Create(droppedPaths);
-        if (result.Plan is not DropImportPlan plan)
+        DropImportPlan? plan = DropImportPlan.TryCreate(droppedPaths, out string refusalMessage);
+        if (plan == null)
         {
-            ShowDropImportProblem(result);
+            new OpenWarnModalCmd(
+                _modalNavS,
+                UICaptionProvider.SourceInspect.WarnTitle,
+                refusalMessage).Execute(null);
             return;
         }
 
@@ -1499,24 +1504,47 @@ public class MainVM : BaseVM
             return;
         }
 
+        // Queue drops pass the ffprobe readability gate before any state is applied,
+        // so a payload of subtitles or scripts never replaces an existing source.
+        if (!plan.IsSingle)
+        {
+            plan = await GateQueueDropAsync(plan);
+            if (plan == null) return;
+        }
+
         if (!ConfirmReplaceImportedSource(plan)) return;
 
         if (plan.IsSingle) ImportDroppedSingleVideo(targetCard, plan.FilePaths[0]);
         else ImportDroppedQueueVideos(targetCard, plan);
     }
 
-    private void ShowDropImportProblem(DropImportResult result)
+    // Narrows the plan to what ffprobe can read. Returns null when the import is
+    // refused; without a usable ffprobe the plan passes through unchanged and the
+    // later analysis reports the missing tool.
+    private async Task<DropImportPlan?> GateQueueDropAsync(DropImportPlan plan)
     {
-        if (result.IsError)
+        SrcProbeVerdict verdict = await SrcProbeGate.RunAsync(
+            GetSelectedFfprobePath(),
+            plan.FilePaths);
+
+        if (verdict.IsRefused)
+        {
             new OpenErrModalCmd(
                 _modalNavS,
                 UICaptionProvider.SourceInspect.ErrorTitle,
-                result.Message).Execute(null);
-        else
+                verdict.BuildRefusalMessage()).Execute(null);
+            return null;
+        }
+
+        if (verdict.HasFailures)
+        {
             new OpenWarnModalCmd(
                 _modalNavS,
                 UICaptionProvider.SourceInspect.WarnTitle,
-                result.Message).Execute(null);
+                verdict.BuildFailureSummary()).Execute(null);
+        }
+
+        return plan.RestrictTo(verdict.ReadablePaths);
     }
 
     private ToolItemCardVM? GetSingleVideoSrcCard() =>
@@ -2106,7 +2134,13 @@ public class MainVM : BaseVM
     {
         if (IsSrcQueueItem(item))
         {
-            item.R1Command = new BrowseSrcQueueCmd(item, _modalNavS, _appDataM, BrowseHistoryKeys.SrcQueue, OnSrcQueueImported);
+            item.R1Command = new BrowseSrcQueueCmd(
+                item,
+                _modalNavS,
+                _appDataM,
+                BrowseHistoryKeys.SrcQueue,
+                OnSrcQueueImported,
+                GetSelectedFfprobePath);
             item.R2Command = new ClearToolItemCmd(item, () => OnSrcQueueCleared(item));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
@@ -2544,6 +2578,14 @@ public class MainVM : BaseVM
     {
         _SrcConcat.Clear();
         RefreshSelectedSrcStatus(resetAnalysis: !HasSelectedVideoSrc());
+    }
+
+    // Re-analysis may exclude stored sources whose ffprobe result disappeared;
+    // the concat state (card summary + file list) is pruned to the accepted files.
+    private void OnSrcConcatAcceptedFiles(string[] acceptedFilePaths)
+    {
+        if (acceptedFilePaths.Length == GetConcatFilePaths().Length) return;
+        _SrcConcat.ApplyImportedFiles(acceptedFilePaths);
     }
 
     private void ApplyRepartPlan(RepartPlanM plan)

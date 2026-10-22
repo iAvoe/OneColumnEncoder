@@ -16,8 +16,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} script files (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI configuration files (*.ini)|*.ini",
             ["Filter.AllFiles"] = "All files (*.*)|*.*",
-            ["CustomScriptModeText"] = "Import custom script",
-            ["VideoFilesOnly"] = "Only video files can be imported. Remove the following unsupported file(s):\n{0}"
+            ["CustomScriptModeText"] = "Import custom script"
         },
         ["zh-cn"] = new()
         {
@@ -26,8 +25,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} 脚本文件 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 配置文件 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "所有文件 (*.*)|*.*",
-            ["CustomScriptModeText"] = "导入自定义脚本",
-            ["VideoFilesOnly"] = "只能导入视频文件。请移除以下不支持的文件：\n{0}"
+            ["CustomScriptModeText"] = "导入自定义脚本"
         },
         ["zh-tw"] = new()
         {
@@ -36,8 +34,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} 腳本檔案 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 設定檔 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "所有檔案 (*.*)|*.*",
-            ["CustomScriptModeText"] = "導入自訂腳本",
-            ["VideoFilesOnly"] = "只能匯入影片檔案。請移除以下不支援的檔案：\n{0}"
+            ["CustomScriptModeText"] = "導入自訂腳本"
         }
     };
 
@@ -50,8 +47,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"Scripts {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Fichiers de configuration SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Tous les fichiers (*.*)|*.*",
-            ["CustomScriptModeText"] = "Importer un script perso",
-            ["VideoFilesOnly"] = "Seuls les fichiers vidéo peuvent être importés. Retirez les fichiers non pris en charge suivants :\n{0}"
+            ["CustomScriptModeText"] = "Importer un script perso"
         };
         Data["es"] = new(Data["en"])
         {
@@ -60,8 +56,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"Scripts {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Configuración SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Todos los archivos (*.*)|*.*",
-            ["CustomScriptModeText"] = "Importar script propio",
-            ["VideoFilesOnly"] = "Solo se pueden importar archivos de vídeo. Elimina los siguientes archivos no compatibles:\n{0}"
+            ["CustomScriptModeText"] = "Importar script propio"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -70,8 +65,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} スクリプト (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 設定ファイル (*.ini)|*.ini",
             ["Filter.AllFiles"] = "すべてのファイル (*.*)|*.*",
-            ["CustomScriptModeText"] = "カスタムスクリプトを取込",
-            ["VideoFilesOnly"] = "動画ファイルのみインポートできます。次のサポートされていないファイルを除外してください:\n{0}"
+            ["CustomScriptModeText"] = "カスタムスクリプトを取込"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -80,8 +74,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"Скрипты {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Конфигурации SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Все файлы (*.*)|*.*",
-            ["CustomScriptModeText"] = "Импорт своего скрипта",
-            ["VideoFilesOnly"] = "Можно импортировать только видеофайлы. Удалите следующие неподдерживаемые файлы:\n{0}"
+            ["CustomScriptModeText"] = "Импорт своего скрипта"
         };
         Data["de"] = new(Data["en"])
         {
@@ -90,8 +83,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth}-Skripte (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI-Konfigurationsdateien (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Alle Dateien (*.*)|*.*",
-            ["CustomScriptModeText"] = "Benutzerskript importieren",
-            ["VideoFilesOnly"] = "Nur Videodateien können importiert werden. Entfernen Sie die folgenden nicht unterstützten Dateien:\n{0}"
+            ["CustomScriptModeText"] = "Benutzerskript importieren"
         };
         Data["ko"] = new(Data["en"])
         {
@@ -100,8 +92,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} 스크립트 파일 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 구성 파일 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "모든 파일 (*.*)|*.*",
-            ["CustomScriptModeText"] = "사용자 정의 스크립트 가져오기",
-            ["VideoFilesOnly"] = "동영상 파일만 가져올 수 있습니다. 다음 지원되지 않는 파일을 제거하세요:\n{0}"
+            ["CustomScriptModeText"] = "사용자 정의 스크립트 가져오기"
         };
         Data["pt-br"] = new(Data["en"])
         {
@@ -110,8 +101,7 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.VapourSynthScript"] = $"Scripts {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Arquivos de configuração SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Todos os arquivos (*.*)|*.*",
-            ["CustomScriptModeText"] = "Importar script personalizado",
-            ["VideoFilesOnly"] = "Somente arquivos de vídeo podem ser importados. Remova os seguintes arquivos não suportados:\n{0}"
+            ["CustomScriptModeText"] = "Importar script personalizado"
         };
     }
 
@@ -121,7 +111,6 @@ public class SrcFilePickerLangProvider : LangProviderBase
     public string SvfiIniFilter { get; }
     public string AllFilesFilter { get; }
     public string CustomScriptModeText { get; }
-    public string VideoFilesOnly { get; }
 
     public SrcFilePickerLangProvider(string languageCode) : base(languageCode, Data)
     {
@@ -131,6 +120,5 @@ public class SrcFilePickerLangProvider : LangProviderBase
         SvfiIniFilter = this["Filter.SvfiIni"];
         AllFilesFilter = this["Filter.AllFiles"];
         CustomScriptModeText = this["CustomScriptModeText"];
-        VideoFilesOnly = this["VideoFilesOnly"];
     }
 }

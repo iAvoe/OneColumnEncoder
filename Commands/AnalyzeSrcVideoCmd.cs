@@ -20,7 +20,8 @@ public class AnalyzeSrcVideoCmd(
     Action<bool>? onAnalysisCompleted = null,
     Action? onCompleted = null,
     Func<bool>? isConcatRoute = null,
-    Func<string[]>? getConcatFilePaths = null) : AsyncBaseCmd
+    Func<string[]>? getConcatFilePaths = null,
+    Action<string[]>? onConcatAccepted = null) : AsyncBaseCmd
 {
     private readonly Func<string> _getFfprobePath = getFfprobePath;
     private readonly Func<string> _getsrcPath = getsrcPath;
@@ -34,6 +35,7 @@ public class AnalyzeSrcVideoCmd(
     private readonly Action? _onCompleted = onCompleted;
     private readonly Func<bool>? _isConcatRoute = isConcatRoute;
     private readonly Func<string[]>? _getConcatFilePaths = getConcatFilePaths;
+    private readonly Action<string[]>? _onConcatAccepted = onConcatAccepted;
 
     private static AnalyzeSrcVideoCmdLangProvider Lang => new(UILangProvider.Current.LanguageCode);
     private static readonly JsonSerializerOptions CachedJsonOptions = CreateJsonSerializerOptions();
@@ -135,6 +137,10 @@ public class AnalyzeSrcVideoCmd(
         if (result.HasResolutionMismatch)
             throw new InvalidOperationException(result.ResolutionMismatchMessage ?? string.Empty);
 
+        // ffprobe returned no usable data for some stored files ⇒ exclude them and
+        // keep the compatible part; the analyzer throws when fewer than 2 remain.
+        string[] acceptedConcatPaths = [.. result.RawAnalyses.Select(entry => entry.FilePath)];
+
         _analysis.Route = SrcRouteKind.Concat;
         _analysis.FFprobePath = ffprobePath;
         _analysis.SrcPath = result.ReferencePath;
@@ -145,20 +151,24 @@ public class AnalyzeSrcVideoCmd(
                 new SourceRawAnalysisM(entry.FilePath, entry.DisplayName, entry.FfprobeJson))]),
             CachedJsonOptions);
         concatCard.ApplyFfprobeAnalysisJson(result.ReferenceRawJson);
-        concatCard.ApplyConcatAnalysis(concatFilePaths, allValid: true);
+        concatCard.ApplyConcatAnalysis(acceptedConcatPaths, allValid: true);
+        _onConcatAccepted?.Invoke(acceptedConcatPaths);
 
-        string message = string.Format(UILangProvider.Current["SourceConcat.Analyzed"], concatFilePaths.Length);
+        string message = string.Format(UILangProvider.Current["SourceConcat.Analyzed"], acceptedConcatPaths.Length);
         ShowSourceAnalysisCompletedModal(message);
 
+        List<string> warningSections = [];
+        if (result.ProbeFailures.Count > 0)
+            warningSections.Add(SrcProbeGate.FormatFailures(result.ProbeFailures));
         if (result.Warnings.Count > 0)
+            warningSections.Add(string.Join(Environment.NewLine + Environment.NewLine, result.Warnings));
+
+        if (warningSections.Count > 0)
         {
-            string warningMessage = string.Join(
-                Environment.NewLine + Environment.NewLine,
-                result.Warnings);
             new OpenWarnModalCmd(
                 _modalNavS,
                 UICaptionProvider.SourceInspect.WarnTitle,
-                warningMessage).Execute(null);
+                string.Join(Environment.NewLine + Environment.NewLine, warningSections)).Execute(null);
         }
 
         if (result.ConcatTotalFrames > 0)
@@ -210,7 +220,6 @@ public class AnalyzeSrcVideoCmd(
         QueueSourceFilterResult result = await AnalyzeAndFilterQueueSourcesAsync(
             ffprobePath,
             queueFilePaths,
-            _modalNavS,
             () => new SrcCheckCardVM { IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc },
             filterMode,
             shouldFilterQueue);
@@ -267,7 +276,6 @@ public class AnalyzeSrcVideoCmd(
     private static async Task<QueueSourceFilterResult> AnalyzeAndFilterQueueSourcesAsync(
         string ffprobePath,
         string[] queueFilePaths,
-        ModalNavS modalNavS,
         Func<SrcCheckCardVM> createProbeCard,
         QueueFilterMode filterMode,
         bool shouldFilterQueue)
@@ -303,16 +311,8 @@ public class AnalyzeSrcVideoCmd(
             }
             catch (Exception ex)
             {
-                string failureMessage = FormatAnalysisFailureMessage(
-                    filePath,
-                    ex.Message,
-                    i + 1,
-                    queueFilePaths.Length,
-                    willSkipAndContinue: true);
-                new OpenErrModalCmd(
-                    modalNavS,
-                    UILangProvider.SrcAnalysisWindowTitle,
-                    failureMessage).Execute(null);
+                // ffprobe returned no usable data ⇒ exclude this file silently;
+                // the single completion summary reports every skipped item at once.
                 skipped.Add(new(filePath, Path.GetFileName(filePath), ex.Message));
             }
         }
@@ -413,48 +413,37 @@ public class AnalyzeSrcVideoCmd(
             : null;
     }
 
-    // Formats an error message with optional queue progress (e.g., "3/10") and a skip-notice suffix for queue mode.
-    private static string FormatAnalysisFailureMessage(
-        string srcPath,
-        string detail,
-        int? queueIndex = null,
-        int? queueTotal = null,
-        bool willSkipAndContinue = false)
+    // Formats an analysis failure message for a single-file source.
+    private static string FormatAnalysisFailureMessage(string srcPath, string detail)
     {
-        List<string> lines = [];
-        if (queueIndex.HasValue && queueTotal.HasValue)
-            lines.Add(string.Format(Lang.QueueItemProgress, queueIndex.Value, queueTotal.Value));
-
-        lines.Add(string.Format(Lang.SourceFilePath, srcPath));
-        lines.Add(detail);
-        if (willSkipAndContinue)
-        {
-            lines.Add(string.Empty);
-            lines.Add(Lang.QueueItemSkipMsg);
-        }
-
+        List<string> lines =
+        [
+            string.Format(Lang.SourceFilePath, srcPath),
+            detail
+        ];
         return string.Join(Environment.NewLine, lines);
     }
 
     private static string FormatAllQueueItemsFailedMessage(int queueCount) =>
         string.Format(Lang.AllQueueItemsFailed, queueCount);
 
-    // Appends a list of skipped files (up to 5 details) to the existing message, with an "and N more" suffix if truncated.
+    // Appends the shared "skipped items" summary (up to 5 details plus an
+    // "and N more" suffix) to the existing message.
     private static string FormatQueueSkippedMessage(string message, IReadOnlyList<QueueSourceFailure> skipped)
     {
-        const int maxDetails = 5;
-        List<string> skippedLines = [string.Format(Lang.SkippedItemsLabel, skipped.Count)];
-        skippedLines.AddRange(skipped
-            .Take(maxDetails)
-            .Select(item => string.IsNullOrWhiteSpace(item.DisplayName) ? item.FilePath : item.DisplayName)
-            .Select(detail => string.Format(Lang.ListItemPrefix, detail)));
-        int omitted = skipped.Count - Math.Min(skipped.Count, maxDetails);
+        string failureSummary = SrcProbeGate.FormatFailures(
+            [.. skipped.Select(FormatSkippedItem)]);
+        return failureSummary.Length == 0
+            ? message
+            : message + Environment.NewLine + Environment.NewLine + failureSummary;
+    }
 
-        if (omitted > 0) skippedLines.Add(string.Format(Lang.AndMoreLabel, omitted));
-        return message
-            + Environment.NewLine
-            + Environment.NewLine
-            + string.Join(Environment.NewLine, skippedLines);
+    // One line per skipped file: display name (or path) plus the first line of the reason.
+    private static string FormatSkippedItem(QueueSourceFailure item)
+    {
+        string name = string.IsNullOrWhiteSpace(item.DisplayName) ? item.FilePath : item.DisplayName;
+        string reason = (item.ErrorMessage ?? string.Empty).Split('\n')[0].Trim();
+        return string.IsNullOrWhiteSpace(reason) ? name : $"{name}: {reason}";
     }
 
     private void ShowSourceAnalysisCompletedModal(string message)

@@ -58,7 +58,7 @@ public sealed class OpenRepartConfCmd(
     }
 
     /// <summary>
-    /// Lets the user pick source files, runs compatibility analysis, and shows an import summary.
+    /// Lets the user pick one or more source files, runs compatibility analysis, and shows an import summary.
     /// </summary>
     /// <returns>The analyzed plan, or null if cancelled or no plan could be produced.</returns>
     private async Task<RepartPlanM?> ImportFilesAsync()
@@ -67,7 +67,7 @@ public sealed class OpenRepartConfCmd(
         {
             Title = UILangProvider.Current["SourceQueue.SelectFilesTitle"],
             Filter = new SrcFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
-            Multiselect = false,
+            Multiselect = true,
             CheckFileExists = true,
             CheckPathExists = true
         };
@@ -75,14 +75,8 @@ public sealed class OpenRepartConfCmd(
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return null;
 
         string[] filePaths = dialog.FileNames;
-        string? unsupportedMessage = SrcFilePicker.GetUnsupportedVideoFilesMessage(filePaths);
-        if (unsupportedMessage != null)
-        {
-            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, unsupportedMessage)
-                .Execute(null);
-            return null;
-        }
-
+        // Rejection is ffprobe-based: files that ffprobe cannot read are excluded
+        // by the staged compatibility analysis, no extension pre-filter runs here.
         if (filePaths.Length == 0)
         {
             new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.SourceRequired)
@@ -93,7 +87,7 @@ public sealed class OpenRepartConfCmd(
         RepartAnalysisResult? result = await RunAnalysisAsync(
             filePaths,
             requireMultipleSources: false,
-            isSingleVideoImport: true);
+            isSingleVideoImport: filePaths.Length == 1);
         if (result?.Plan == null) return null;
 
         new OpenSuccModalCmd(

@@ -13,7 +13,8 @@ This document explains the video import and check system.
 | ffprobe | A tool that reads video parameters such as resolution, frame rate, pixel format, color, and field order. |
 | Checklist | The program checks each source item by item: metadata, progressive, bit-depth, constant frame rate, YUV420, chroma, etc. |
 | Error / Warning | Error disables the Start Encoding button. Warning only reminds you and does not disable it. |
-| Reject non-whitelisted | If any selected file is not in the whitelist, the whole import is rejected and an error is shown. |
+| Reject non-whitelisted | (removed) The extension whitelist no longer rejects anything on its own |
+| ffprobe as sole verdict | Whether a file can be imported/participate depends only on ffprobe returning data; multi-file modes exclude unreadable files item by item with a summary, single mode reports an error |
 | Reference file | The baseline file in multi-file modes. Other files are compared with it. |
 | CFR / VFR | CFR is constant frame rate. VFR is variable frame rate. Many tools do not support VFR. |
 | Progressive / interlaced | Progressive is usually fine. Interlaced is an old scanning method and modern tools usually do not support it. |
@@ -25,7 +26,7 @@ This document explains the video import and check system.
 | Rule | Explanation | Effect |
 |---|---|---|
 | Route priority | Queue > Concat > Repart > Single Video | When multiple modes are active at the same time, the mode to use is decided in this order |
-| Dialog extension filter | Whitelist of about 90 entries; scripts support `.avs`, `.vpy`, `.ini` | The file dialog only shows files with video extensions |
+| Dialog extension filter | Whitelist of about 90 entries; scripts support `.avs`, `.vpy`, `.ini` | The file dialog only shows files with video extensions (UI filter only, part of no rejection rule) |
 | Effect of All files | Every dialog has an All files option | Any file can still be force-selected |
 | Checklist | Metadata, progressive, bit-depth, CFR, square pixels, color, chroma, YUV420, etc. | Every source is checked; errors disable the Start Encoding button, warnings do not |
 | Metadata | Must not be unknown, unspecified, or reserved | Abnormal metadata usually means the source may be damaged |
@@ -42,12 +43,12 @@ This document explains the video import and check system.
 
 ## 3. Check Differences Across the Four Import Modes
 
-| Mode | Import method | Minimum sources | Second extension check | Cross-file strictness | Script requirement | Audio default |
+| Mode | Import method | Minimum sources | Import gate | Cross-file strictness | Script requirement | Audio default |
 |---|---|---|---|---|---|---|
-| Single Video | Single file | 1 | None | None | Single script source | — |
-| Queue Mode | Multi-select, Blu-ray PLAYLIST | More than 0 | Yes; non-whitelisted files cause an error | Medium | Script queue folder | — |
-| Concat Mode | Multi-select | At least 2 | Yes; non-whitelisted files cause an error | Fairly strict | Script-embedded clip list | Re-encode as AAC 320 kbps |
-| Repart Mode | File import, chapter folder | More than 0 | Yes; non-whitelisted files cause an error | Strict | No script source required | Re-encode as AAC 320 kbps |
+| Single Video | Single file | 1 | None (ffprobe verification) | None | Single script source | — |
+| Queue Mode | Multi-select, Blu-ray PLAYLIST | More than 0 | None (ffprobe verification) | Medium | Script queue folder | — |
+| Concat Mode | Multi-select | At least 2 | None (ffprobe verification) | Fairly strict | Script-embedded clip list | Re-encode as AAC 320 kbps |
+| Repart Mode | File import, chapter folder | More than 0 | None (ffprobe verification) | Strict | No script source required | Re-encode as AAC 320 kbps |
 
 ## 4. Multi-file Modes: Whether Sources Can Be Used Together
 
@@ -70,7 +71,7 @@ This document explains the video import and check system.
 | Item | Rule |
 |---|---|
 | Import | Select only one video |
-| Post-selection extension check | None (files selected via All files are accepted) |
+| Post-selection extension check | None (consistent with multi-file modes; rejection is decided by ffprobe returning no data) |
 | Cross-file compatibility | None |
 | Analysis condition | Both the tool path and the source path must be non-empty |
 | Analysis failure | Produces an error that blocks starting |
@@ -84,11 +85,11 @@ This document explains the video import and check system.
 | Item | Rule |
 |---|---|
 | Import | Multi-file dialog; Blu-ray PLAYLIST supported |
-| Non-whitelisted extensions | Error and abort the import |
+| Import gate | ffprobe readability pre-check before the import is applied: unreadable files are excluded item by item with one summary; all unreadable refuses the import, leaving an existing source untouched |
 | Empty result | A warning is shown if no file was selected |
 | Mixed folders | May cause an error |
 | Per-file analysis | Each file is checked item by item |
-| Single-file failure | Skipped with an error shown |
+| Single-file failure | Silently excluded; the completion summary lists all failures at once (name + reason) |
 | All files failed | Cannot continue |
 | Filter modes | When there is more than 1 file, prompts for First-stream or Typical-stream |
 | Acceptance condition | Closing the filter accepts everything; otherwise candidates must match the reference |
@@ -105,7 +106,7 @@ This document explains the video import and check system.
 
 | Item | Rule |
 |---|---|
-| Non-whitelisted extensions | Error and abort the import |
+| Import gate | No extension pre-filter; unreadable files are excluded by the compatibility analysis and summarized |
 | Minimum count | Fewer than 2 files is an error |
 | Same extension | All files must share the same extension, case-insensitive |
 | VFR | Warning per file, does not block |
@@ -113,7 +114,7 @@ This document explains the video import and check system.
 | Codec / pixel format mismatch | Warning |
 | Frame rate mismatch | Warning |
 | No video stream or missing width/height | Error |
-| Single-file probe failure | May interrupt |
+| Single-file probe failure | Silently excluded; analysis continues while at least 2 analyzable files remain, otherwise the import is stopped with a failure summary |
 | All files failed | Cannot continue |
 | Frame counting | Total frame count is accumulated; if any file lacks a frame count, the total length is incomplete |
 | Reference file | The first successfully analyzed file |
@@ -123,6 +124,10 @@ This document explains the video import and check system.
 | Audio mux | Re-encoded as AAC 320 kbps by default |
 
 ### 5.4 Repart Mode
+
+| Item | Rule |
+|---|---|
+| Import | File import accepts one or several videos (multi-select); chapter folder import is also available |
 
 #### Pre-check and Stage-by-stage Exclusion
 
@@ -197,7 +202,7 @@ equivalent to the file dialog import. The view layer (MainUI) owns the OLE drag 
 | 1 video dropped | Imported into Single Video mode |
 | Several videos dropped | Imported into Queue mode (multi-file mode) |
 | Folders dropped | Folders are ignored; a warning is shown when no usable file is found |
-| Extension check | Single Video mode does not re-check the extension (any file is accepted); Queue mode checks the whitelist and reports an error that aborts the import when a file is not whitelisted |
+| Extension check | Unified for all four modes: no extension pre-filter; rejection depends only on ffprobe returning no data (single mode = error, multi-file modes = per-file exclusion). A queue-mode drop runs the readability pre-check first and refuses the whole import when nothing is readable |
 | Target card disabled | The import is refused with a message (ffprobe missing, or the selected upstream does not support queue mode) |
 | A source is already imported | A confirmation dialog is shown; confirming replaces the source and continues, cancelling keeps the current source |
 | Hover feedback | While a payload hovers the window, a highlight overlay with the target mode (Single Video / Queue) is shown to signal that the mouse can be released |

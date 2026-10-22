@@ -8,12 +8,14 @@ public class BrowseSrcQueueCmd(
     ModalNavS modalNavS,
     AppDataM appDataM,
     string browseKey,
-    Action<ToolItemCardVM, string, string[]>? afterImport = null) : BrowseCmdBase(item)
+    Action<ToolItemCardVM, string, string[]>? afterImport = null,
+    Func<string>? getFfprobePath = null) : BrowseCmdBase(item)
 {
     private readonly ModalNavS _modalNavS = modalNavS;
     private readonly AppDataM _appDataM = appDataM;
     private readonly string _browseKey = browseKey;
     private readonly Action<ToolItemCardVM, string, string[]>? _afterImport = afterImport;
+    private readonly Func<string>? _getFfprobePath = getFfprobePath;
 
     public override async void Execute(object? parameter)
     {
@@ -76,18 +78,31 @@ public class BrowseSrcQueueCmd(
             }
         }
 
-        string? unsupportedMessage = SrcFilePicker.GetUnsupportedVideoFilesMessage(filePaths);
-        if (unsupportedMessage != null)
+        // ffprobe readability gate before the card state changes: unreadable files
+        // are excluded with one summary, all unreadable refuses the whole import.
+        SrcProbeVerdict verdict = await SrcProbeGate.RunAsync(
+            _getFfprobePath?.Invoke() ?? string.Empty,
+            filePaths);
+        if (verdict.IsRefused)
         {
             new OpenErrModalCmd(
                 _modalNavS,
                 UICaptionProvider.SourceInspect.ErrorTitle,
-                unsupportedMessage)
-                .Execute(null);
+                verdict.BuildRefusalMessage()).Execute(null);
             ActivateMainWindow();
             return;
         }
 
+        if (verdict.HasFailures)
+        {
+            new OpenWarnModalCmd(
+                _modalNavS,
+                UICaptionProvider.SourceInspect.WarnTitle,
+                verdict.BuildFailureSummary()).Execute(null);
+            ActivateMainWindow();
+        }
+
+        filePaths = verdict.ReadablePaths;
         SetQueueCardText(pathText, filePaths);
         Remember(_appDataM, _browseKey, pathText);
         _afterImport?.Invoke(_item, pathText, filePaths);

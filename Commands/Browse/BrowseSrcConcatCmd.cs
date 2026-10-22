@@ -40,17 +40,8 @@ public class BrowseSrcConcatCmd(
         string[] filePaths = dialog.FileNames;
         if (filePaths.Length == 0) return;
 
-        // Reject unsupported extensions even if the user switches the dialog to "All files".
-        string? unsupportedExtensionError = SrcFilePicker.GetUnsupportedVideoFilesMessage(filePaths);
-        if (unsupportedExtensionError != null)
-        {
-            new OpenErrModalCmd(
-                _modalNavS,
-                UICaptionProvider.SourceInspect.WarnTitle,
-                unsupportedExtensionError).Execute(null);
-            ActivateMainWindow();
-            return;
-        }
+        // Rejection is ffprobe-based: files that ffprobe cannot read are excluded
+        // by the compatibility analysis below, no extension pre-filter runs here.
 
         // Concat mode needs at least two sources to build a meaningful file list.
         if (filePaths.Length < MinimumConcatSourceCount)
@@ -104,23 +95,35 @@ public class BrowseSrcConcatCmd(
             return;
         }
 
+        // Compatible part of the selection stays in the import; files that ffprobe
+        // could not read are excluded and reported in one combined summary.
+        string[] acceptedPaths = analysisResult is not null
+            ? [.. analysisResult.RawAnalyses.Select(entry => entry.FilePath)]
+            : filePaths;
+
+        List<string> warningSections = [];
+        if (analysisResult is not null && analysisResult.ProbeFailures.Count > 0)
+            warningSections.Add(SrcProbeGate.FormatFailures(analysisResult.ProbeFailures));
         if (analysisResult is not null && analysisResult.VariableFrameRateWarnings.Count > 0)
-        {
-            string warningMessage = string.Join(
+            warningSections.Add(string.Join(
                 Environment.NewLine + Environment.NewLine,
-                analysisResult.VariableFrameRateWarnings);
+                analysisResult.VariableFrameRateWarnings));
+
+        if (warningSections.Count > 0)
+        {
             new OpenWarnModalCmd(
                 _modalNavS,
                 UICaptionProvider.SourceInspect.WarnTitle,
-                warningMessage).Execute(null);
+                string.Join(Environment.NewLine + Environment.NewLine, warningSections)).Execute(null);
             ActivateMainWindow();
         }
 
-        // Store the parent folder and show a compact, ordered file summary in the import card.
-        string parentDir = Path.GetDirectoryName(filePaths[0]) ?? string.Empty;
-        SetQueueCardText(parentDir, filePaths);
-        Remember(_appDataM, _browseKey, filePaths[0]);
-        _afterImport?.Invoke(_item, filePaths);
+        // Store the parent folder of the accepted files and show a compact, ordered
+        // summary in the import card, so the card never points at an excluded file.
+        string parentDir = Path.GetDirectoryName(acceptedPaths[0]) ?? string.Empty;
+        SetQueueCardText(parentDir, acceptedPaths);
+        Remember(_appDataM, _browseKey, acceptedPaths[0]);
+        _afterImport?.Invoke(_item, acceptedPaths);
         ActivateMainWindow();
     }
 
