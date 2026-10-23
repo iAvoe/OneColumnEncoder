@@ -1,0 +1,84 @@
+name: Feature and behavior adjustment (not a bug) / 功能与行为变更（非 bug）
+description: Add/remove feature or process, change handling or behavior. 添加/移除功能或流程，修改操作或行为
+assignees:
+  - iAvoe
+body:
+  - type: textarea
+    id: brief
+    attributes:
+      label: Brief 概述
+      description: >
+        One liner summary of this request, expand if needed. 一句话说明，必要时补充。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority 优先级
+      description: >
+        Select one category that best reflects the necessity. 选择最符合当前议题的级别。
+
+        - High——solves bad practices, legal compliance, user frustration (despite not a bug); something unusable but should be → it's a bug. 修正不当实践、合法合规、体验糟糕（尽管情况非 bug）；无法执行但应该可以执行 → 是 bug。
+        - Mid——clear improvement that adds valuable capability or convenience (nice to have). 明显带来功能改善、能力扩大、便利性提升（有比没好）。
+        - Low——exploratory proposal; subtle benefit or subject to evaluation. 难说有益；有待考量。
+      options:
+        - High 高
+        - Mid 中
+        - Low 低
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope 方面
+      description: >
+        Select all relevant areas affected by this request; this form is for 1 request——consider opening another one if there are multiple. 选择所有符合该议题的相关方面；本表单针对单个议题——若有多组则应另开新议题。
+      multiple: true
+      options:
+        - Feature 功能
+        - UI/UX
+        - Compatibility 兼容性
+        - Logic & Processing 逻辑处理
+        - Performance 性能
+        - Other 其它
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope-detail
+    attributes:
+      label: Scope details 方面说明
+      description: >
+        Explain the selections above, e.g. for "Other". 对上方所选方面加以说明（如选择了“其它”）。
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location 定位
+      description: >
+        Identify the relevant UI section, window title, source file paths, or function names, depending on how exact you can describe.
+        按你所能描述的精确程度，找到并列出相关的 UI 位置、窗口标题、源文件路径或函数名。
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale & Justification 合理性与解释说明
+      description: >
+        Evaluate this request quickly and avoid premature rejection; simply ignore points that are not applicable.
+        快速检验当前议题，避免过早误判为无效用；不相关的点可直接忽略。
+
+        1. Expectation 预期——what's the expected behavior (if not described previously)? 详细说明预期行为如何（如果先前未说清楚）？
+        2. Impact 影响——why is this beneficial to the majority of users (not compromising the majority to benefit a minority)? 说明为何此改动有益于大多数用户（非薄众厚寡的改动）？
+        3. Feasibility 可行性——how does it avoid refactoring the entire codebase? 说明此改动为何能避免重构整个项目？
+        4. Trade-offs 妥协——what side-effects to expect, and why this remains good despite having them? 说明预期的副作用，以及当前议题为何在副作用存在时仍然合理？
+    validations:
+      required: true
+
+  - type: textarea
+    id: other-details
+    attributes:
+      label: Other Details 其它细节
