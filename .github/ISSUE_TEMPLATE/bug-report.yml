@@ -15,27 +15,27 @@ body:
   - type: textarea
     id: environment-os
     attributes:
-      label: Environment——OS 环境——操作系统
+      label: Environment——OS 操作系统
       description: >
-        Click `Start Menu`, enter `winver` and press Enter to answer below, i.e. Windows 10 Version 22H2 Build 19045.
+        i.e. Windows 10 Version 22H2 Build 19045. 例：Windows 10 版本 22H2 内部版本 19045。
 
-        点击“开始”菜单，输入 `winver` 并按回车，例：Windows 10 版本 22H2 内部版本 19045。
-
-        Has this OS been heavily debloated——list components that are removed. 此操作系统是否被大幅精简过——列出已移除的组件。
+        - Click `Start Menu`, enter `winver` and press Enter. 点击“开始”菜单，输入 `winver` 并按回车
     validations:
       required: true
 
   - type: textarea
     id: environment-hardware
     attributes:
-      label: Environment——Hardware 环境——硬件
+      label: Environment——Hardware 硬件
       description: >
-        CPU model, GPU model, RAM capacity——not needed if unrelated to the issue. CPU 型号、GPU 型号、内存容量——与本议题无关均可略过。
+        not needed if unrelated to the issue. 与本议题无关均可略过。
+
+        - CPU model, RAM capacity. CPU 型号、内存容量
 
   - type: textarea
     id: whereabouts-text
     attributes:
-      label: Whereabouts——Text 定位问题——文本
+      label: Fault location 故障定位
       description: >
         To locate where and what caused this issue. 用于定位问题发生的位置和可能原因。
 
@@ -52,24 +52,20 @@ body:
     attributes:
       label: Whereabouts——Image 定位问题——图片
       description: >
-        If an image explains things better, take advantage of it. 若图片描述问题更清晰则用。
+        Provide if an image explains things better, take advantage of it. 若图片描述问题更清晰则用。
 
-        Upload the image to a Dropbox, Google Drive, etc., *set access permission to public*, then share the link.
-        
-        将图片上传至 Dropbox、Google Drive 等处，*把访问权限设为公开*，然后分享链接。
+        - Upload the image to a Dropbox/Google Drive, ..., set access permission to public, then share the link. 将图片上传至网盘，*把访问权限设为公开*，然后分享链接。
 
-        Verify view permission with the browser's *incognito mode*. 用浏览器的*隐身模式*检查访问权限。
+        - Verify view permission with the browser's *incognito mode*. 用浏览器的*隐身模式*检查访问权限。
 
   - type: textarea
     id: correction
     attributes:
-      label: Correction 预期说明
+      label: Expectation 预期说明
       description: >
         Behavior related——say the expected behavior. 行为相关——说明预期行为。
 
-        Data related——say the expected string/integer value. 数据相关——说明预期的字符串/整数值。
-    validations:
-      required: true
+        - Data related——say the expected string/integer value. 数据相关——说明预期的字符串/整数值。
 
   - type: textarea
     id: other-details
@@ -78,7 +74,7 @@ body:
       description: >
         If an error modal is visible, right-click and copy the error string, then paste it here. 如果错误弹窗出现，右键复制错误字符串并粘贴到此处。
 
-        Modify the file path if the names in it are somehow *too artsy* to show. 如果文件路径中的名称过于“艺术”，请修改后填写。
+        - Modify the file path if the names in is unapproriate. 如果文件或路径名不适当公开则修改。
 
   - type: textarea
     id: additions
