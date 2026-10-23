@@ -54,7 +54,7 @@ body:
       description: >
         Provide if an image explains things better, take advantage of it. 若图片描述问题更清晰则用。
 
-        - Upload the image to a Dropbox/Google Drive, ..., set access permission to public, then share the link. 将图片上传至网盘，*把访问权限设为公开*，然后分享链接。
+        - Upload the image to a Dropbox/Google Drive, ..., *set read permission to public*, then share the link. 将图片上传至网盘，*把访问权限设为公开*，然后分享链接。
 
         - Verify view permission with the browser's *incognito mode*. 用浏览器的*隐身模式*检查访问权限。
 
