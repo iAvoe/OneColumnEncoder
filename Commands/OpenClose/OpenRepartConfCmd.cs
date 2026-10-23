@@ -24,8 +24,7 @@ public sealed class OpenRepartConfCmd(
     /// </summary>
     public override async void Execute(object? parameter)
     {
-        if (TryActivateExistingWindow<RepartConfModal>())
-            return;
+        if (TryActivateExistingWindow<RepartConfModal>()) return;
 
         RepartPlanM? initialPlan = forceReimport ? null : getCurrentPlan();
         if (initialPlan == null)

@@ -1,12 +1,8 @@
 # OneColumnEncoder
 
-The problem with video encoding software really comes down to a talent mismatch: people who know how to build software often don't understand the nuances of video encoding, and the encoding experts typically lacks software development skills.
+OneColumnEncoder (1cenc) has the video filtering-encoding procedures presented and controlled primarily via the UI, guided by a top→down, left→right flow that minimizes what would otherwise be the numerous things to pay attention to. Allowing fast, precise, advanced, customized, validated and previewed encoding configurations, plus an easy out of box experience.
 
-OneColumnEncoder's rather hardcore, meanwhile simple and intuitive UI/UX flow, automated repetitive tasks, and complete video encoding tasks nice and fast.
-
-《韩非子·功名》：“右手画圆，左手画方，不能两成”——懂得开发软件的人往往不了解视频编码，而对视频编码有所了解者通常又缺乏软件开发技能。
-
-OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，将重复操作自动化，让压制任务完成得又快又好。
+OneColumnEncoder (1cenc) 以 UI 操作主导，呈现完整的视频滤镜与编码流程，遵循从上到下、从左到右的线性操作逻辑，将原本需要同时关注的大量细节优化到极致。用户得以快速而精确地完成验证可行、且预览检查确认过的复杂自定义编码与滤镜处理配置，同时获得开箱即用的便捷体验。
 
 <p align="center"><img src="./WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600"/></p>
 
