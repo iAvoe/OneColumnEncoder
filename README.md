@@ -1,6 +1,6 @@
 # OneColumnEncoder
 
-OneColumnEncoder (1cenc) has the video filtering-encoding procedures presented and controlled primarily via the UI, guided by a top→down, left→right flow that minimizes what would otherwise be the numerous things to pay attention to. Allowing fast, precise, advanced, customized, validated and previewed encoding configurations, plus an easy out of box experience.
+OneColumnEncoder (1cenc) has the video filtering-encoding procedures presented and controlled primarily via the UI, guided by a top→down, left→right flow that minimizes what would otherwise be the numerous things to pay attention to. Allowing fast, precise, advanced, customized, validated and previewed encoding and filtering configurations, plus an easy out of box experience.
 
 OneColumnEncoder (1cenc) 以 UI 操作主导，呈现完整的视频滤镜与编码流程，遵循从上到下、从左到右的线性操作逻辑，将原本需要同时关注的大量细节优化到极致。用户得以快速而精确地完成验证可行、且预览检查确认过的复杂自定义编码与滤镜处理配置，同时获得开箱即用的便捷体验。
 
