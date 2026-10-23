@@ -38,7 +38,9 @@ body:
     attributes:
       label: Scope 方面
       description: >
-        Select all relevant areas affected by this request; this form is for 1 request——consider opening another one if there are multiple. 选择所有符合该议题的相关方面；本表单针对单个议题——若有多组则应另开新议题。
+        Select all relevant areas affected by this request. 选择所有符合该议题的相关方面
+
+        -  this form is for 1 request——consider opening another one if there are multiple. 本表单针对单个议题——若有多组则应另开新议题。
       multiple: true
       options:
         - Feature 功能
