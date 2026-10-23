@@ -17,13 +17,15 @@ body:
     attributes:
       label: Priority 优先级
       description: >
-        Select one category that best reflects the necessity. 选择最符合当前议题的级别。
+        Select the best reflecting category. 选择最符合当前议题的级别。
 
-        - High——solves bad practices, legal compliance, user frustration (despite not a bug); something unusable but should be → it's a bug. 修正不当实践、合法合规、体验糟糕（尽管情况非 bug）；无法执行但应该可以执行 → 是 bug。
+        - High——solves bad practices, legal compliance, user frustration (despite not a bug); . 修正不当实践、合法合规、体验糟糕（尽管情况非 bug）。
 
         - Mid——clear improvement that adds valuable capability or convenience (nice to have). 明显带来功能改善、能力扩大、便利性提升（有比没好）。
 
         - Low——exploratory proposal; subtle benefit or subject to evaluation. 难说有益；有待考量。
+
+        - Note: something unusable but should be → it's a bug. 注：无法执行但应该可以执行 → 是 bug
       options:
         - High 高
         - Mid 中
