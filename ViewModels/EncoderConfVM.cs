@@ -317,7 +317,13 @@ public class EncoderConfVM : BaseVM
         foreach (EncoderPresetItem preset in EncoderPresetsM.X264Presets)
             X264ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
         foreach (EncoderPresetItem preset in EncoderPresetsM.X265Presets)
+        {
             X265ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
+
+            // Group split: hand-tuned presets (0-4) | stock/simple presets (5+)
+            if (preset.Key == 4)
+                X265ModeDropdown.Items.Add(new DropdownItemM(string.Empty, isSeparator: true));
+        }
         foreach (EncoderPresetItem preset in EncoderPresetsM.SvtAv1Presets)
             SvtAv1ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
 

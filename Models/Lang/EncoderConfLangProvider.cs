@@ -52,6 +52,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "Film / IRL Shoot",
             ["AnimeText"] = "Anime",
             ["StressTestText"] = "Stress Test",
+            ["SlowText"] = "Slow",
+            ["SlowerText"] = "Slower",
+            ["VeryslowText"] = "Very Slow",
+            ["MediumAnimeText"] = "Medium Anime",
+            ["SlowAnimeText"] = "Slow Anime",
+            ["SlowerAnimeText"] = "Slower Anime",
+            ["VeryslowAnimeText"] = "Very Slow Anime",
+            ["MediumHQText"] = "Medium HQ",
+            ["SlowHQText"] = "Slow HQ",
+            ["SlowerHQText"] = "Slower HQ",
+            ["VeryslowHQText"] = "Very Slow HQ",
             ["PeakQualityText"] = "Peak Quality",
             ["CompressionOptText"] = "High Compression",
             ["SpeedOptimizedText"] = "Fast",
@@ -112,6 +123,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "电影/实拍",
             ["AnimeText"] = "动画",
             ["StressTestText"] = "压力测试",
+            ["SlowText"] = "慢",
+            ["SlowerText"] = "更慢",
+            ["VeryslowText"] = "很慢",
+            ["MediumAnimeText"] = "中等·动画",
+            ["SlowAnimeText"] = "慢·动画",
+            ["SlowerAnimeText"] = "更慢·动画",
+            ["VeryslowAnimeText"] = "很慢·动画",
+            ["MediumHQText"] = "中等·高画质",
+            ["SlowHQText"] = "慢·高画质",
+            ["SlowerHQText"] = "更慢·高画质",
+            ["VeryslowHQText"] = "很慢·高画质",
             ["PeakQualityText"] = "极致画质",
             ["CompressionOptText"] = "优化压缩",
             ["SpeedOptimizedText"] = "优化速度",
@@ -172,6 +194,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "電影/實拍",
             ["AnimeText"] = "動畫",
             ["StressTestText"] = "壓力測試",
+            ["SlowText"] = "慢",
+            ["SlowerText"] = "更慢",
+            ["VeryslowText"] = "很慢",
+            ["MediumAnimeText"] = "中等·動畫",
+            ["SlowAnimeText"] = "慢·動畫",
+            ["SlowerAnimeText"] = "更慢·動畫",
+            ["VeryslowAnimeText"] = "很慢·動畫",
+            ["MediumHQText"] = "中等·高畫質",
+            ["SlowHQText"] = "慢·高畫質",
+            ["SlowerHQText"] = "更慢·高畫質",
+            ["VeryslowHQText"] = "很慢·高畫質",
             ["PeakQualityText"] = "極致畫質",
             ["CompressionOptText"] = "優化壓縮",
             ["SpeedOptimizedText"] = "優化速度",
@@ -227,6 +260,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "Film / Prises de vue réelles",
             ["AnimeText"] = "Animation",
             ["StressTestText"] = "Test de charge",
+            ["SlowText"] = "Lent",
+            ["SlowerText"] = "Plus lent",
+            ["VeryslowText"] = "Très lent",
+            ["MediumAnimeText"] = "Moyen · Animation",
+            ["SlowAnimeText"] = "Lent · Animation",
+            ["SlowerAnimeText"] = "Plus lent · Animation",
+            ["VeryslowAnimeText"] = "Très lent · Animation",
+            ["MediumHQText"] = "Moyen · HQ",
+            ["SlowHQText"] = "Lent · HQ",
+            ["SlowerHQText"] = "Plus lent · HQ",
+            ["VeryslowHQText"] = "Très lent · HQ",
             ["PeakQualityText"] = "Qualité max.",
             ["CompressionOptText"] = "Compression élevée",
             ["SpeedOptimizedText"] = "Rapide",
@@ -278,6 +322,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "Cine / grabación real",
             ["AnimeText"] = "Anime",
             ["StressTestText"] = "Prueba de estrés",
+            ["SlowText"] = "Lento",
+            ["SlowerText"] = "Más lento",
+            ["VeryslowText"] = "Muy lento",
+            ["MediumAnimeText"] = "Medio · Anime",
+            ["SlowAnimeText"] = "Lento · Anime",
+            ["SlowerAnimeText"] = "Más lento · Anime",
+            ["VeryslowAnimeText"] = "Muy lento · Anime",
+            ["MediumHQText"] = "Medio · HQ",
+            ["SlowHQText"] = "Lento · HQ",
+            ["SlowerHQText"] = "Más lento · HQ",
+            ["VeryslowHQText"] = "Muy lento · HQ",
             ["PeakQualityText"] = "Calidad máxima",
             ["CompressionOptText"] = "Alta compresión",
             ["SpeedOptimizedText"] = "Rápido",
@@ -329,6 +384,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "映画 / 実写",
             ["AnimeText"] = "アニメ",
             ["StressTestText"] = "ストレステスト",
+            ["SlowText"] = "低速",
+            ["SlowerText"] = "より低速",
+            ["VeryslowText"] = "超低速",
+            ["MediumAnimeText"] = "中速・アニメ",
+            ["SlowAnimeText"] = "低速・アニメ",
+            ["SlowerAnimeText"] = "より低速・アニメ",
+            ["VeryslowAnimeText"] = "超低速・アニメ",
+            ["MediumHQText"] = "中速・HQ",
+            ["SlowHQText"] = "低速・HQ",
+            ["SlowerHQText"] = "より低速・HQ",
+            ["VeryslowHQText"] = "超低速・HQ",
             ["PeakQualityText"] = "最高品質",
             ["CompressionOptText"] = "高圧縮",
             ["SpeedOptimizedText"] = "高速",
@@ -380,6 +446,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "Фильм / съемка",
             ["AnimeText"] = "Аниме",
             ["StressTestText"] = "Стресс-тест",
+            ["SlowText"] = "Медленно",
+            ["SlowerText"] = "Медленнее",
+            ["VeryslowText"] = "Очень медленно",
+            ["MediumAnimeText"] = "Средний · Аниме",
+            ["SlowAnimeText"] = "Медленно · Аниме",
+            ["SlowerAnimeText"] = "Медленнее · Аниме",
+            ["VeryslowAnimeText"] = "Очень медленно · Аниме",
+            ["MediumHQText"] = "Средний · HQ",
+            ["SlowHQText"] = "Медленно · HQ",
+            ["SlowerHQText"] = "Медленнее · HQ",
+            ["VeryslowHQText"] = "Очень медленно · HQ",
             ["PeakQualityText"] = "Макс. качество",
             ["CompressionOptText"] = "Высокое сжатие",
             ["SpeedOptimizedText"] = "Быстро",
@@ -431,6 +508,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "Film / Reale Aufnahmen",
             ["AnimeText"] = "Anime",
             ["StressTestText"] = "Stresstest",
+            ["SlowText"] = "Langsam",
+            ["SlowerText"] = "Langsamer",
+            ["VeryslowText"] = "Sehr langsam",
+            ["MediumAnimeText"] = "Mittel · Anime",
+            ["SlowAnimeText"] = "Langsam · Anime",
+            ["SlowerAnimeText"] = "Langsamer · Anime",
+            ["VeryslowAnimeText"] = "Sehr langsam · Anime",
+            ["MediumHQText"] = "Mittel · HQ",
+            ["SlowHQText"] = "Langsam · HQ",
+            ["SlowerHQText"] = "Langsamer · HQ",
+            ["VeryslowHQText"] = "Sehr langsam · HQ",
             ["PeakQualityText"] = "Maximale Qualität",
             ["CompressionOptText"] = "Hohe Kompression",
             ["SpeedOptimizedText"] = "Schnell",
@@ -440,7 +528,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["DoviDesc"] = "Dolby Vision Profile 5/7/8 unterstützt HEVC (P9=AVC, P10=AV1). AVC und HEVC erfordern die Aktivierung von HRD für SEI-Daten, was vom VBV-Modus abhängt. Es gibt zwei Optionen:\n  1. VBV normal nutzen (über --level/--level-idc oder manuelle Einstellung)\n  2. Extrem hohe VBV-Bitrate (im Tbps-Bereich) festlegen, um das Limit zu umgehen (keinen level-Parameter angeben, um ein Überschreiben von VBV zu vermeiden)",
             ["DoviTitle"] = "Dolby-Vision-Kompatibilität",
             ["DoviOnOff"] = "Wann aktivieren",
-            ["DoviSrcOnly"] = "Quando fonte é DOVI",
+            ["DoviSrcOnly"] = "Wenn Quelle DOVI ist",
             ["X264HrdTitle"] = "x264 HRD (VBV erforderlich)",
             ["X265HrdTitle"] = "x265 HRD (VBV erforderlich)",
             ["Hrd100GbpsText"] = "100 Gbit/s (Limitierung vermeiden)",
@@ -491,6 +579,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "영화/실사 촬영",
             ["AnimeText"] = "애니메이션",
             ["StressTestText"] = "스트레스 테스트",
+            ["SlowText"] = "느림",
+            ["SlowerText"] = "더 느림",
+            ["VeryslowText"] = "매우 느림",
+            ["MediumAnimeText"] = "중간 · 애니메이션",
+            ["SlowAnimeText"] = "느림 · 애니메이션",
+            ["SlowerAnimeText"] = "더 느림 · 애니메이션",
+            ["VeryslowAnimeText"] = "매우 느림 · 애니메이션",
+            ["MediumHQText"] = "중간 · HQ",
+            ["SlowHQText"] = "느림 · HQ",
+            ["SlowerHQText"] = "더 느림 · HQ",
+            ["VeryslowHQText"] = "매우 느림 · HQ",
             ["PeakQualityText"] = "최고 품질",
             ["CompressionOptText"] = "고압축",
             ["SpeedOptimizedText"] = "고속",
@@ -542,6 +641,17 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FilmIRLText"] = "Filmagem / Cena real",
             ["AnimeText"] = "Anime",
             ["StressTestText"] = "Teste de estresse",
+            ["SlowText"] = "Lento",
+            ["SlowerText"] = "Mais lento",
+            ["VeryslowText"] = "Muito lento",
+            ["MediumAnimeText"] = "Médio · Anime",
+            ["SlowAnimeText"] = "Lento · Anime",
+            ["SlowerAnimeText"] = "Mais lento · Anime",
+            ["VeryslowAnimeText"] = "Muito lento · Anime",
+            ["MediumHQText"] = "Médio · HQ",
+            ["SlowHQText"] = "Lento · HQ",
+            ["SlowerHQText"] = "Mais lento · HQ",
+            ["VeryslowHQText"] = "Muito lento · HQ",
             ["PeakQualityText"] = "Qualidade máxima",
             ["CompressionOptText"] = "Alta compressão",
             ["SpeedOptimizedText"] = "Rápido",
@@ -604,6 +714,17 @@ public class EncoderConfLangProvider : LangProviderBase
     public string FilmIRLText { get; }
     public string AnimeText { get; }
     public string StressTestText { get; }
+    public string SlowText { get; }
+    public string SlowerText { get; }
+    public string VeryslowText { get; }
+    public string MediumAnimeText { get; }
+    public string SlowAnimeText { get; }
+    public string SlowerAnimeText { get; }
+    public string VeryslowAnimeText { get; }
+    public string MediumHQText { get; }
+    public string SlowHQText { get; }
+    public string SlowerHQText { get; }
+    public string VeryslowHQText { get; }
     public string PeakQualityText { get; }
     public string CompressionOptText { get; }
     public string SpeedOptimizedText { get; }
@@ -667,6 +788,17 @@ public class EncoderConfLangProvider : LangProviderBase
         FilmIRLText = this["FilmIRLText"];
         AnimeText = this["AnimeText"];
         StressTestText = this["StressTestText"];
+        SlowText = this["SlowText"];
+        SlowerText = this["SlowerText"];
+        VeryslowText = this["VeryslowText"];
+        MediumAnimeText = this["MediumAnimeText"];
+        SlowAnimeText = this["SlowAnimeText"];
+        SlowerAnimeText = this["SlowerAnimeText"];
+        VeryslowAnimeText = this["VeryslowAnimeText"];
+        MediumHQText = this["MediumHQText"];
+        SlowHQText = this["SlowHQText"];
+        SlowerHQText = this["SlowerHQText"];
+        VeryslowHQText = this["VeryslowHQText"];
         PeakQualityText = this["PeakQualityText"];
         CompressionOptText = this["CompressionOptText"];
         SpeedOptimizedText = this["SpeedOptimizedText"];

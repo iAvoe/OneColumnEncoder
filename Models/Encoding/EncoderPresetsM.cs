@@ -1,4 +1,4 @@
-namespace OneColumnEncoder.Models;
+namespace OneColumnEncoder.Models.Encoding;
 
 /// <summary>
 /// One encoder preset item.
@@ -47,6 +47,17 @@ public static class EncoderPresetsM
             "--high-tier --tu-intra-depth 4 --tu-inter-depth 4 --max-tu-size 16 --tskip --tskip-fast --me umh --weightb --max-merge 5 --early-skip --ref 3 --no-open-gop --min-keyint 5 --fades --bframes 16 --b-adapt 2 --bframe-bias 20 --constrained-intra --b-intra $crfParam --crqpoffs -4 --cbqpoffs -2 --ipratio 1.6 --pbratio 1.3 --cu-lossless --psy-rdoq 2.3 --rdoq-level 2 --hevc-aq --aq-strength 0.9 --qg-size 8 --rd 3 --limit-modes --limit-refs 1 --rskip 1 --rect --amp --psy-rd 1.5 --splitrd-skip --rdpenalty 2 --deblock -1:0 --limit-sao --sao-non-deblock"),
         new(4, "StressTestText",
             "--high-tier --tu-intra-depth 4 --tu-inter-depth 4 --max-tu-size 4 --limit-tu 1 --rect --amp --tskip --me star --weightb --max-merge 5 --ref 3 --no-open-gop --min-keyint 1 --fades --bframes 16 --b-adapt 2 --b-intra $crfParam --crqpoffs -5 --cbqpoffs -2 --ipratio 1.67 --pbratio 1.33 --cu-lossless --psy-rdoq 2.5 --rdoq-level 2 --hevc-aq --aq-strength 1.4 --qg-size 8 --rd 5 --limit-refs 0 --rskip 2 --rskip-edge-threshold 3 --no-cutree --psy-rd 1.5 --rdpenalty 2 --deblock -2:-2 --limit-sao --sao-non-deblock --selective-sao 1"),
+        new(5, "SlowText", "--preset slow"),
+        new(6, "SlowerText", "--preset slower"),
+        new(7, "VeryslowText", "--preset veryslow"),
+        new(8, "MediumAnimeText", "--tune animation"),
+        new(9, "MediumHQText", "--tune grain"),
+        new(10, "SlowAnimeText", "--preset slow --tune animation"),
+        new(11, "SlowerAnimeText", "--preset slower --tune animation"),
+        new(12, "VeryslowAnimeText", "--preset veryslow --tune animation"),
+        new(13, "SlowHQText", "--preset slow --tune grain"),
+        new(14, "SlowerHQText", "--preset slower --tune grain"),
+        new(15, "VeryslowHQText", "--preset veryslow --tune grain"),
     ];
 
     public static IReadOnlyList<EncoderPresetItem> SvtAv1Presets { get; } =
