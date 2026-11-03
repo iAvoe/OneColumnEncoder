@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.FiveButtonGroup"
+﻿<UserControl x:Class="OneColumnEncoder.Components.FiveButtonGroup"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -56,6 +56,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_1Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -90,6 +91,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_2Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -124,6 +126,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_3Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -158,6 +161,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_4Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -193,6 +197,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_5Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -242,6 +247,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_1Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -276,6 +282,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_2Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -310,6 +317,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_3Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -344,6 +352,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_4Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -378,6 +387,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B5_5Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>

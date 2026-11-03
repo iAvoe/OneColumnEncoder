@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.QueueSidebarPanel"
+﻿<UserControl x:Class="OneColumnEncoder.Components.QueueSidebarPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,7 +15,7 @@
         <Thickness x:Key="QueueSidebarItemMargin">0 5</Thickness>
     </UserControl.Resources>
 
-    <Border Background="{StaticResource Background}"
+    <Border Background="{DynamicResource Background}"
             Padding="{StaticResource QueueSidebarContentPadding}">
         <Grid>
             <Grid.RowDefinitions>
@@ -211,7 +211,7 @@
                            FontSize="10"
                            Height="12.5"
                            Margin="0 2.5 0 0"
-                           Foreground="{StaticResource GlobalSecondary}"
+                           Foreground="{DynamicResource GlobalSecondary}"
                            TextWrapping="Wrap" />
             </StackPanel>
         </Grid>

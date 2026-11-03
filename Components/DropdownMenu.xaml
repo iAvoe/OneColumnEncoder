@@ -10,7 +10,7 @@
     <!-- RoundedDropdownMenu is defined in App.xaml -->
     <ComboBox ItemsSource="{Binding Items}"
               SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-              Style="{StaticResource RoundedDropdownMenu}">
+              Style="{DynamicResource RoundedDropdownMenu}">
         <ComboBox.ItemTemplate>
             <DataTemplate>
                 <Grid>
@@ -34,7 +34,7 @@
                     <Border Height="1.5"
                             VerticalAlignment="Center"
                             SnapsToDevicePixels="True"
-                            Background="{StaticResource GlobalSecondary}"
+                            Background="{DynamicResource GlobalSecondary}"
                             Visibility="{Binding IsSeparator,
                                                  Converter={StaticResource BoolToVisibility}}" />
                 </Grid>

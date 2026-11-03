@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.ProgressBar"
+﻿<UserControl x:Class="OneColumnEncoder.Components.ProgressBar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -46,9 +46,9 @@
             <Setter Property="Maximum"
                     Value="100" />
             <Setter Property="Background"
-                    Value="{StaticResource MemoryRangeEmpty}" />
+                    Value="{DynamicResource MemoryRangeEmpty}" />
             <Setter Property="Foreground"
-                    Value="{StaticResource GlobalSecondary}" />
+                    Value="{DynamicResource GlobalSecondary}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ProgressBar">
@@ -145,23 +145,23 @@
         <!-- Mode 1: Progress available (nb_frames present) -->
         <Grid Grid.Column="1"
               Margin="7.5 0 10 0"
-              Style="{StaticResource ProgressVisibleWhenAvailableStyle}">
+              Style="{DynamicResource ProgressVisibleWhenAvailableStyle}">
             <ProgressBar Style="{StaticResource AvailableProgressBarStyle}"
                          Value="{Binding ProgressValue, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                         Foreground="{StaticResource ProgressGreen}"
-                         Background="{StaticResource MemoryRangeEmpty}" />
+                         Foreground="{DynamicResource ProgressGreen}"
+                         Background="{DynamicResource MemoryRangeEmpty}" />
         </Grid>
         <!-- Mode 2: Progress unavailable -->
         <Grid Grid.Column="1"
               Margin="7.5 0 0 0"
-              Style="{StaticResource ProgressVisibleWhenUnavailableStyle}">
+              Style="{DynamicResource ProgressVisibleWhenUnavailableStyle}">
             <ProgressBar Style="{StaticResource UnavailableProgressBarStyle}"
                          IsIndeterminate="{Binding IsEncodingActive, RelativeSource={RelativeSource AncestorType=UserControl}}" />
         </Grid>
         <TextBlock Grid.Column="2"
                    Text="{Binding ProgressText, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    FontSize="13"
-                   Foreground="{StaticResource GlobalSecondary}"
+                   Foreground="{DynamicResource GlobalSecondary}"
                    VerticalAlignment="Center">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">

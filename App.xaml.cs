@@ -47,6 +47,9 @@ public partial class App : Application
             ApplyStartupLanguageOnce();
             _ = new UILangProvider(_appConfM.Lang.LanguageCode);
 
+            // Apply saved theme
+            UI.ThemeManager.ApplyTheme(_appConfM.Theme.ThemeName);
+
             if (_forkSnapshotLoadError != null)
             {
                 new OpenErrModalCmd(

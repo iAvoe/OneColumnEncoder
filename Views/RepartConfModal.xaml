@@ -12,7 +12,7 @@
                    Width="1080"
                    Height="800"
                    WindowStartupLocation="CenterOwner"
-                   Background="{StaticResource Background}">
+                   Background="{DynamicResource Background}">
     <ui:AdaptiveWindow.Resources>
         <DataTemplate x:Key="IconTextButtonTemplate">
             <StackPanel Orientation="Horizontal"
@@ -39,7 +39,8 @@
                     </Rectangle.Style>
                 </Rectangle>
                 <TextBlock Text="{Binding}"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Center"
+                           Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
             </StackPanel>
         </DataTemplate>
     </ui:AdaptiveWindow.Resources>
@@ -58,7 +59,7 @@
             <TextBlock Text="{Binding SummaryText}"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
-                       Foreground="{StaticResource GlobalSecondary}" />
+                       Foreground="{DynamicResource GlobalSecondary}" />
         </Grid>
 
         <!-- Timeline -->
@@ -69,8 +70,8 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Border Background="{StaticResource TimelineTrackBackgroundDark}"
-                    BorderBrush="{StaticResource TimelineTrackBorderDark}"
+            <Border Background="{DynamicResource TimelineTrackBackgroundDark}"
+                    BorderBrush="{DynamicResource TimelineTrackBorderDark}"
                     BorderThickness="1"
                     CornerRadius="5"
                     MouseLeftButtonDown="TimelineTrack_MouseLeftButtonDown">
@@ -127,7 +128,7 @@
                                             <Setter Property="BorderThickness"
                                                     Value="0" />
                                             <Setter Property="Foreground"
-                                                    Value="{StaticResource ButtonTertiary}" />
+                                                    Value="{DynamicResource ButtonTertiary}" />
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Thumb">
@@ -140,7 +141,7 @@
                                                 <DataTrigger Binding="{Binding IsSelected}"
                                                              Value="True">
                                                     <Setter Property="Foreground"
-                                                            Value="{StaticResource BorderAmber}" />
+                                                            Value="{DynamicResource BorderAmber}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -154,13 +155,14 @@
             <Grid Grid.Row="1"
                   Margin="0 5 0 0">
                 <TextBlock Text="{Binding TimelineStartText}"
-                           Foreground="{StaticResource GlobalSecondary}" />
+                           Foreground="{DynamicResource GlobalSecondary}" />
                 <TextBlock Text="{Binding TimelineEndText}"
                            HorizontalAlignment="Right"
-                           Foreground="{StaticResource GlobalSecondary}" />
+                           Foreground="{DynamicResource GlobalSecondary}" />
             </Grid>
         </Grid>
 
+        <!-- Everything thats below timeline -->
         <Grid Grid.Row="2"
               IsEnabled="{Binding CanEdit}"
               Margin="0 15 0 0">
@@ -190,6 +192,7 @@
                 <Grid Grid.Row="1"
                       DataContext="{Binding SourceSortButtons}"
                       Margin="5 20 0 0">
+                    <!-- Sort by frames, sort by filename -->
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="5" />
@@ -262,6 +265,7 @@
                         </StackPanel>
                     </Button>
                 </Grid>
+                <!-- Input source list -->
                 <ListBox Grid.Row="2"
                          ItemsSource="{Binding Sources}"
                          Margin="-1 8 -6 0"
@@ -280,28 +284,28 @@
                                         <Setter Property="Background"
                                                 Value="Transparent" />
                                         <Setter Property="BorderBrush"
-                                                Value="{StaticResource GlobalSecondary}" />
+                                                Value="{DynamicResource GlobalSecondary}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IndexState}"
                                                          Value="{x:Static vms:RepartSourceIndexState.Loading}">
                                                 <Setter Property="Background"
-                                                        Value="{StaticResource BackgroundAmber}" />
+                                                        Value="{DynamicResource BackgroundAmber}" />
                                                 <Setter Property="BorderBrush"
-                                                        Value="{StaticResource BorderAmber}" />
+                                                        Value="{DynamicResource BorderAmber}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding IndexState}"
                                                          Value="{x:Static vms:RepartSourceIndexState.Ready}">
                                                 <Setter Property="Background"
-                                                        Value="{StaticResource BackgroundGreen}" />
+                                                        Value="{DynamicResource BackgroundGreen}" />
                                                 <Setter Property="BorderBrush"
-                                                        Value="{StaticResource BorderGreen}" />
+                                                        Value="{DynamicResource BorderGreen}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding IndexState}"
                                                          Value="{x:Static vms:RepartSourceIndexState.Failed}">
                                                 <Setter Property="Background"
-                                                        Value="{StaticResource BackgroundRed}" />
+                                                        Value="{DynamicResource BackgroundRed}" />
                                                 <Setter Property="BorderBrush"
-                                                        Value="{StaticResource BorderRed}" />
+                                                        Value="{DynamicResource BorderRed}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -316,7 +320,7 @@
                                                 FontWeight="SemiBold"
                                                 TextTrimming="CharacterEllipsis" />
                                      <TextBlock Text="{Binding P1Text}"
-                                                Foreground="{StaticResource GlobalSecondary}" />
+                                                Foreground="{DynamicResource GlobalSecondary}" />
                                      </StackPanel>
                                      <StackPanel Grid.Column="1"
                                                  Orientation="Horizontal"
@@ -527,10 +531,10 @@
                 <Border Grid.Row="0"
                         x:Name="DividerPreviewHost"
                         Margin="0 -7.5 0 -40"
-                        BorderBrush="{StaticResource GlobalSecondary}"
+                        BorderBrush="{DynamicResource GlobalSecondary}"
                         BorderThickness="1"
                         CornerRadius="5"
-                        Background="White"
+                        Background="{DynamicResource Background}"
                         MinHeight="100">
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
@@ -580,12 +584,12 @@
                                                         <Border.Style>
                                                             <Style TargetType="Border">
                                                                 <Setter Property="Background"
-                                                                        Value="{StaticResource TimelineTrackBackgroundDark}" />
+                                                                        Value="{DynamicResource TimelineTrackBackgroundDark}" />
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding IsSelected}"
                                                                                  Value="True">
                                                                         <Setter Property="Background"
-                                                                                Value="{StaticResource BorderAmber}" />
+                                                                                Value="{DynamicResource BorderAmber}" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -597,7 +601,7 @@
                                             <TextBlock Grid.Row="1"
                                                        Text="{Binding FrameText}"
                                                        TextAlignment="Center"
-                                                       Foreground="{StaticResource GlobalPrimary}"
+                                                       Foreground="{DynamicResource GlobalPrimary}"
                                                        FontSize="11"
                                                        Margin="0 0 0 1" />
                                         </Grid>
@@ -633,7 +637,7 @@
                     <comps:SectionHeader HeaderText="{Binding OutputEpisodesTitle}" />
                     <TextBlock Text="{Binding OutputCountText}"
                                HorizontalAlignment="Right"
-                               Foreground="{StaticResource GlobalSecondary}" />
+                               Foreground="{DynamicResource GlobalSecondary}" />
                 </Grid>
                 <comps:TwoButtonGroup Grid.Row="1"
                                       DataContext="{Binding OutputSortButtons}"
@@ -653,7 +657,7 @@
                             <DataTemplate>
                                 <Border Margin="0 5 0 0"
                                         Padding="5"
-                                        BorderBrush="{StaticResource GlobalSecondary}"
+                                        BorderBrush="{DynamicResource GlobalSecondary}"
                                         BorderThickness="1"
                                         CornerRadius="5">
                                     <Grid>
@@ -666,12 +670,12 @@
                                             <TextBlock Text="{Binding Name}"
                                                        FontWeight="Bold" />
                                             <TextBlock Text="{Binding FrameRangeText}"
-                                                       Foreground="{StaticResource GlobalSecondary}" />
+                                                       Foreground="{DynamicResource GlobalSecondary}" />
                                         </StackPanel>
                                          <TextBlock Grid.Column="1"
                                                     Text="{Binding FrameCountText}"
                                                     VerticalAlignment="Center"
-                                                    Foreground="{StaticResource GlobalSecondary}" />
+                                                    Foreground="{DynamicResource GlobalSecondary}" />
                                          <StackPanel Grid.Column="2"
                                                      Orientation="Horizontal"
                                                      VerticalAlignment="Center"
@@ -723,7 +727,7 @@
                        Height="Auto"
                        TextAlignment="Left"
                        VerticalAlignment="Bottom"
-                       Foreground="{StaticResource GlobalSecondary}"
+                       Foreground="{DynamicResource GlobalSecondary}"
                        TextWrapping="Wrap" />
             <!-- Master cancel confirm buttons -->
             <comps:TwoButtonGroup Grid.Column="1"

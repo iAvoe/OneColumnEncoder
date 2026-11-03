@@ -14,7 +14,7 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
     protected void SaveAppConf()
     {
         UILangProvider.ValidateMissingTranslations(_appConfStore.Lang.LanguageCode);
-        ApplyLangAndFont();
+        ApplyLangFontAndTheme();
         _appConfStore.Save();
         Debug.WriteLine($"[{GetType().Name}] Translation self-check passed for '{UILangProvider.Current.LanguageCode}'.");
     }
@@ -23,13 +23,14 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
     {
         AppConfM loadedConfig = AppConfM.Load();
         ApplyToStore(loadedConfig);
-        ApplyLangAndFont();
+        ApplyLangFontAndTheme();
     }
 
-    protected void ApplyLangAndFont()
+    protected void ApplyLangFontAndTheme()
     {
         UILangProvider.SetLanguage(_appConfStore.Lang.LanguageCode);
         AppFontProvider.ApplyFrom(_appConfStore);
+        UI.ThemeManager.ApplyTheme(_appConfStore.Theme.ThemeName);
     }
 
     private void ApplyToStore(AppConfM loadedConfig)
@@ -38,6 +39,7 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
         _appConfStore.InitLang = loadedConfig.InitLang;
         _appConfStore.Overwrite = loadedConfig.Overwrite;
         _appConfStore.Lang = loadedConfig.Lang;
+        _appConfStore.Theme = loadedConfig.Theme;
         _appConfStore.Font = loadedConfig.Font;
         _appConfStore.Logs = loadedConfig.Logs;
         _appConfStore.AudioMux = loadedConfig.AudioMux;

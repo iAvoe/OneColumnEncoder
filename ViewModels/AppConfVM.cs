@@ -75,6 +75,7 @@ public class AppConfVM : BaseVM
         {
             [UICaptionProvider.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
             [UICaptionProvider.AppConf.Groups.Language] = _appConfM.Lang,
+            [UICaptionProvider.AppConf.Groups.Theme] = _appConfM.Theme,
             [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM,
             [UICaptionProvider.AppConf.Groups.Fonts] = _appConfM.Font,
             [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs,

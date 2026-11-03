@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.FontPickerDropdown"
+﻿<UserControl x:Class="OneColumnEncoder.Components.FontPickerDropdown"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,10 +30,10 @@
                                    PopupAnimation="Fade">
                                 <Border x:Name="DropDownBorder"
                                         Width="{Binding DropDownWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        Background="{StaticResource Background}"
+                                        Background="{DynamicResource Background}"
                                         CornerRadius="10"
                                         BorderThickness="2"
-                                        BorderBrush="{StaticResource GlobalSecondary}"
+                                        BorderBrush="{DynamicResource GlobalSecondary}"
                                         ClipToBounds="True">
                                     <ScrollViewer ClipToBounds="True">
                                         <ItemsPresenter />
@@ -91,7 +91,7 @@
                     <Border Height="1.5"
                             VerticalAlignment="Center"
                             SnapsToDevicePixels="True"
-                            Background="{StaticResource GlobalSecondary}"
+                            Background="{DynamicResource GlobalSecondary}"
                             Visibility="{Binding IsSeparator, Converter={StaticResource BoolToVisibility}}" />
                 </Grid>
             </DataTemplate>

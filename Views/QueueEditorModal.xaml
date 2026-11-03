@@ -16,7 +16,7 @@
                    MaxHeight="720"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
-                   Background="{StaticResource Background}">
+                   Background="{DynamicResource Background}">
     <ui:AdaptiveWindow.Resources>
         <DataTemplate x:Key="IconTextButtonTemplate">
             <StackPanel Orientation="Horizontal"
@@ -43,7 +43,8 @@
                     </Rectangle.Style>
                 </Rectangle>
                 <TextBlock Text="{Binding}"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Center"
+                           Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
             </StackPanel>
         </DataTemplate>
     </ui:AdaptiveWindow.Resources>

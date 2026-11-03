@@ -1,4 +1,4 @@
-<ui:AdaptiveWindow x:Class="OneColumnEncoder.Views.MuxTracksConfModal"
+﻿<ui:AdaptiveWindow x:Class="OneColumnEncoder.Views.MuxTracksConfModal"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:ui="clr-namespace:OneColumnEncoder.UI"
@@ -9,7 +9,7 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    d:DataContext="{d:DesignInstance Type=muxs:MuxTracksConfVM}"
                    mc:Ignorable="d"
-                   Background="{StaticResource Background}"
+                   Background="{DynamicResource Background}"
                    Title="{Binding WindowTitle}"
                    MinWidth="540"
                    SizeToContent="Height"
@@ -24,7 +24,7 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0"
-                BorderBrush="{StaticResource RemixedBackground2}"
+                BorderBrush="{DynamicResource RemixedBackground2}"
                 BorderThickness="0 0 0.5 0"
                 Margin="0 0 12.5 0"
                 Visibility="{Binding ShowSidebar, Converter={StaticResource BoolToVisibility}}">
@@ -56,16 +56,16 @@
                                 <Trigger Property="IsSelected"
                                          Value="True">
                                     <Setter Property="Background"
-                                            Value="{StaticResource BackgroundGreen}" />
+                                            Value="{DynamicResource BackgroundGreen}" />
                                     <Setter Property="BorderBrush"
-                                            Value="{StaticResource CorrectTeal}" />
+                                            Value="{DynamicResource CorrectTeal}" />
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="{StaticResource GlobalPrimary}"
+                            <Border BorderBrush="{DynamicResource GlobalPrimary}"
                                     BorderThickness="1"
                                     CornerRadius="5"
                                     Padding="7.5"
@@ -76,7 +76,7 @@
                                                FontWeight="Bold"
                                                TextTrimming="CharacterEllipsis" />
                                     <TextBlock Text="{Binding TrackSummary}"
-                                               Foreground="{StaticResource GlobalSecondary}"
+                                               Foreground="{DynamicResource GlobalSecondary}"
                                                FontSize="11" />
                                 </StackPanel>
                             </Border>
@@ -98,7 +98,7 @@
                            Style="{StaticResource H2}"
                            TextTrimming="CharacterEllipsis" />
                 <TextBlock Text="{Binding CurrentSourceDurationText}"
-                           Foreground="{StaticResource GlobalSecondary}" />
+                           Foreground="{DynamicResource GlobalSecondary}" />
             </StackPanel>
             <Grid Grid.Row="1"
                   Margin="0 15 0 0">
@@ -111,7 +111,7 @@
                            VerticalAlignment="Center" />
                 <TextBlock Grid.Row="1"
                            Text="{Binding EmptyText}"
-                           Foreground="{StaticResource GlobalSecondary}"
+                           Foreground="{DynamicResource GlobalSecondary}"
                            FontWeight="DemiBold"
                            HorizontalAlignment="Center"
                            Visibility="{Binding HasNoSubtitles, Converter={StaticResource BoolToVisibility}}" />

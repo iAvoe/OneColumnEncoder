@@ -12,7 +12,7 @@
         Width="990"
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource Background}">
+        Background="{DynamicResource Background}">
     <Grid Margin="15 10 15 15">
         <FlowDocumentScrollViewer HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
@@ -28,43 +28,43 @@
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Description, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 5 0 0"
                            FontSize="12"
-                           Foreground="{StaticResource ButtonTertiary}"
+                           Foreground="{DynamicResource ButtonTertiary}"
                            FontStyle="Italic">
                     <Run Text="{Binding Lang.CopyHint, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.GettingStarted, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step1, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step2, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step3, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step4, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step5, Mode=OneWay}" />
                 </Paragraph>
 
@@ -75,17 +75,17 @@
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.WhyDisabled1, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.WhyDisabled2, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.WhyDisabled3, Mode=OneWay}" />
                 </Paragraph>
 
@@ -96,7 +96,7 @@
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ToolDownloadLink, Mode=OneWay}" />
                 </Paragraph>
 
@@ -107,7 +107,7 @@
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.UpdateDesc, Mode=OneWay}" />
                 </Paragraph>
 
@@ -118,57 +118,57 @@
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ComplianceDesc, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseFFmpeg, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseVapourSynth, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseAvs2yuv, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseAvs2pipemod, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseSvfi, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseX264, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseX265, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource ButtonTertiary}">
+                           Foreground="{DynamicResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseSvtAv1, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ComplianceFooter, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}"
+                           Foreground="{DynamicResource GlobalPrimary}"
                            FontWeight="Bold">
                     <Run Text="{Binding Lang.ComplianceDisclaimer, Mode=OneWay}" />
                 </Paragraph>
@@ -179,7 +179,7 @@
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ParamConfigIntro, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
@@ -189,17 +189,17 @@
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.AutoParamBase, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.AutoParamEncode, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.AutoParamFooter, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
@@ -209,12 +209,12 @@
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ManualBaseList, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ManualBaseFooter, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
@@ -224,7 +224,7 @@
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
+                           Foreground="{DynamicResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ManualExtIntro, Mode=OneWay}" />
                 </Paragraph>
             </FlowDocument>

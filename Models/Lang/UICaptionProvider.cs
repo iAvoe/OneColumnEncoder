@@ -108,6 +108,7 @@ public static class UICaptionProvider
         {
             public static string Overwrite => Lang["AppConf.Overwrite"];
             public static string Language => Lang["AppConf.Language"];
+            public static string Theme => Lang["AppConf.Theme"];
             public static string InitMode => Lang["AppConf.InitMode"];
             public static string Fonts => Lang["AppConf.Fonts"];
             public static string Logs => Lang["AppConf.Logs"];
@@ -172,6 +173,18 @@ public static class UICaptionProvider
                 "de" => "de (!Localized)",
                 "ko" => "ko (!Localized)",
                 "pt-br" => "pt-br (!Local)",
+                _ => code
+            };
+        }
+
+        public static class ThemeOptions
+        {
+            public static readonly string[] Codes = ["Light", "Dark"];
+
+            public static string GetDisplayName(string code) => code switch
+            {
+                "Light" => Lang["Theme.Light"],
+                "Dark" => Lang["Theme.Dark"],
                 _ => code
             };
         }

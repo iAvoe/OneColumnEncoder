@@ -13,6 +13,7 @@ public class AppConfM : SaveLoadBase<AppConfM>
     public bool InitLang { get; set; } = false;
     public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
     public Language Lang { get; set; } = new Language();
+    public ThemeSettings Theme { get; set; } = new ThemeSettings();
     public FontSettings Font { get; set; } = new FontSettings();
     public LogSettings Logs { get; set; } = new LogSettings();
     public AudioMuxSettings AudioMux { get; set; } = new AudioMuxSettings();
@@ -28,6 +29,10 @@ public class AppConfM : SaveLoadBase<AppConfM>
     public class Language
     {
         public string LanguageCode { get; set; } = "en";
+    }
+    public class ThemeSettings
+    {
+        public string ThemeName { get; set; } = "Light";
     }
     public class FontSettings
     {

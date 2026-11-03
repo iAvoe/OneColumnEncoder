@@ -34,7 +34,7 @@
     -->
     <Grid>
         <!-- Shadow stays on a separate layer so text and buttons remain sharp. -->
-        <Border BorderBrush="{StaticResource GlobalPrimary}"
+        <Border BorderBrush="{DynamicResource GlobalPrimary}"
                 BorderThickness="1.5"
                 CornerRadius="18"
                 IsHitTestVisible="False"
@@ -43,7 +43,7 @@
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Background"
-                            Value="{StaticResource Background}" />
+                            Value="{DynamicResource Background}" />
                     <Setter Property="Effect">
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="13"
@@ -60,11 +60,11 @@
         <Border CornerRadius="18"
                 Padding="17.5 20"
                 SnapsToDevicePixels="True"
-                Background="{StaticResource Background}">
+                Background="{DynamicResource Background}">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"
-                            Value="{StaticResource GlobalPrimary}" />
+                            Value="{DynamicResource GlobalPrimary}" />
                     <Setter Property="BorderThickness"
                             Value="1.5" />
                     <Style.Triggers>
@@ -73,7 +73,7 @@
                             <Setter Property="Opacity"
                                     Value="0.85" />
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource GlobalTertiary}" />
+                                    Value="{DynamicResource GlobalTertiary}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -194,7 +194,7 @@
                            HorizontalAlignment="Right"
                            VerticalAlignment="Bottom"
                            FontSize="12"
-                           Foreground="{StaticResource GlobalTertiary}"
+                           Foreground="{DynamicResource GlobalTertiary}"
                            Margin="0 -15 5 0" />
             </Grid>
         </Border>

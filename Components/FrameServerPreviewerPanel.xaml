@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.FrameServerPreviewerPanel"
+﻿<UserControl x:Class="OneColumnEncoder.Components.FrameServerPreviewerPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,7 +16,7 @@
             <Setter Property="FontWeight"
                     Value="SemiBold" />
             <Setter Property="Foreground"
-                    Value="{StaticResource GlobalPrimary}" />
+                    Value="{DynamicResource GlobalPrimary}" />
             <Setter Property="VerticalAlignment"
                     Value="Center" />
             <Setter Property="TextTrimming"
@@ -86,7 +86,7 @@
                 
                 <!-- AVS-VS-FFmpeg message -->
                 <comps:HintPanel Text="{Binding FrameServerLogText}"
-                                 HintBrush="{StaticResource GlobalSecondary}" />
+                                 HintBrush="{DynamicResource GlobalSecondary}" />
             </StackPanel>
             
             <!-- Zoom toggles -->
@@ -98,7 +98,7 @@
                 <TextBlock Text="Zoom: "
                            FontSize="13"
                            VerticalAlignment="Center"
-                           Foreground="{StaticResource GlobalPrimary}" />
+                           Foreground="{DynamicResource GlobalPrimary}" />
                 <Button Content="--"
                         Width="30"
                         Height="30"
@@ -115,7 +115,7 @@
                            FontSize="13"
                            TextAlignment="Center"
                            VerticalAlignment="Center"
-                           Foreground="{StaticResource GlobalPrimary}" />
+                           Foreground="{DynamicResource GlobalPrimary}" />
                 <Button Content="+"
                         Width="30"
                         Height="30"
@@ -178,7 +178,7 @@
                        Text="Frame:"
                        FontSize="13"
                        VerticalAlignment="Center"
-                       Foreground="{StaticResource GlobalPrimary}" />
+                       Foreground="{DynamicResource GlobalPrimary}" />
             <comps:IntegerSlider Grid.Column="1"
                                  Minimum="0"
                                  Maximum="{Binding MaxPositionSeconds}"

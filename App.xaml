@@ -6,8 +6,9 @@
              xmlns:conv="clr-namespace:OneColumnEncoder.Converters">
     <Application.Resources>
         <ResourceDictionary>
-            <!-- Spacing, fonts, colors -->
+            <!-- Theme colors - default to Light theme -->
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/Themes/Light.xaml" />
                 <ResourceDictionary Source="Views/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
@@ -20,6 +21,20 @@
             <FontFamily x:Key="UiFont">Segoe UI</FontFamily>
             <FontFamily x:Key="CodeFont">Consolas</FontFamily>
             
+            <!-- TextBox global style for theme support -->
+            <Style TargetType="TextBox">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource GlobalPrimary}" />
+                <Setter Property="Background"
+                        Value="{DynamicResource Background}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource GlobalTertiary}" />
+                <Setter Property="CaretBrush"
+                        Value="{DynamicResource GlobalPrimary}" />
+                <Setter Property="SelectionBrush"
+                        Value="{DynamicResource BorderAzure}" />
+            </Style>
+            
             <!-- Buttons -->
             <Style x:Key="LinkButton"
                    TargetType="Button"
@@ -27,7 +42,7 @@
                 <Setter Property="Background"
                         Value="Transparent" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource GlobalPrimary}" />
+                        Value="{DynamicResource GlobalPrimary}" />
                 <Setter Property="BorderThickness"
                         Value="0" />
                 <Setter Property="VerticalAlignment"
@@ -63,17 +78,17 @@
                     <Trigger Property="IsEnabled"
                              Value="False">
                         <Setter Property="Foreground"
-                                Value="{StaticResource GlobalSecondary}" />
+                                Value="{DynamicResource GlobalSecondary}" />
                     </Trigger>
                     <Trigger Property="IsFocused"
                              Value="True">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BorderGreen}" />
+                                Value="{DynamicResource BorderGreen}" />
                     </Trigger>
                     <Trigger Property="IsCancel"
                              Value="True">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BorderRed}" />
+                                Value="{DynamicResource BorderRed}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -107,11 +122,11 @@
                     <Trigger Property="IsEnabled"
                              Value="False">
                         <Setter Property="Foreground"
-                                Value="{StaticResource GlobalSecondary}" />
+                                Value="{DynamicResource ButtonDisabledForeground}" />
                         <Setter Property="Background"
-                                Value="{StaticResource Background}" />
+                                Value="{DynamicResource ButtonDisabledBackground}" />
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource GlobalTertiary}" />
+                                Value="{DynamicResource ButtonDisabledBorder}" />
                         <Setter Property="BorderThickness"
                                 Value="1.5" />
                     </Trigger>
@@ -119,11 +134,11 @@
                     <Trigger Property="IsCancel"
                              Value="True">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BorderRed}" />
+                                Value="{DynamicResource BorderRed}" />
                         <Setter Property="Background"
-                                Value="{StaticResource BackgroundRed}" />
+                                Value="{DynamicResource BackgroundRed}" />
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderRed}" />
+                                Value="{DynamicResource BorderRed}" />
                         <Setter Property="BorderThickness"
                                 Value="1.5" />
                     </Trigger>
@@ -135,22 +150,33 @@
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
                 <Setter Property="Background"
-                        Value="{StaticResource ButtonPrimary}" />
+                        Value="{DynamicResource ButtonPrimary}" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource Background}" />
+                        Value="{DynamicResource Background}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource ButtonPrimary}" />
+                        Value="{DynamicResource ButtonPrimary}" />
                 <Setter Property="BorderThickness"
                         Value="0" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Background"
-                                Value="{StaticResource Background}" />
+                                Value="{DynamicResource Background}" />
                         <Setter Property="Foreground"
-                                Value="{StaticResource ButtonPrimary}" />
+                                Value="{DynamicResource ButtonPrimary}" />
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource ButtonPrimary}" />
+                                Value="{DynamicResource ButtonPrimary}" />
+                        <Setter Property="BorderThickness"
+                                Value="1.5" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource ButtonDisabledForeground}" />
+                        <Setter Property="Background"
+                                Value="{DynamicResource ButtonDisabledBackground}" />
+                        <Setter Property="BorderBrush"
+                                Value="{DynamicResource ButtonDisabledBorder}" />
                         <Setter Property="BorderThickness"
                                 Value="1.5" />
                     </Trigger>
@@ -160,22 +186,33 @@
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
                 <Setter Property="Background"
-                        Value="{StaticResource GlobalSecondary}" />
+                        Value="{DynamicResource GlobalSecondary}" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource Background}" />
+                        Value="{DynamicResource Background}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource GlobalSecondary}" />
+                        Value="{DynamicResource GlobalSecondary}" />
                 <Setter Property="BorderThickness"
                         Value="0" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Background"
-                                Value="{StaticResource Background}" />
+                                Value="{DynamicResource Background}" />
                         <Setter Property="Foreground"
-                                Value="{StaticResource GlobalSecondary}" />
+                                Value="{DynamicResource GlobalSecondary}" />
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource GlobalSecondary}" />
+                                Value="{DynamicResource GlobalSecondary}" />
+                        <Setter Property="BorderThickness"
+                                Value="1.5" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource ButtonDisabledForeground}" />
+                        <Setter Property="Background"
+                                Value="{DynamicResource ButtonDisabledBackground}" />
+                        <Setter Property="BorderBrush"
+                                Value="{DynamicResource ButtonDisabledBorder}" />
                         <Setter Property="BorderThickness"
                                 Value="1.5" />
                     </Trigger>
@@ -185,22 +222,33 @@
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
                 <Setter Property="Background"
-                        Value="{StaticResource GlobalTertiary}" />
+                        Value="{DynamicResource GlobalTertiary}" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource Background}" />
+                        Value="{DynamicResource Background}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource GlobalTertiary}" />
+                        Value="{DynamicResource GlobalTertiary}" />
                 <Setter Property="BorderThickness"
                         Value="0" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Background"
-                                Value="{StaticResource Background}" />
+                                Value="{DynamicResource Background}" />
                         <Setter Property="Foreground"
-                                Value="{StaticResource GlobalTertiary}" />
+                                Value="{DynamicResource GlobalTertiary}" />
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource GlobalTertiary}" />
+                                Value="{DynamicResource GlobalTertiary}" />
+                        <Setter Property="BorderThickness"
+                                Value="1.5" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource ButtonDisabledForeground}" />
+                        <Setter Property="Background"
+                                Value="{DynamicResource ButtonDisabledBackground}" />
+                        <Setter Property="BorderBrush"
+                                Value="{DynamicResource ButtonDisabledBorder}" />
                         <Setter Property="BorderThickness"
                                 Value="1.5" />
                     </Trigger>
@@ -210,22 +258,33 @@
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
                 <Setter Property="Background"
-                        Value="{StaticResource GlobalQuaternary}" />
+                        Value="{DynamicResource GlobalQuaternary}" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource Background}" />
+                        Value="{DynamicResource Background}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource GlobalQuaternary}" />
+                        Value="{DynamicResource GlobalQuaternary}" />
                 <Setter Property="BorderThickness"
                         Value="0" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Background"
-                                Value="{StaticResource Background}" />
+                                Value="{DynamicResource Background}" />
                         <Setter Property="Foreground"
-                                Value="{StaticResource GlobalQuaternary}" />
+                                Value="{DynamicResource GlobalQuaternary}" />
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource GlobalQuaternary}" />
+                                Value="{DynamicResource GlobalQuaternary}" />
+                        <Setter Property="BorderThickness"
+                                Value="1.5" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource ButtonDisabledForeground}" />
+                        <Setter Property="Background"
+                                Value="{DynamicResource ButtonDisabledBackground}" />
+                        <Setter Property="BorderBrush"
+                                Value="{DynamicResource ButtonDisabledBorder}" />
                         <Setter Property="BorderThickness"
                                 Value="1.5" />
                     </Trigger>
@@ -235,22 +294,33 @@
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
                 <Setter Property="Background"
-                        Value="{StaticResource Background}" />
+                        Value="{DynamicResource Background}" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource ButtonPrimary}" />
+                        Value="{DynamicResource ButtonPrimary}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource ButtonPrimary}" />
+                        Value="{DynamicResource ButtonPrimary}" />
                 <Setter Property="BorderThickness"
                         Value="1.5" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Background"
-                                Value="{StaticResource ButtonPrimary}" />
+                                Value="{DynamicResource ButtonPrimary}" />
                         <Setter Property="Foreground"
-                                Value="{StaticResource Background}" />
+                                Value="{DynamicResource Background}" />
                         <Setter Property="BorderBrush"
-                                Value="{StaticResource Background}" />
+                                Value="{DynamicResource Background}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource ButtonDisabledForeground}" />
+                        <Setter Property="Background"
+                                Value="{DynamicResource ButtonDisabledBackground}" />
+                        <Setter Property="BorderBrush"
+                                Value="{DynamicResource ButtonDisabledBorder}" />
+                        <Setter Property="BorderThickness"
+                                Value="1.5" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -260,23 +330,23 @@
                 <Setter Property="Background"
                         Value="Transparent" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource BorderGreen}" />
+                        Value="{DynamicResource BorderGreen}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource BorderGreen}" />
+                        Value="{DynamicResource BorderGreen}" />
                 <Setter Property="BorderThickness"
                         Value="1.5" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BackgroundGreen}" />
+                                Value="{DynamicResource BackgroundGreen}" />
                         <Setter Property="Background"
-                                Value="{StaticResource BorderGreen}" />
+                                Value="{DynamicResource BorderGreen}" />
                     </Trigger>
                     <Trigger Property="IsEnabled"
                              Value="False">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BackgroundGreen2}" />
+                                Value="{DynamicResource BackgroundGreen2}" />
                         <Setter Property="Background"
                                 Value="Transparent" />
                     </Trigger>
@@ -288,23 +358,23 @@
                 <Setter Property="Background"
                         Value="Transparent" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource BorderAzure}" />
+                        Value="{DynamicResource BorderAzure}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource BorderAzure}" />
+                        Value="{DynamicResource BorderAzure}" />
                 <Setter Property="BorderThickness"
                         Value="1.5" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BackgroundAzure}" />
+                                Value="{DynamicResource BackgroundAzure}" />
                         <Setter Property="Background"
-                                Value="{StaticResource BorderAzure}" />
+                                Value="{DynamicResource BorderAzure}" />
                     </Trigger>
                     <Trigger Property="IsEnabled"
                              Value="False">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BackgroundAzure2}" />
+                                Value="{DynamicResource BackgroundAzure2}" />
                         <Setter Property="Background"
                                 Value="Transparent" />
                     </Trigger>
@@ -316,23 +386,23 @@
                 <Setter Property="Background"
                         Value="Transparent" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource BorderPurpleish}" />
+                        Value="{DynamicResource BorderPurpleish}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource BorderPurpleish}" />
+                        Value="{DynamicResource BorderPurpleish}" />
                 <Setter Property="BorderThickness"
                         Value="1.5" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Background"
-                                Value="{StaticResource BorderPurpleish}" />
+                                Value="{DynamicResource BorderPurpleish}" />
                         <Setter Property="Foreground"
-                                Value="{StaticResource BackgroundLavender}" />
+                                Value="{DynamicResource BackgroundLavender}" />
                     </Trigger>
                     <Trigger Property="IsEnabled"
                              Value="False">
                         <Setter Property="Foreground"
-                                Value="{StaticResource BorderThistle}" />
+                                Value="{DynamicResource BorderThistle}" />
                         <Setter Property="Background"
                                 Value="Transparent" />
                     </Trigger>
@@ -343,11 +413,11 @@
             <Style x:Key="DropdownToggleButton"
                    TargetType="ToggleButton">
                 <Setter Property="Background"
-                        Value="{StaticResource GlobalSecondary}" />
+                        Value="{DynamicResource GlobalSecondary}" />
                 <Setter Property="BorderBrush"
                         Value="Transparent" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource Background}" />
+                        Value="{DynamicResource Background}" />
                 <Setter Property="BorderThickness"
                         Value="1.5" />
                 <Setter Property="HorizontalContentAlignment"
@@ -373,9 +443,12 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <ContentPresenter Grid.Column="0"
-                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    <TextBlock Grid.Column="0"
+                                               Text="{TemplateBinding Content}"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                               TextTrimming="CharacterEllipsis" />
                                     <TextBlock Grid.Column="1"
                                                Text="▼"
                                                FontSize="{TemplateBinding FontSize}"
@@ -388,11 +461,11 @@
                                 <Trigger Property="IsMouseOver"
                                          Value="True">
                                     <Setter Property="Background"
-                                            Value="{StaticResource Background}" />
+                                            Value="{DynamicResource Background}" />
                                     <Setter Property="Foreground"
-                                            Value="{StaticResource GlobalSecondary}" />
+                                            Value="{DynamicResource GlobalSecondary}" />
                                     <Setter Property="BorderBrush"
-                                            Value="{StaticResource GlobalSecondary}" />
+                                            Value="{DynamicResource GlobalSecondary}" />
                                     <Setter Property="BorderThickness"
                                             Value="1.5" />
                                     <Setter Property="Padding"
@@ -402,6 +475,15 @@
                                          Value="True">
                                     <Setter Property="Opacity"
                                             Value="0.85" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                         Value="False">
+                                    <Setter Property="Foreground"
+                                            Value="{DynamicResource ButtonDisabledForeground}" />
+                                    <Setter Property="Background"
+                                            Value="{DynamicResource ButtonDisabledBackground}" />
+                                    <Setter Property="BorderBrush"
+                                            Value="{DynamicResource ButtonDisabledBorder}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -420,9 +502,9 @@
                     </DataTrigger>
                 </Style.Triggers>
                 <Setter Property="Background"
-                        Value="{StaticResource Background}" />
+                        Value="{DynamicResource Background}" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource GlobalPrimary}" />
+                        Value="{DynamicResource GlobalPrimary}" />
                 <Setter Property="Margin"
                         Value="0" />
                 <Setter Property="Padding"
@@ -442,9 +524,9 @@
                                 <Trigger Property="IsMouseOver"
                                          Value="True">
                                     <Setter Property="Foreground"
-                                            Value="{StaticResource Background}" />
+                                            Value="{DynamicResource Background}" />
                                     <Setter Property="Background"
-                                            Value="{StaticResource GlobalSecondary}" />
+                                            Value="{DynamicResource GlobalSecondary}" />
                                 </Trigger>
                                 <Trigger Property="IsEnabled"
                                          Value="False">
@@ -488,10 +570,10 @@
                                        Placement="Bottom"
                                        PopupAnimation="Fade">
                                     <Border x:Name="DropDownBorder"
-                                            Background="{StaticResource Background}"
+                                            Background="{DynamicResource Background}"
                                             CornerRadius="10"
                                             BorderThickness="2"
-                                            BorderBrush="{StaticResource GlobalSecondary}"
+                                            BorderBrush="{DynamicResource GlobalSecondary}"
                                             ClipToBounds="True">
                                         <ScrollViewer ClipToBounds="True">
                                             <ItemsPresenter />

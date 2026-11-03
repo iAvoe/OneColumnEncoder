@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.MuxTrackItem"
+﻿<UserControl x:Class="OneColumnEncoder.Components.MuxTrackItem"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels.MuxTracks"
@@ -19,16 +19,16 @@
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"
-                            Value="{StaticResource MuxTrackUserBorder}" />
+                            Value="{DynamicResource MuxTrackUserBorder}" />
                     <Setter Property="Background"
-                            Value="{StaticResource MuxTrackUserBackground}" />
+                            Value="{DynamicResource MuxTrackUserBackground}" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Model.IsSourceTrack}"
                                      Value="True">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource MuxTrackSourceBorder}" />
+                                    Value="{DynamicResource MuxTrackSourceBorder}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource MuxTrackSourceBackground}" />
+                                    Value="{DynamicResource MuxTrackSourceBackground}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -50,7 +50,7 @@
                                TextTrimming="CharacterEllipsis" />
                     <TextBlock Grid.Column="1"
                                Text="{Binding DurationText}"
-                               Foreground="{StaticResource GlobalSecondary}" />
+                               Foreground="{DynamicResource GlobalSecondary}" />
                 </Grid>
 
                 <Grid Grid.Row="1"

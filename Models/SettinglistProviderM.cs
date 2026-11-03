@@ -9,6 +9,7 @@ public static class SettinglistProviderM
     [
         .. GetOverwriteSettings(),
         .. GetLanguageSettings(),
+        .. GetThemeSettings(),
         .. GetInitModeSettings(),
         .. GetFontSettings(),
         .. GetLogSettings(),
@@ -46,6 +47,16 @@ public static class SettinglistProviderM
             nameof(AppConfM.Language.LanguageCode),
             Options: UICaptionProvider.AppConf.LanguageOptions.Codes,
             DisplayNameResolver: UICaptionProvider.AppConf.LanguageOptions.GetDisplayName)
+    ];
+
+    public static List<SettingItemDefinitionM> GetThemeSettings() =>
+    [
+        new(UICaptionProvider.AppConf.Groups.Theme,
+            Lang["Setting.Theme.Select"],
+            SettingControlType.Dropdown,
+            nameof(AppConfM.ThemeSettings.ThemeName),
+            Options: UICaptionProvider.AppConf.ThemeOptions.Codes,
+            DisplayNameResolver: UICaptionProvider.AppConf.ThemeOptions.GetDisplayName)
     ];
 
     public static List<SettingItemDefinitionM> GetInitModeSettings() =>

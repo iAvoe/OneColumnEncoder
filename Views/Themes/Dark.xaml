@@ -1,0 +1,243 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Theme identification marker -->
+    <SolidColorBrush x:Key="ThemePaletteMarker"
+                     Color="Transparent" />
+
+    <!-- Core semantic palette -->
+    <SolidColorBrush Color="#E9ECEF"
+                     x:Key="GlobalPrimary" />
+    <SolidColorBrush Color="#AEB7BE"
+                     x:Key="GlobalSecondary" />
+    <SolidColorBrush Color="#8A949B"
+                     x:Key="GlobalTertiary" />
+    <SolidColorBrush Color="#C2CAD0"
+                     x:Key="GlobalQuaternary" />
+    <SolidColorBrush Color="#F07A75"
+                     x:Key="BorderRed" />
+    <SolidColorBrush Color="#74BFB1"
+                     x:Key="BorderGreen" />
+    <SolidColorBrush Color="#74B4C2"
+                     x:Key="BorderAzure" />
+    <SolidColorBrush Color="#B57BD0"
+                     x:Key="BorderEmience" />
+    <SolidColorBrush Color="#DCC7DC"
+                     x:Key="BorderThistle" />
+    <SolidColorBrush Color="#E0B23A"
+                     x:Key="BorderAmber" />
+    <SolidColorBrush Color="#B08BC0"
+                     x:Key="BorderPurple" />
+    <SolidColorBrush Color="#C079B4"
+                     x:Key="BorderPurpleish" />
+    <SolidColorBrush Color="#121212"
+                     x:Key="Background" />
+    <SolidColorBrush Color="#2A1A1A"
+                     x:Key="BackgroundRed" />
+    <SolidColorBrush Color="#142320"
+                     x:Key="BackgroundGreen" />
+    <SolidColorBrush Color="#142027"
+                     x:Key="BackgroundAzure" />
+    <SolidColorBrush Color="#24404A"
+                     x:Key="BackgroundAzure2" />
+    <SolidColorBrush Color="#2A2412"
+                     x:Key="BackgroundAmber" />
+    <SolidColorBrush Color="#173333"
+                     x:Key="BackgroundTeal" />
+    <SolidColorBrush Color="#22223A"
+                     x:Key="BackgroundLavender" />
+    <SolidColorBrush Color="#24443F"
+                     x:Key="BackgroundGreen2" />
+    <SolidColorBrush Color="#5F9B98"
+                     x:Key="BorderLowSatGreen" />
+    <SolidColorBrush Color="#2FBFB0"
+                     x:Key="CorrectTeal" />
+    <SolidColorBrush Color="#FFA23A"
+                     x:Key="WarningOrange" />
+    <SolidColorBrush Color="#E2555F"
+                     x:Key="ErrorRed" />
+    <SolidColorBrush Color="#2A2A28"
+                     x:Key="MuxTrackSourceBackground" />
+    <SolidColorBrush Color="#8A8A86"
+                     x:Key="MuxTrackSourceBorder" />
+    <SolidColorBrush Color="#33313A"
+                     x:Key="MuxTrackUserBackground" />
+    <SolidColorBrush Color="#9A99A1"
+                     x:Key="MuxTrackUserBorder" />
+    <SolidColorBrush Color="#E4E7EA"
+                     x:Key="ButtonPrimary" />
+    <SolidColorBrush Color="#C2BFAD"
+                     x:Key="ButtonTertiary" />
+    <!-- Disabled button palette (dark: dimmer, clearly darker) -->
+    <SolidColorBrush Color="#6E787F"
+                     x:Key="ButtonDisabledForeground" />
+    <SolidColorBrush Color="#1C2024"
+                     x:Key="ButtonDisabledBackground" />
+    <SolidColorBrush Color="#3A4147"
+                     x:Key="ButtonDisabledBorder" />
+    <SolidColorBrush Color="#3FCB6A"
+                     x:Key="ProgressGreen" />
+    <SolidColorBrush Color="#5B82E8"
+                     x:Key="ProgressAzure" />
+    <SolidColorBrush Color="#1B2430"
+                     x:Key="ScriptAccentAvsBackground" />
+    <SolidColorBrush Color="#6FA8FF"
+                     x:Key="ScriptAccentAvsForeground" />
+    <SolidColorBrush Color="#15261A"
+                     x:Key="ScriptAccentVpyBackground" />
+    <SolidColorBrush Color="#5FCF87"
+                     x:Key="ScriptAccentVpyForeground" />
+    <SolidColorBrush Color="#2A1A2E"
+                     x:Key="ScriptAccentFFmpegBackground" />
+    <SolidColorBrush Color="#D08BDB"
+                     x:Key="ScriptAccentFFmpegForeground" />
+    <SolidColorBrush Color="#3A2F45"
+                     x:Key="TimelineTrackBackground" />
+    <SolidColorBrush Color="#A788B8"
+                     x:Key="TimelineTrackBorder" />
+    <SolidColorBrush Color="#241A2E"
+                     x:Key="TimelineTrackBackgroundDark" />
+    <SolidColorBrush Color="#6B4A82"
+                     x:Key="TimelineTrackBorderDark" />
+    <SolidColorBrush Color="#E8D48A"
+                     x:Key="TimelineThumbBackground" />
+    <SolidColorBrush Color="#B89B3E"
+                     x:Key="TimelineThumbBorder" />
+
+    <!-- Card palettes -->
+    <SolidColorBrush Color="#1E3331"
+                     x:Key="RemixedBackground" />
+    <SolidColorBrush Color="#C6E6E1"
+                     x:Key="RemixedForeground" />
+    <SolidColorBrush Color="#3E7772"
+                     x:Key="RemixedBorder" />
+    <SolidColorBrush Color="#7F8A88"
+                     x:Key="RemixedDisabledForeground" />
+    <SolidColorBrush Color="#233B33"
+                     x:Key="RemixedBackgroundGreen" />
+    <SolidColorBrush Color="#3A341F"
+                     x:Key="RemixedBackgroundDarkYellow" />
+    <SolidColorBrush Color="#3A2323"
+                     x:Key="RemixedBackgroundRed" />
+    <SolidColorBrush Color="#1E2B36"
+                     x:Key="RemixedBackground2" />
+    <SolidColorBrush Color="#C9DDF0"
+                     x:Key="RemixedForeground2" />
+    <SolidColorBrush Color="#3F6B8C"
+                     x:Key="RemixedBorder2" />
+    <SolidColorBrush Color="#33291A"
+                     x:Key="RemixedBackground3" />
+    <SolidColorBrush Color="#EFDDBE"
+                     x:Key="RemixedForeground3" />
+    <SolidColorBrush Color="#8F6637"
+                     x:Key="RemixedBorder3" />
+    <SolidColorBrush Color="#2C2E1E"
+                     x:Key="RemixedBackground4" />
+    <SolidColorBrush Color="#DFE3C2"
+                     x:Key="RemixedForeground4" />
+    <SolidColorBrush Color="#777A4F"
+                     x:Key="RemixedBorder4" />
+
+    <!-- Script tool card palette -->
+    <SolidColorBrush Color="#3A2A16"
+                     x:Key="ScriptRemixedBackground" />
+    <SolidColorBrush Color="#F0D2A8"
+                     x:Key="ScriptRemixedForeground" />
+    <SolidColorBrush Color="#C98A3A"
+                     x:Key="ScriptRemixedBorder" />
+    <SolidColorBrush Color="#8A8A8A"
+                     x:Key="ScriptRemixedDisabledForeground" />
+    <SolidColorBrush Color="#233B33"
+                     x:Key="ScriptRemixedBackgroundGreen" />
+    <SolidColorBrush Color="#3B2323"
+                     x:Key="ScriptRemixedBackgroundRed" />
+
+    <!-- Memory range palette: empty block and level colors -->
+    <SolidColorBrush Color="#2A2E33"
+                     x:Key="MemoryRangeEmpty" />
+
+    <!-- Upstream program (yellow to orange occupancy family) -->
+    <SolidColorBrush Color="#4A3B12"
+                     x:Key="MemoryRangeUpstream1" />
+    <SolidColorBrush Color="#5C4914"
+                     x:Key="MemoryRangeUpstream2" />
+    <SolidColorBrush Color="#6E5716"
+                     x:Key="MemoryRangeUpstream3" />
+    <SolidColorBrush Color="#806418"
+                     x:Key="MemoryRangeUpstream4" />
+    <SolidColorBrush Color="#92721A"
+                     x:Key="MemoryRangeUpstream5" />
+    <SolidColorBrush Color="#A4801C"
+                     x:Key="MemoryRangeUpstream6" />
+    <SolidColorBrush Color="#B68E1E"
+                     x:Key="MemoryRangeUpstream7" />
+    <SolidColorBrush Color="#C89C20"
+                     x:Key="MemoryRangeUpstream8" />
+
+    <!-- Downstream program / encoder (pink to maroon occupancy family) -->
+    <SolidColorBrush Color="#3A1B26"
+                     x:Key="MemoryRangeDownstream1" />
+    <SolidColorBrush Color="#4A2030"
+                     x:Key="MemoryRangeDownstream2" />
+    <SolidColorBrush Color="#5C2638"
+                     x:Key="MemoryRangeDownstream3" />
+    <SolidColorBrush Color="#6E2C40"
+                     x:Key="MemoryRangeDownstream4" />
+    <SolidColorBrush Color="#803248"
+                     x:Key="MemoryRangeDownstream5" />
+    <SolidColorBrush Color="#923850"
+                     x:Key="MemoryRangeDownstream6" />
+    <SolidColorBrush Color="#A43E58"
+                     x:Key="MemoryRangeDownstream7" />
+    <SolidColorBrush Color="#B64460"
+                     x:Key="MemoryRangeDownstream8" />
+
+    <!-- Other programs (light blue to navy occupancy family) -->
+    <SolidColorBrush Color="#16283A"
+                     x:Key="MemoryRangeOther1" />
+    <SolidColorBrush Color="#1B324A"
+                     x:Key="MemoryRangeOther2" />
+    <SolidColorBrush Color="#203C5A"
+                     x:Key="MemoryRangeOther3" />
+    <SolidColorBrush Color="#25466A"
+                     x:Key="MemoryRangeOther4" />
+    <SolidColorBrush Color="#2A507A"
+                     x:Key="MemoryRangeOther5" />
+    <SolidColorBrush Color="#2F5A8A"
+                     x:Key="MemoryRangeOther6" />
+    <SolidColorBrush Color="#34649A"
+                     x:Key="MemoryRangeOther7" />
+    <SolidColorBrush Color="#396EAA"
+                     x:Key="MemoryRangeOther8" />
+
+    <!-- System cache (pale green to deep green occupancy family) -->
+    <SolidColorBrush Color="#162E1A"
+                     x:Key="MemoryRangeCache1" />
+    <SolidColorBrush Color="#1B3A20"
+                     x:Key="MemoryRangeCache2" />
+    <SolidColorBrush Color="#204626"
+                     x:Key="MemoryRangeCache3" />
+    <SolidColorBrush Color="#25522C"
+                     x:Key="MemoryRangeCache4" />
+    <SolidColorBrush Color="#2A5E32"
+                     x:Key="MemoryRangeCache5" />
+    <SolidColorBrush Color="#2F6A38"
+                     x:Key="MemoryRangeCache6" />
+    <SolidColorBrush Color="#34763E"
+                     x:Key="MemoryRangeCache7" />
+    <SolidColorBrush Color="#398244"
+                     x:Key="MemoryRangeCache8" />
+
+    <!-- Dark-mode support colors -->
+    <SolidColorBrush Color="#40679FAB"
+                     x:Key="DragDropHighlight" />
+    <SolidColorBrush Color="#1B2B3A"
+                     x:Key="StatusBadgeBackground" />
+    <SolidColorBrush Color="#6FB9DD"
+                     x:Key="StatusBadgeForeground" />
+    <SolidColorBrush Color="#00B8C4CC"
+                     x:Key="ProgressStripeBackground" />
+    <SolidColorBrush Color="#66B8C4CC"
+                     x:Key="ProgressStripeForeground" />
+
+</ResourceDictionary>

@@ -1,4 +1,4 @@
-<ui:AdaptiveWindow x:Class="OneColumnEncoder.Views.BdPlaylistSelectModal"
+﻿<ui:AdaptiveWindow x:Class="OneColumnEncoder.Views.BdPlaylistSelectModal"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,7 +14,7 @@
                    MaxHeight="700"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
-                   Background="{StaticResource Background}">
+                   Background="{DynamicResource Background}">
     <ui:AdaptiveWindow.Resources>
         <Style x:Key="PlaylistSelectListBoxItemStyle"
                TargetType="ListBoxItem">
@@ -25,7 +25,7 @@
             <Setter Property="BorderThickness"
                     Value="1" />
             <Setter Property="BorderBrush"
-                    Value="{StaticResource GlobalSecondary}" />
+                    Value="{DynamicResource GlobalSecondary}" />
             <Setter Property="Background"
                     Value="Transparent" />
             <Setter Property="HorizontalContentAlignment"
@@ -48,9 +48,9 @@
                 <Trigger Property="IsMouseOver"
                          Value="True">
                     <Setter Property="Background"
-                            Value="{StaticResource MemoryRangeEmpty}" />
+                            Value="{DynamicResource MemoryRangeEmpty}" />
                     <Setter Property="BorderBrush"
-                            Value="{StaticResource RemixedBorder2}" />
+                            Value="{DynamicResource RemixedBorder2}" />
                     <Setter Property="BorderThickness"
                             Value="1" />
                     <Setter Property="Opacity"
@@ -59,9 +59,9 @@
                 <Trigger Property="IsSelected"
                          Value="True">
                     <Setter Property="Background"
-                            Value="{StaticResource ScriptAccentFFmpegBackground}" />
+                            Value="{DynamicResource ScriptAccentFFmpegBackground}" />
                     <Setter Property="BorderBrush"
-                            Value="{StaticResource TimelineTrackBorder}" />
+                            Value="{DynamicResource TimelineTrackBorder}" />
                     <Setter Property="BorderThickness"
                             Value="1" />
                 </Trigger>
@@ -94,7 +94,7 @@
                            Text="{Binding SummaryText}"
                            VerticalAlignment="Center"
                            TextAlignment="Right"
-                           Foreground="{StaticResource GlobalSecondary}"
+                           Foreground="{DynamicResource GlobalSecondary}"
                            Background="Transparent" />
             </Grid>
 
@@ -119,12 +119,12 @@
                                 <TextBlock Text="{Binding PlaylistCount, StringFormat={}{0} playlist(s)}"
                                            FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
-                                           Foreground="{StaticResource GlobalSecondary}" />
+                                           Foreground="{DynamicResource GlobalSecondary}" />
                                 <TextBlock Text="{Binding ClipSequenceText}"
-                                           Foreground="{StaticResource GlobalSecondary}"
+                                           Foreground="{DynamicResource GlobalSecondary}"
                                            TextTrimming="CharacterEllipsis" />
                                 <TextBlock Text="{Binding SamplePlaylistIdsText, StringFormat=Playlists: {0}}"
-                                           Foreground="{StaticResource GlobalSecondary}" />
+                                           Foreground="{DynamicResource GlobalSecondary}" />
                             </StackPanel>
                         </Border>
                     </DataTemplate>
@@ -152,7 +152,7 @@
                            Text="{Binding FinalPlaylistSummaryText}"
                            VerticalAlignment="Center"
                            TextAlignment="Right"
-                           Foreground="{StaticResource GlobalSecondary}"
+                           Foreground="{DynamicResource GlobalSecondary}"
                            Background="Transparent" />
             </Grid>
 
@@ -177,11 +177,11 @@
                                 <TextBlock Text="{Binding TitleText}"
                                            FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
-                                           Foreground="{StaticResource GlobalSecondary}" />
+                                           Foreground="{DynamicResource GlobalSecondary}" />
                                 <TextBlock Text="{Binding ChapterCount, StringFormat={}{0} chapters}"
-                                           Foreground="{StaticResource GlobalSecondary}" />
+                                           Foreground="{DynamicResource GlobalSecondary}" />
                                 <TextBlock Text="{Binding ClipSequenceText}"
-                                           Foreground="{StaticResource GlobalSecondary}"
+                                           Foreground="{DynamicResource GlobalSecondary}"
                                            TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </Border>
@@ -232,11 +232,11 @@
                                 <TextBlock Text="{Binding TitleText}"
                                            FontWeight="SemiBold" />
                                 <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
-                                           Foreground="{StaticResource GlobalSecondary}" />
+                                           Foreground="{DynamicResource GlobalSecondary}" />
                                 <TextBlock Text="{Binding ChapterCount, StringFormat={}{0} chapters}"
-                                           Foreground="{StaticResource GlobalSecondary}" />
+                                           Foreground="{DynamicResource GlobalSecondary}" />
                                 <TextBlock Text="{Binding ClipSequenceText}"
-                                           Foreground="{StaticResource GlobalSecondary}"
+                                           Foreground="{DynamicResource GlobalSecondary}"
                                            TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </Border>

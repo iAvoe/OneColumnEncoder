@@ -13,7 +13,7 @@
                    Width="760"
                    MinHeight="1180"
                    WindowStartupLocation="CenterOwner"
-                   Background="{StaticResource Background}">
+                   Background="{DynamicResource Background}">
     <ui:AdaptiveWindow.Resources>
         <Style x:Key="AppendLinkButton"
                TargetType="Button"
@@ -133,7 +133,7 @@
         <TextBlock Grid.Row="0"
                    Text="{Binding ScribeDescription}"
                    TextWrapping="Wrap"
-                   Foreground="{StaticResource GlobalPrimary}" />
+                   Foreground="{DynamicResource GlobalPrimary}" />
 
         <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
         <TabControl Grid.Row="1"
@@ -159,8 +159,9 @@
                              VerticalAlignment="Stretch"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
+                             Background="{DynamicResource Background}"
                              IsReadOnly="True"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal"
@@ -172,7 +173,7 @@
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              IsReadOnly="True"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
@@ -180,8 +181,8 @@
                         <TextBox Text="{Binding AvsUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource ScriptAccentAvsBackground}"
-                                 Foreground="{StaticResource ScriptAccentAvsForeground}"
+                                 Background="{DynamicResource ScriptAccentAvsBackground}"
+                                 Foreground="{DynamicResource ScriptAccentAvsForeground}"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
                                  Margin="0 2.5 0 0"
@@ -259,7 +260,7 @@
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="Transparent"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              Margin="0 2.5 0 0"
@@ -270,7 +271,7 @@
                               IsEnabled="{Binding IsFrameRateApplicable}"
                               Margin="0 2.5 0 0"
                               FontWeight="DemiBold"
-                              Foreground="{StaticResource GlobalSecondary}" />
+                              Foreground="{DynamicResource GlobalSecondary}" />
                 </Grid>
             </TabItem>
 
@@ -291,8 +292,9 @@
                              Style="{StaticResource ScribeCodeBox}"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
+                             Background="{DynamicResource Background}"
                              IsReadOnly="True"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal"
@@ -303,7 +305,7 @@
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              IsReadOnly="True"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
@@ -312,8 +314,8 @@
                         <TextBox Text="{Binding VpyUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource ScriptAccentVpyBackground}"
-                                 Foreground="{StaticResource ScriptAccentVpyForeground}"
+                                 Background="{DynamicResource ScriptAccentVpyBackground}"
+                                 Foreground="{DynamicResource ScriptAccentVpyForeground}"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
                                  Margin="0 2.5 0 0"
@@ -391,7 +393,7 @@
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="Transparent"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              Margin="0 2.5 0 0"
@@ -402,7 +404,7 @@
                               IsEnabled="{Binding IsFrameRateApplicable}"
                               Margin="0 2.5 0 0"
                               FontWeight="DemiBold"
-                              Foreground="{StaticResource GlobalSecondary}" />
+                              Foreground="{DynamicResource GlobalSecondary}" />
                 </Grid>
             </TabItem>
 
@@ -421,8 +423,8 @@
                              Style="{StaticResource ScribeCodeBox}"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              Padding="1.25 2.5"
@@ -433,15 +435,15 @@
                              FontWeight="Normal" />
                     <TextBlock Grid.Row="1"
                                Text="{Binding FFmpegFreeTextHint}"
-                               Foreground="{StaticResource GlobalSecondary}"
+                               Foreground="{DynamicResource GlobalSecondary}"
                                TextWrapping="Wrap"
                                FontWeight="Normal" />
                     <Grid Grid.Row="2">
                         <TextBox Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource ScriptAccentFFmpegBackground}"
-                                 Foreground="{StaticResource ScriptAccentFFmpegForeground}"
+                                 Background="{DynamicResource ScriptAccentFFmpegBackground}"
+                                 Foreground="{DynamicResource ScriptAccentFFmpegForeground}"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="False"
                                  Margin="0 2.5 0 0"
@@ -546,8 +548,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -571,8 +573,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{StaticResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </StackPanel>
 
@@ -597,8 +599,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </StackPanel>
                 </StackPanel>
@@ -649,7 +651,7 @@
                                              ValueText="{Binding RotateDisplay}" />
                         <TextBlock Grid.Column="1"
                                    Text="{Binding RotateDisplay}"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                     </Grid>
                     <TextBox Text="{Binding SelectedRotateFilterDisplay, Mode=OneWay}"
@@ -658,8 +660,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -685,10 +687,10 @@
                             <CheckBox Content="{Binding HorizontalFlipLabel}"
                                       IsChecked="{Binding HorizontalFlipEnabled}"
                                       Margin="0 0 20 0"
-                                      Foreground="{StaticResource GlobalSecondary}" />
+                                      Foreground="{DynamicResource GlobalSecondary}" />
                             <CheckBox Content="{Binding VerticalFlipLabel}"
                                       IsChecked="{Binding VerticalFlipEnabled}"
-                                      Foreground="{StaticResource GlobalSecondary}" />
+                                      Foreground="{DynamicResource GlobalSecondary}" />
                         </StackPanel>
                         <TextBox Text="{Binding FFmpegFlipFilterDisplay, Mode=OneWay}"
                                  Margin="0 2.5 0 0"
@@ -696,8 +698,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </StackPanel>
                 </StackPanel>
@@ -743,8 +745,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              FontWeight="Normal"
                              VerticalAlignment="Center" />
                 </StackPanel>
@@ -919,15 +921,15 @@
                                    Margin="5 0 0 0"
                                    Text="nits"
                                    VerticalAlignment="Center"
-                                   Foreground="{StaticResource GlobalSecondary}" />
+                                   Foreground="{DynamicResource GlobalSecondary}" />
                     </Grid>
                     <TextBox Text="{Binding SelectedPlaceboLoadCommand, Mode=OneWay}"
                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              VerticalAlignment="Center"
                              Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     <!-- CSP to Bt.709 filters -->
@@ -938,7 +940,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="NCG→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding IsAvsOrFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
                         <TextBox Grid.Column="1"
@@ -947,8 +949,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center"
                                  Visibility="{Binding IsAvsOrFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
@@ -959,7 +961,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="WCG→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                         <TextBox Grid.Column="1"
                                  Text="{Binding SelectedHighToLowColorFilterDisplay, Mode=OneWay}"
@@ -967,8 +969,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
@@ -978,7 +980,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="HDR→SDR"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                         <TextBox Grid.Column="1"
                                  Text="{Binding SelectedHdrToSdrColorFilterDisplay, Mode=OneWay}"
@@ -986,8 +988,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
@@ -997,7 +999,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="HDRWCG→SDR709"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center"
                                    TextWrapping="Wrap" />
                         <TextBox Grid.Column="1"
@@ -1006,8 +1008,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
@@ -1017,7 +1019,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="{Binding SelectedHlgTargetLabel}"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                         <TextBox Grid.Column="1"
                                  Text="{Binding SelectedHlgToSdrColorFilterDisplay, Mode=OneWay}"
@@ -1025,8 +1027,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
@@ -1036,7 +1038,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="{Binding SelectedDoviSdrTargetLabel}"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center"
                                    TextWrapping="Wrap" />
                         <TextBox Grid.Column="1"
@@ -1045,8 +1047,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
@@ -1056,7 +1058,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="{Binding SelectedDoviHdrTargetLabel}"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center"
                                    TextWrapping="Wrap" />
                         <TextBox Grid.Column="1"
@@ -1065,8 +1067,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
                 </StackPanel>
@@ -1127,7 +1129,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="&#x2192;422"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
 
                         <TextBox Grid.Column="1"
@@ -1136,8 +1138,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}" />
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -1146,7 +1148,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="&#x2192;420"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
 
                         <TextBox Grid.Column="1"
@@ -1155,8 +1157,8 @@
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}" />
+                                 Background="{DynamicResource Background}"
+                                 Foreground="{DynamicResource ButtonTertiary}" />
                     </Grid>
                 </StackPanel>
 
@@ -1185,8 +1187,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              VerticalAlignment="Center" />
                 </StackPanel>
 
@@ -1238,7 +1240,7 @@
                                 BorderThickness="0"
                                 HorizontalAlignment="Right">
                             <TextBlock Text="{Binding CropWidth}"
-                                       Foreground="{StaticResource GlobalSecondary}"
+                                       Foreground="{DynamicResource GlobalSecondary}"
                                        HorizontalAlignment="Center" />
                         </Border>
                     </Grid>
@@ -1260,7 +1262,7 @@
                                 BorderThickness="0"
                                 HorizontalAlignment="Right">
                             <TextBlock Text="{Binding CropHeight}"
-                                       Foreground="{StaticResource GlobalSecondary}"
+                                       Foreground="{DynamicResource GlobalSecondary}"
                                        HorizontalAlignment="Center" />
                         </Border>
                     </Grid>
@@ -1271,8 +1273,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              FontWeight="Normal"
                              VerticalAlignment="Center" />
                 </StackPanel>
@@ -1338,7 +1340,7 @@
                         </comps:IntegerSlider>
                         <TextBlock Grid.Column="1"
                                    Text="{Binding ResolutionWidth}"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                     </Grid>
 
@@ -1347,10 +1349,10 @@
                         <CheckBox Content="{Binding ResolutionModeLabel}"
                                   IsChecked="{Binding IsResolutionUpscale, Mode=TwoWay}"
                                   Margin="0 0 20 0"
-                                  Foreground="{StaticResource GlobalSecondary}" />
+                                  Foreground="{DynamicResource GlobalSecondary}" />
                         <CheckBox Content="{Binding ResolutionLockAspectLabel}"
                                   IsChecked="{Binding IsResolutionAspectLocked, Mode=TwoWay}"
-                                  Foreground="{StaticResource GlobalSecondary}" />
+                                  Foreground="{DynamicResource GlobalSecondary}" />
                     </StackPanel>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -1381,7 +1383,7 @@
                         </comps:IntegerSlider>
                         <TextBlock Grid.Column="1"
                                    Text="{Binding ResolutionHeight}"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                     </Grid>
                      <TextBox Margin="0 2.5 0 0"
@@ -1389,8 +1391,8 @@
                               IsReadOnly="True"
                               BorderThickness="0"
                               FontFamily="{DynamicResource CodeFont}"
-                              Background="{StaticResource Background}"
-                              Foreground="{StaticResource ButtonTertiary}"
+                              Background="{DynamicResource Background}"
+                              Foreground="{DynamicResource ButtonTertiary}"
                               FontWeight="Normal"
                               Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}" />
                      <TextBox Margin="0 2.5 0 0"
@@ -1399,8 +1401,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              FontWeight="Normal" />
                 </StackPanel>
 
@@ -1446,8 +1448,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              VerticalAlignment="Center" />
 
                 </StackPanel>
@@ -1483,8 +1485,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              AcceptsReturn="True"
                              TextWrapping="NoWrap"
                              VerticalAlignment="Center" />
@@ -1498,8 +1500,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              VerticalAlignment="Center"
                              Text="3 -filter:v &quot;fps=_,libplacebo=color_primaries=_:color_trc=_:colorspace=_,scale=_:_&quot;&#x0a;4 -filter:v &quot;fps=_,libplacebo=reset_sar=_,libplacebo=color_primaries=_:color_trc=_:colorspace=_,scale=_:_&quot;&#x0a;5 -filter:v &quot;hqdn3d,fps=_,libplacebo=reset_sar=_,libplacebo=color_primaries=_:color_trc=_:colorspace=_,scale=_:_&quot;" />
                 </StackPanel>
@@ -1529,8 +1531,8 @@
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
+                             Background="{DynamicResource Background}"
+                             Foreground="{DynamicResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal"

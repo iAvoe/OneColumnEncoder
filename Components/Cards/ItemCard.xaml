@@ -30,9 +30,9 @@
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"
-                            Value="{StaticResource GlobalPrimary}" />
+                            Value="{DynamicResource GlobalPrimary}" />
                     <Setter Property="Background"
-                            Value="{StaticResource Background}" />
+                            Value="{DynamicResource Background}" />
                     <Setter Property="Effect">
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="10"
@@ -46,30 +46,30 @@
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="1">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder}" />
+                                    Value="{DynamicResource RemixedBorder}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground}" />
+                                    Value="{DynamicResource RemixedBackground}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="2">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder2}" />
+                                    Value="{DynamicResource RemixedBorder2}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground2}" />
+                                    Value="{DynamicResource RemixedBackground2}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="3">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder3}" />
+                                    Value="{DynamicResource RemixedBorder3}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground3}" />
+                                    Value="{DynamicResource RemixedBackground3}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="4">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder4}" />
+                                    Value="{DynamicResource RemixedBorder4}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground4}" />
+                                    Value="{DynamicResource RemixedBackground4}" />
                         </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -79,16 +79,16 @@
                                            Value="False" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource BorderGreen}" />
+                                    Value="{DynamicResource BorderGreen}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource BackgroundGreen}" />
+                                    Value="{DynamicResource BackgroundGreen}" />
                         </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="True">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource BorderRed}" />
+                                    Value="{DynamicResource BorderRed}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource BackgroundRed}" />
+                                    Value="{DynamicResource BackgroundRed}" />
                         </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -98,14 +98,14 @@
                                            Value="False" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource BorderRed}" />
+                                    Value="{DynamicResource BorderRed}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource BackgroundRed}" />
+                                    Value="{DynamicResource BackgroundRed}" />
                         </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="False">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource GlobalSecondary}" />
+                                    Value="{DynamicResource GlobalSecondary}" />
                             <Setter Property="Effect"
                                     Value="{x:Null}" />
                         </DataTrigger>
@@ -141,48 +141,48 @@
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"
-                            Value="{StaticResource GlobalPrimary}" />
+                            Value="{DynamicResource GlobalPrimary}" />
                     <Setter Property="Background"
-                            Value="{StaticResource Background}" />
+                            Value="{DynamicResource Background}" />
                     <Setter Property="TextElement.Foreground"
-                            Value="{StaticResource GlobalPrimary}" />
+                            Value="{DynamicResource GlobalPrimary}" />
                     <Style.Triggers>
                         <!-- Remixed palette -->
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="1">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder}" />
+                                    Value="{DynamicResource RemixedBorder}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground}" />
+                                    Value="{DynamicResource RemixedBackground}" />
                             <Setter Property="TextElement.Foreground"
-                                    Value="{StaticResource RemixedForeground}" />
+                                    Value="{DynamicResource RemixedForeground}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="2">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder2}" />
+                                    Value="{DynamicResource RemixedBorder2}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground2}" />
+                                    Value="{DynamicResource RemixedBackground2}" />
                             <Setter Property="TextElement.Foreground"
-                                    Value="{StaticResource RemixedForeground2}" />
+                                    Value="{DynamicResource RemixedForeground2}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="3">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder3}" />
+                                    Value="{DynamicResource RemixedBorder3}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground3}" />
+                                    Value="{DynamicResource RemixedBackground3}" />
                             <Setter Property="TextElement.Foreground"
-                                    Value="{StaticResource RemixedForeground3}" />
+                                    Value="{DynamicResource RemixedForeground3}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="4">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource RemixedBorder4}" />
+                                    Value="{DynamicResource RemixedBorder4}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource RemixedBackground4}" />
+                                    Value="{DynamicResource RemixedBackground4}" />
                             <Setter Property="TextElement.Foreground"
-                                    Value="{StaticResource RemixedForeground4}" />
+                                    Value="{DynamicResource RemixedForeground4}" />
                         </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -192,16 +192,16 @@
                                                Value="False" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource BorderGreen}" />
+                                    Value="{DynamicResource BorderGreen}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource BackgroundGreen}" />
+                                    Value="{DynamicResource BackgroundGreen}" />
                         </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="True">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource BorderRed}" />
+                                    Value="{DynamicResource BorderRed}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource BackgroundRed}" />
+                                    Value="{DynamicResource BackgroundRed}" />
                         </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -211,16 +211,16 @@
                                            Value="False" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource BorderRed}" />
+                                    Value="{DynamicResource BorderRed}" />
                             <Setter Property="Background"
-                                    Value="{StaticResource BackgroundRed}" />
+                                    Value="{DynamicResource BackgroundRed}" />
                         </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="False">
                             <Setter Property="BorderBrush"
-                                    Value="{StaticResource GlobalSecondary}" />
+                                    Value="{DynamicResource GlobalSecondary}" />
                             <Setter Property="TextElement.Foreground"
-                                    Value="{StaticResource GlobalSecondary}" />
+                                    Value="{DynamicResource GlobalSecondary}" />
                         </DataTrigger>
                         <!-- Hover effect -->
                         <Trigger Property="IsMouseOver"
@@ -228,7 +228,7 @@
                             <Setter Property="Opacity"
                                     Value="0.7" />
                             <Setter Property="BorderBrush"
-                                    Value="AliceBlue" />
+                                    Value="{DynamicResource BorderAzure}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -283,27 +283,27 @@
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="1">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground}" />
+                                                Value="{DynamicResource RemixedForeground}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="2">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground2}" />
+                                                Value="{DynamicResource RemixedForeground2}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="3">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground3}" />
+                                                Value="{DynamicResource RemixedForeground3}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="4">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground4}" />
+                                                Value="{DynamicResource RemixedForeground4}" />
                                     </DataTrigger>
                                     <Trigger Property="IsEnabled"
                                              Value="False">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource GlobalSecondary}" />
+                                                Value="{DynamicResource GlobalSecondary}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -319,27 +319,27 @@
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="1">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground}" />
+                                                Value="{DynamicResource RemixedForeground}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="2">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground2}" />
+                                                Value="{DynamicResource RemixedForeground2}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="3">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground3}" />
+                                                Value="{DynamicResource RemixedForeground3}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                  Value="4">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource RemixedForeground4}" />
+                                                Value="{DynamicResource RemixedForeground4}" />
                                     </DataTrigger>
                                     <Trigger Property="IsEnabled"
                                              Value="False">
                                         <Setter Property="Foreground"
-                                                Value="{StaticResource GlobalSecondary}" />
+                                                Value="{DynamicResource GlobalSecondary}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>

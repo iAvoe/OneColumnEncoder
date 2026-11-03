@@ -15,7 +15,7 @@
         SizeToContent="Height"
         Width="510"
         WindowStartupLocation="CenterOwner"
-        Background="{StaticResource Background}">
+        Background="{DynamicResource Background}">
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Copy"
                         CanExecute="CopyMessage_CanExecute"

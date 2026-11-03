@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.ColumnTextGrid"
+﻿<UserControl x:Class="OneColumnEncoder.Components.ColumnTextGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -40,24 +40,24 @@
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"
                                    FontSize="10"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    Visibility="{Binding TopText, Converter={StaticResource StringToVisibilityConverter}}" />
                         <TextBlock Text="{Binding MainText}"
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"
                                    FontSize="13"
-                                   Foreground="{StaticResource GlobalPrimary}" />
+                                   Foreground="{DynamicResource GlobalPrimary}" />
                         <TextBlock Text="{Binding BottomText}"
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"
                                    FontSize="10"
-                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Foreground="{DynamicResource GlobalSecondary}"
                                    Visibility="{Binding BottomText, Converter={StaticResource StringToVisibilityConverter}}" />
                     </StackPanel>
 
                     <Border Grid.Column="1"
                             Width="1"
-                            Background="{StaticResource GlobalPrimary}"
+                            Background="{DynamicResource GlobalPrimary}"
                             Margin="8 0"
                             VerticalAlignment="Stretch">
                         <Border.Visibility>

@@ -19,11 +19,11 @@
                 <DataTrigger Binding="{Binding Button2Highlight, RelativeSource={RelativeSource AncestorType=local:TwoButtonGroup}}"
                              Value="True">
                     <Setter Property="BorderBrush"
-                            Value="{StaticResource BorderAmber}" />
+                            Value="{DynamicResource BorderAmber}" />
                     <Setter Property="Background"
-                            Value="{StaticResource BackgroundAmber}" />
+                            Value="{DynamicResource BackgroundAmber}" />
                     <Setter Property="Foreground"
-                            Value="{StaticResource GlobalPrimary}" />
+                            Value="{DynamicResource GlobalPrimary}" />
                     <Setter Property="BorderThickness"
                             Value="1.5" />
                 </DataTrigger>
@@ -31,6 +31,8 @@
         </Style>
         <Style x:Key="Button2TextStyle"
                TargetType="TextBlock">
+            <Setter Property="Foreground"
+                    Value="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Button2Strikethrough, RelativeSource={RelativeSource AncestorType=local:TwoButtonGroup}}"
                              Value="True">
@@ -79,6 +81,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B2_1Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -157,6 +160,7 @@
                         </Rectangle.Style>
                     </Rectangle>
                     <TextBlock Text="{Binding B2_1Text}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
