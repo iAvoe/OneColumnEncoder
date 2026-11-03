@@ -115,6 +115,7 @@
                              LabelWidth="0"
                              HorizontalAlignment="Stretch"
                              IsEnabled="{Binding IsIdle}" />
+        <!-- Preview Buttons (HDR-WCG preview and stadnard preview button) -->
         <Grid Grid.Row="3"
               Margin="0 5 0 0">
             <Grid.ColumnDefinitions>
@@ -122,7 +123,6 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="180" />
             </Grid.ColumnDefinitions>
-
             <comps:FiveButtonGroup Grid.Column="0"
                                    DataContext="{Binding DisplayModeButtons}"
                                    ButtonHeight="30"
@@ -131,13 +131,11 @@
                                    Button3Command="{Binding Cmd3}"
                                    Button4Command="{Binding Cmd4}"
                                    Button5Command="{Binding Cmd5}" />
-
             <Button Grid.Column="2"
                     Command="{Binding PreviewCommand}"
                     Height="30"
                     HorizontalAlignment="Stretch"
-                    Style="{StaticResource PrimaryButton}"
-                    Background="{DynamicResource ButtonPrimary}">
+                    Style="{StaticResource PrimaryButton}">
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center">
@@ -153,6 +151,7 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <TextBlock Text="{Binding PreviewButtonText}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                VerticalAlignment="Center"
                                Margin="5 0 0 0" />
                 </StackPanel>
@@ -197,12 +196,12 @@
                            TextAlignment="Right"
                            HorizontalAlignment="Right"
                            Margin="2.5 2.5 2.5 1"
-                           Background="AliceBlue"
+                           Background="{DynamicResource StatusBadgeBackground}"
                            Padding="1">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground"
-                                    Value="#10739E" />
+                                    Value="{DynamicResource StatusBadgeForeground}" />
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
@@ -212,12 +211,12 @@
                            TextAlignment="Right"
                            HorizontalAlignment="Right"
                            Margin="2.5 1 2.5 2.5"
-                           Background="AliceBlue"
+                           Background="{DynamicResource StatusBadgeBackground}"
                            Padding="1">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground"
-                                    Value="#10739E" />
+                                    Value="{DynamicResource StatusBadgeForeground}" />
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
