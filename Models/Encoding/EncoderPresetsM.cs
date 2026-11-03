@@ -60,6 +60,7 @@ public static class EncoderPresetsM
         new(15, "VeryslowHQText", "--preset veryslow --tune grain"),
     ];
 
+    // Tune VQ: visual quality first
     public static IReadOnlyList<EncoderPresetItem> SvtAv1Presets { get; } =
     [
         new(0, "PeakQualityText",
@@ -68,6 +69,14 @@ public static class EncoderPresetsM
             "--preset 2 --scd 1 --enable-tf 2 --tf-strength 2 $crfParam --sharpness 4 --progress 2 $deblock"),
         new(2, "SpeedOptimizedText",
             "--preset 2 --scd 1 --scm 0 --enable-tf 2 --tf-strength 2 $crfParam --tune 0 --enable-variance-boost 1 --variance-boost-curve 2 --variance-boost-strength 2 --variance-octile 2 --sharpness 4 --progress 2"),
+        new(3, "SlowVQText", "--preset 3 --tune 0"),
+        new(4, "SlowPSNRText", "--preset 3 --tune 1"),
+        new(5, "VerySlowVQText", "--preset 2 --tune 0"),
+        new(6, "VerySlowPSNRText", "--preset 2 --tune 1"),
+        new(7, "SuperSlowVQText", "--preset 1 --tune 0"),
+        new(8, "SuperSlowPSNRText", "--preset 1 --tune 1"),
+        new(9, "UltraSlowVQText", "--preset -1 --tune 0"),
+        new(10, "UltraSlowPSNRText", "--preset -1 --tune 1"),
     ];
 
     public static IReadOnlyList<ThirdPartyParamDef> ThirdPartyParams { get; } =

@@ -325,7 +325,13 @@ public class EncoderConfVM : BaseVM
                 X265ModeDropdown.Items.Add(new DropdownItemM(string.Empty, isSeparator: true));
         }
         foreach (EncoderPresetItem preset in EncoderPresetsM.SvtAv1Presets)
+        {
             SvtAv1ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
+
+            // Group split: hand-tuned presets (0-2) | tune-only presets (3+)
+            if (preset.Key == 2)
+                SvtAv1ModeDropdown.Items.Add(new DropdownItemM(string.Empty, isSeparator: true));
+        }
 
         // VVenC preview presets — always qpa enabled
         VvencModeDropdown.Items.Add(new DropdownItemM("qpa medium") { Tag = 0 });

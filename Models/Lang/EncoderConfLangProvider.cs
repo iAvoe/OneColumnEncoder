@@ -66,6 +66,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "Peak Quality",
             ["CompressionOptText"] = "High Compression",
             ["SpeedOptimizedText"] = "Fast",
+            ["SlowVQText"] = "Slow VQ",
+            ["SlowPSNRText"] = "Slow PSNR",
+            ["VerySlowVQText"] = "Very Slow VQ",
+            ["VerySlowPSNRText"] = "Very Slow PSNR",
+            ["SuperSlowVQText"] = "Super Slow VQ",
+            ["SuperSlowPSNRText"] = "Super Slow PSNR",
+            ["UltraSlowVQText"] = "Ultra Slow VQ",
+            ["UltraSlowPSNRText"] = "Ultra Slow PSNR",
             ["BlankPresetText"] = "None",
             ["VvencHintText"] = "VVenC is only for single-image preview, not used in main encoding",
             ["BlankPresetHint"] = "None: use encoder default / fully customize via additional parameter textbox",
@@ -137,6 +145,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "极致画质",
             ["CompressionOptText"] = "优化压缩",
             ["SpeedOptimizedText"] = "优化速度",
+            ["SlowVQText"] = "慢速·VQ",
+            ["SlowPSNRText"] = "慢速·PSNR",
+            ["VerySlowVQText"] = "很慢·VQ",
+            ["VerySlowPSNRText"] = "很慢·PSNR",
+            ["SuperSlowVQText"] = "超慢·VQ",
+            ["SuperSlowPSNRText"] = "超慢·PSNR",
+            ["UltraSlowVQText"] = "极慢·VQ",
+            ["UltraSlowPSNRText"] = "极慢·PSNR",
             ["BlankPresetText"] = "留空",
             ["VvencHintText"] = "VVenC 仅用于单帧预览，不参与主编码流程",
             ["BlankPresetHint"] = "留空：使用编码器默认或底部附加编码器参数文本框写入",
@@ -208,6 +224,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "極致畫質",
             ["CompressionOptText"] = "優化壓縮",
             ["SpeedOptimizedText"] = "優化速度",
+            ["SlowVQText"] = "慢速·VQ",
+            ["SlowPSNRText"] = "慢速·PSNR",
+            ["VerySlowVQText"] = "很慢·VQ",
+            ["VerySlowPSNRText"] = "很慢·PSNR",
+            ["SuperSlowVQText"] = "超慢·VQ",
+            ["SuperSlowPSNRText"] = "超慢·PSNR",
+            ["UltraSlowVQText"] = "極慢·VQ",
+            ["UltraSlowPSNRText"] = "極慢·PSNR",
             ["BlankPresetText"] = "留空",
             ["VvencHintText"] = "VVenC 僅用於單幀預覽，不參與主編碼流程",
             ["BlankPresetHint"] = "留空：使用編碼器默認或底部附加編碼器參數文本框寫入",
@@ -274,6 +298,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "Qualité max.",
             ["CompressionOptText"] = "Compression élevée",
             ["SpeedOptimizedText"] = "Rapide",
+            ["SlowVQText"] = "Lent · VQ",
+            ["SlowPSNRText"] = "Lent · PSNR",
+            ["VerySlowVQText"] = "Très lent · VQ",
+            ["VerySlowPSNRText"] = "Très lent · PSNR",
+            ["SuperSlowVQText"] = "Super lent · VQ",
+            ["SuperSlowPSNRText"] = "Super lent · PSNR",
+            ["UltraSlowVQText"] = "Ultra lent · VQ",
+            ["UltraSlowPSNRText"] = "Ultra lent · PSNR",
             ["BlankPresetText"] = "Aucun",
             ["VvencHintText"] = "VVenC est réservé à l'aperçu d'une seule image, pas utilisé pour l'encodage principal",
             ["BlankPresetHint"] = "Aucun : défaut encodeur / personnalisation par paramètres additionnels",
@@ -336,6 +368,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "Calidad máxima",
             ["CompressionOptText"] = "Alta compresión",
             ["SpeedOptimizedText"] = "Rápido",
+            ["SlowVQText"] = "Lento · VQ",
+            ["SlowPSNRText"] = "Lento · PSNR",
+            ["VerySlowVQText"] = "Muy lento · VQ",
+            ["VerySlowPSNRText"] = "Muy lento · PSNR",
+            ["SuperSlowVQText"] = "Súper lento · VQ",
+            ["SuperSlowPSNRText"] = "Súper lento · PSNR",
+            ["UltraSlowVQText"] = "Ultra lento · VQ",
+            ["UltraSlowPSNRText"] = "Ultra lento · PSNR",
             ["BlankPresetText"] = "Ninguno",
             ["VvencHintText"] = "VVenC es solo para vista previa de imagen única, no se usa en codificación principal",
             ["BlankPresetHint"] = "Ninguno: usar defecto del codificador / personalizar abajo",
@@ -398,6 +438,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "最高品質",
             ["CompressionOptText"] = "高圧縮",
             ["SpeedOptimizedText"] = "高速",
+            ["SlowVQText"] = "低速・VQ",
+            ["SlowPSNRText"] = "低速・PSNR",
+            ["VerySlowVQText"] = "とても低速・VQ",
+            ["VerySlowPSNRText"] = "とても低速・PSNR",
+            ["SuperSlowVQText"] = "超低速・VQ",
+            ["SuperSlowPSNRText"] = "超低速・PSNR",
+            ["UltraSlowVQText"] = "極低速・VQ",
+            ["UltraSlowPSNRText"] = "極低速・PSNR",
             ["BlankPresetText"] = "なし",
             ["VvencHintText"] = "VVenC は単一画像プレビューのみで使用、本エンコードでは使用しません",
             ["BlankPresetHint"] = "なし: エンコーダ既定値 / 下の追加パラメータで完全指定",
@@ -460,6 +508,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "Макс. качество",
             ["CompressionOptText"] = "Высокое сжатие",
             ["SpeedOptimizedText"] = "Быстро",
+            ["SlowVQText"] = "Медленно · VQ",
+            ["SlowPSNRText"] = "Медленно · PSNR",
+            ["VerySlowVQText"] = "Очень медленно · VQ",
+            ["VerySlowPSNRText"] = "Очень медленно · PSNR",
+            ["SuperSlowVQText"] = "Супер медленно · VQ",
+            ["SuperSlowPSNRText"] = "Супер медленно · PSNR",
+            ["UltraSlowVQText"] = "Ультра медленно · VQ",
+            ["UltraSlowPSNRText"] = "Ультра медленно · PSNR",
             ["BlankPresetText"] = "Нет",
             ["VvencHintText"] = "VVenC используется только для предпросмотра одного кадра, не для основного кодирования",
             ["BlankPresetHint"] = "Нет: настройки кодера по умолчанию / полная настройка ниже",
@@ -522,6 +578,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "Maximale Qualität",
             ["CompressionOptText"] = "Hohe Kompression",
             ["SpeedOptimizedText"] = "Schnell",
+            ["SlowVQText"] = "Langsam · VQ",
+            ["SlowPSNRText"] = "Langsam · PSNR",
+            ["VerySlowVQText"] = "Sehr langsam · VQ",
+            ["VerySlowPSNRText"] = "Sehr langsam · PSNR",
+            ["SuperSlowVQText"] = "Super langsam · VQ",
+            ["SuperSlowPSNRText"] = "Super langsam · PSNR",
+            ["UltraSlowVQText"] = "Ultra langsam · VQ",
+            ["UltraSlowPSNRText"] = "Ultra langsam · PSNR",
             ["BlankPresetText"] = "Keine",
             ["VvencHintText"] = "VVenC ist nur für Einzelbildvorschau, nicht für Hauptkodierung",
             ["BlankPresetHint"] = "Keine: Encoder-Standard / vollständige Anpassung über Zusatzparameter",
@@ -593,6 +657,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "최고 품질",
             ["CompressionOptText"] = "고압축",
             ["SpeedOptimizedText"] = "고속",
+            ["SlowVQText"] = "느림 · VQ",
+            ["SlowPSNRText"] = "느림 · PSNR",
+            ["VerySlowVQText"] = "매우 느림 · VQ",
+            ["VerySlowPSNRText"] = "매우 느림 · PSNR",
+            ["SuperSlowVQText"] = "슈퍼 느림 · VQ",
+            ["SuperSlowPSNRText"] = "슈퍼 느림 · PSNR",
+            ["UltraSlowVQText"] = "울트라 느림 · VQ",
+            ["UltraSlowPSNRText"] = "울트라 느림 · PSNR",
             ["BlankPresetText"] = "없음",
             ["VvencHintText"] = "VVenC는 단일 이미지 미리보기에만 사용되며, 본 인코딩에는 사용하지 않음",
             ["BlankPresetHint"] = "없음: 인코더 기본값 사용 / 하단 추가 파라미터 텍스트상자로 완전 지정",
@@ -655,6 +727,14 @@ public class EncoderConfLangProvider : LangProviderBase
             ["PeakQualityText"] = "Qualidade máxima",
             ["CompressionOptText"] = "Alta compressão",
             ["SpeedOptimizedText"] = "Rápido",
+            ["SlowVQText"] = "Lento · VQ",
+            ["SlowPSNRText"] = "Lento · PSNR",
+            ["VerySlowVQText"] = "Muito lento · VQ",
+            ["VerySlowPSNRText"] = "Muito lento · PSNR",
+            ["SuperSlowVQText"] = "Super lento · VQ",
+            ["SuperSlowPSNRText"] = "Super lento · PSNR",
+            ["UltraSlowVQText"] = "Ultra lento · VQ",
+            ["UltraSlowPSNRText"] = "Ultra lento · PSNR",
             ["BlankPresetText"] = "Nenhum",
             ["VvencHintText"] = "VVenC é apenas para visualização de imagem única, não usado na codificação principal",
             ["BlankPresetHint"] = "Nenhum: usar padrão do codificar / personalizar totalmente via caixa de texto de parâmetros adicionais",
@@ -728,6 +808,14 @@ public class EncoderConfLangProvider : LangProviderBase
     public string PeakQualityText { get; }
     public string CompressionOptText { get; }
     public string SpeedOptimizedText { get; }
+    public string SlowVQText { get; }
+    public string SlowPSNRText { get; }
+    public string VerySlowVQText { get; }
+    public string VerySlowPSNRText { get; }
+    public string SuperSlowVQText { get; }
+    public string SuperSlowPSNRText { get; }
+    public string UltraSlowVQText { get; }
+    public string UltraSlowPSNRText { get; }
     public string BlankPresetText { get; }
     public string BlankPresetHint { get; }
     public string VvencText { get; }
@@ -802,6 +890,14 @@ public class EncoderConfLangProvider : LangProviderBase
         PeakQualityText = this["PeakQualityText"];
         CompressionOptText = this["CompressionOptText"];
         SpeedOptimizedText = this["SpeedOptimizedText"];
+        SlowVQText = this["SlowVQText"];
+        SlowPSNRText = this["SlowPSNRText"];
+        VerySlowVQText = this["VerySlowVQText"];
+        VerySlowPSNRText = this["VerySlowPSNRText"];
+        SuperSlowVQText = this["SuperSlowVQText"];
+        SuperSlowPSNRText = this["SuperSlowPSNRText"];
+        UltraSlowVQText = this["UltraSlowVQText"];
+        UltraSlowPSNRText = this["UltraSlowPSNRText"];
         BlankPresetText = this["BlankPresetText"];
         BlankPresetHint = this["BlankPresetHint"];
         VvencText = "VVenC (PV)";
