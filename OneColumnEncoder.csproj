@@ -10,7 +10,7 @@
         <Platforms>AnyCPU;x64</Platforms>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ApplicationIcon>favicon.ico</ApplicationIcon>
-        <Version>2.18.26</Version>
+        <Version>2.19.26</Version>
     </PropertyGroup>
 
     <!-- App icon and BluRay MPLS parser -->
