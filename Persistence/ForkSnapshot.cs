@@ -159,6 +159,7 @@ internal sealed class ForkSnapshot
         appConf.InitLang = AppConf.InitLang;
         appConf.Overwrite = AppConf.Overwrite;
         appConf.Lang = AppConf.Lang;
+        appConf.Theme = AppConf.Theme;
         appConf.Font = AppConf.Font;
         appConf.Logs = AppConf.Logs;
         appConf.AudioMux = AppConf.AudioMux;
