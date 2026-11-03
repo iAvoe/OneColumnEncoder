@@ -64,12 +64,12 @@ public class ConfirmDialogLangProvider(string languageCode) : LangProviderBase(l
         Data["ja"] = new(Data["en"])
         {
             ["ConfirmDialog.CopyText"] = "メッセージコピー",
-            ["ConfirmDialog.WarningPrefix"] = "警告: ",
+            ["ConfirmDialog.WarningPrefix"] = "警告：",
             ["ConfirmDialog.ErrorPrefix"] = "エラー: ",
-            ["ConfirmDialog.InfoPrefix"] = "情報: ",
-            ["ConfirmDialog.SuccessPrefix"] = "成功: ",
+            ["ConfirmDialog.InfoPrefix"] = "情報：",
+            ["ConfirmDialog.SuccessPrefix"] = "成功：",
             ["ConfirmDialog.CopyHint"] = "テキストを右クリックしてコピー",
-            ["ConfirmDialog.DebugPrefix"] = "デバッグ: ",
+            ["ConfirmDialog.DebugPrefix"] = "デバッグ：",
         };
         Data["ru"] = new(Data["en"])
         {

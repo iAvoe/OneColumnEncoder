@@ -106,6 +106,19 @@ public abstract class LangProviderBase
     public string PasteText => this["Paste"];
     public string DeleteText => this["Delete"];
     public string SelectAllText => this["Select All"];
+
+    private static readonly Dictionary<string, string> SvtAv1PresetTune = new()
+    {
+        ["SlowVQText"] = "P3 VQ",
+        ["SlowPSNRText"] = "P3 PSNR",
+        ["VerySlowVQText"] = "P2 VQ",
+        ["VerySlowPSNRText"] = "P2 PSNR",
+        ["SuperSlowVQText"] = "P1 VQ",
+        ["SuperSlowPSNRText"] = "P1 PSNR",
+        ["UltraSlowVQText"] = "P-1 VQ",
+        ["UltraSlowPSNRText"] = "P-1 PSNR",
+    };
+
     private static readonly Dictionary<string, Dictionary<string, string>> CommonData = new()
     {
         ["en"] = new()
@@ -777,6 +790,7 @@ public abstract class LangProviderBase
         get
         {
             if (_d.TryGetValue(key, out string? value)) return value;
+            if (SvtAv1PresetTune.TryGetValue(key, out value)) return value;
             if (TryGetCommonValue(key, out value)) return value;
 #if DEBUG
             throw new MissingTranslationException(GetType().Name, LanguageCode, key);

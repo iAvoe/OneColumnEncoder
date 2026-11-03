@@ -130,11 +130,11 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["ja"] = new()
         {
             ["IntroText"] = "このプログラムはツール間の様々な並列実装を無視し、以下を使用します:\n· CPU Sets によるスレッド親和性の提案（一時的なスレッド・ノード移動は許可）\n· エンコードスレッドの NUMA ノード上の RAM 割り当てを試行",
-            ["PriorityText"] = "エンコーダー停止時もOSの応答性を保つため、本プログラムは通常優先度のみ使用します",
+            ["PriorityText"] = "エンコーダー停止時も OS の応答性を保つため、本プログラムは通常優先度のみ使用します",
             ["CacheGroupTitle"] = "検出された L3 キャッシュグループ（↑グループ越境、↓キャッシュヒット）",
-            ["NumaTopologyHintText"] = "CPU内に複数のNUMAノードがある場合、エンコーダーは最初の1つだけを使用します",
-            ["UpstreamNumaTitle"] = "NUMA ソフトバインディング: パイプライン上流",
-            ["DownstreamNumaTitle"] = "NUMA ソフトバインディング: パイプライン下流（エンコーダー）",
+            ["NumaTopologyHintText"] = "CPU 内に複数の NUMA ノードがある場合、エンコーダーは最初の 1 つだけを使用します",
+            ["UpstreamNumaTitle"] = "NUMA ソフトバインディング：パイプライン上流",
+            ["DownstreamNumaTitle"] = "NUMA ソフトバインディング：パイプライン下流（エンコーダー）",
             ["NumaGuidanceText"] = "上流ツールのフィルターが遅い場合、エンコーダーを別のノードに割り当てる方が高速なことがあります。\nそれ以外では、同じノードを共有する方が高速なことがあります—計算 vs レイテンシボトルネック。",
             ["ThreadStrategyTitle"] = "プロセッサスケジューリング",
             ["EncoderThreadCountText"] = "エンコーダスレッド数",
@@ -201,8 +201,8 @@ public class ParallelismConfLangProvider : LangProviderBase
         },
         ["ko"] = new()
         {
-            ["IntroText"] = "이 프로그램은 도구 간 다양한 병렬 구현을 무시하고 다음을 사용합니다:\n· CPU Sets로 스레드 친화성 제안 (임시 스레드 노드 이동 허용)\n· 인코딩 스레드의 NUMA 노드에 RAM 할당 시도",
-            ["PriorityText"] = "인코더가 멈춰도 OS가 멈추지 않도록 이 프로그램은 보통 우선순위만 사용합니다",
+            ["IntroText"] = "이 프로그램은 도구 간 다양한 병렬 구현을 무시하고 다음을 사용합니다:\n· CPU Sets 로 스레드 친화성 제안 (임시 스레드 노드 이동 허용)\n· 인코딩 스레드의 NUMA 노드에 RAM 할당 시도",
+            ["PriorityText"] = "인코더가 멈춰도 OS 가 멈추지 않도록 이 프로그램은 보통 우선순위만 사용합니다",
             ["CacheGroupTitle"] = "감지된 L3 캐시 그룹 (↑ 경계 초과, ↓ 캐시 적중)",
             ["NumaTopologyHintText"] = "CPU 에 여러 NUMA 노드가 있으면 인코더는 첫 번째만 사용합니다",
             ["UpstreamNumaTitle"] = "NUMA 소프트 바인딩: 파이프 업스트림",
@@ -213,15 +213,15 @@ public class ParallelismConfLangProvider : LangProviderBase
             ["PreferUpstreamPhysCoresText"] = "업스트림 도구 스레드를 물리적 코어에 매핑",
             ["PreferDownstreamPhysCoresText"] = "인코더 스레드를 물리적 코어에 매핑",
             ["PipeBufferStrategyTitle"] = "파이프 버퍼",
-            ["PipeBufferStrategyText"] = "파이프 버퍼 크기를 min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)로 최적화",
+            ["PipeBufferStrategyText"] = "파이프 버퍼 크기를 min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB) 로 최적화",
             ["PipeBufferHintText"] = "I/O 요청 횟수를 줄여 전송 속도를 개선할 수 있습니다",
             ["MemoryStrategyTitle"] = "고급 RAM 할당",
             ["LargePagesUnavailableHintText"] = "대형 페이지 RAM 할당 설정을 제공하는 도구가 없으므로 이 방법으로 고해상도 인코딩 성능을 향상시킬 수 없습니다.",
             ["CorePerGroup"] = "· 모든 ",
             ["CorePerGroup1"] = " 코어는 ",
             ["CorePerGroup1alt"] = " 코어 (",
-            ["CorePerGroup1alt1"] = " 스레드)는 ",
-            ["CorePerGroup2"] = " MB L3에 직접 연결",
+            ["CorePerGroup1alt1"] = " 스레드) 는 ",
+            ["CorePerGroup2"] = " MB L3 에 직접 연결",
         },
         ["pt-br"] = new()
         {

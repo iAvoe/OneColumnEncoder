@@ -83,9 +83,9 @@ public class FFProbeSrcRevisionLangProvider(string languageCode) : LangProviderB
         {
             ["SrcRevise.NoEntriesInQueue"] = "큐 파일에서 ffprobe JSON 항목을 찾을 수 없습니다.",
             ["SrcRevise.FailedToParseBatch"] = "BatchRawJson 파싱에 실패했습니다.",
-            ["SrcRevise.NoEntriesInBatch"] = "BatchRawJson에서 ffprobe JSON 항목을 찾을 수 없습니다.",
+            ["SrcRevise.NoEntriesInBatch"] = "BatchRawJson 에서 ffprobe JSON 항목을 찾을 수 없습니다.",
             ["SrcRevise.MissingEntriesArray"] = "JSON 루트에 \"Entries\" 배열이 없습니다.",
-            ["SrcRevise.RevisedJsonNull"] = "수정된 ffprobe JSON이 null로 반환되었습니다.",
+            ["SrcRevise.RevisedJsonNull"] = "수정된 ffprobe JSON 이 null 로 반환되었습니다.",
             ["SrcRevise.JsonRootNotObject"] = "JSON 루트가 객체가 아닙니다.",
         },
         ["pt-br"] = new()

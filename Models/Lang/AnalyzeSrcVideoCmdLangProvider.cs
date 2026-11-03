@@ -70,10 +70,10 @@ public class AnalyzeSrcVideoCmdLangProvider : LangProviderBase
         ["ja"] = new()
         {
             ["QueueItemProgress"] = "キュー項目 {0}/{1}",
-            ["SourceFilePath"] = "ソース: {0}",
+            ["SourceFilePath"] = "ソース：{0}",
             ["QueueItemSkipMsg"] = "このソース項目はスキップされます。このダイアログを閉じて、残りの項目の解析を続行してください。",
-            ["AllQueueItemsFailed"] = "キューのソース解析に失敗しました: すべての {0} 個のキュー項目を解析できなかったためスキップしました。",
-            ["SkippedItemsLabel"] = "スキップされた失敗キュー項目: {0}",
+            ["AllQueueItemsFailed"] = "キューのソース解析に失敗しました：すべての {0} 個のキュー項目を解析できなかったためスキップしました。",
+            ["SkippedItemsLabel"] = "スキップされた失敗キュー項目：{0}",
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...他 {0} 件。",
             ["TotalFramesFormat"] = "{0}: {1}",

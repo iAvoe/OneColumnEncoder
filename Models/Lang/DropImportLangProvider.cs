@@ -106,9 +106,9 @@ public class DropImportLangProvider : LangProviderBase
             ["Mode.Single"] = "단일 파일 모드",
             ["Mode.Queue"] = "큐 모드 ({0}개 파일)",
             ["ReplaceTitle"] = "비디오 소스 바꾸기",
-            ["ReplaceMessage"] = "비디오 소스가 이미 가져와져 있습니다.\n\n확인: 기존 소스를 바꾸고 {0}(으)로 가져오기\n취소: 현재 소스 유지",
+            ["ReplaceMessage"] = "비디오 소스가 이미 가져와져 있습니다.\n\n확인: 기존 소스를 바꾸고 {0}(으) 로 가져오기\n취소: 현재 소스 유지",
             ["NoVideoFile"] = "끌어온 항목에서 비디오 파일을 찾지 못했습니다.",
-            ["ImportDisabled"] = "비디오 소스 가져오기가 현재 비활성화되어 있습니다.\n\n먼저 ffprobe를 가져오세요. OneLineShotArgs 업스트림은 큐 모드를 지원하지 않습니다."
+            ["ImportDisabled"] = "비디오 소스 가져오기가 현재 비활성화되어 있습니다.\n\n먼저 ffprobe 를 가져오세요. OneLineShotArgs 업스트림은 큐 모드를 지원하지 않습니다."
         };
         Data["pt-br"] = new(Data["en"])
         {

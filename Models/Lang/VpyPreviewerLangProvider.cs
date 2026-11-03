@@ -127,12 +127,12 @@ public class VpyPreviewerLangProvider(string languageCode) : LangProviderBase(la
             ["VpyPreview.LogVspipeExitCode"] = "vspipe 終了コード {0}",
             ["VpyPreview.LogErrorPrefix"] = "エラー: ",
             ["VpyPreview.NoneText"] = "<なし>",
-            ["VpyPreview.DebugSourceVideo"] = "ソース動画: {0}",
-            ["VpyPreview.DebugVspipePath"] = "vspipe パス: {0}",
-            ["VpyPreview.DebugVspipeY4mArg"] = "vspipe y4m 引数: {0}",
+            ["VpyPreview.DebugSourceVideo"] = "ソース動画：{0}",
+            ["VpyPreview.DebugVspipePath"] = "vspipe パス：{0}",
+            ["VpyPreview.DebugVspipeY4mArg"] = "vspipe y4m 引数：{0}",
             ["VpyPreview.DebugTotalFrames"] = "TotalFrames: {0}",
             ["VpyPreview.DebugMaxPositionSeconds"] = "MaxPositionSeconds: {0}",
-            ["VpyPreview.DebugPreviewScript"] = "プレビュースクリプト:",
+            ["VpyPreview.DebugPreviewScript"] = "プレビュースクリプト：",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -177,8 +177,8 @@ public class VpyPreviewerLangProvider(string languageCode) : LangProviderBase(la
         Data["ko"] = new(Data["en"])
         {
             ["VpyPreview.Ready"] = "준비됨",
-            ["VpyPreview.ExtractingSource"] = "출력 0(원본)에서 프레임을 추출하는 중...",
-            ["VpyPreview.ExtractingFiltered"] = "출력 1(필터됨)에서 프레임을 추출하는 중...",
+            ["VpyPreview.ExtractingSource"] = "출력 0(원본) 에서 프레임을 추출하는 중...",
+            ["VpyPreview.ExtractingFiltered"] = "출력 1(필터됨) 에서 프레임을 추출하는 중...",
             ["VpyPreview.FrameRendered"] = "프레임 {0} 렌더링 완료",
             ["VpyPreview.Cancelled"] = "취소됨",
             ["VpyPreview.ScriptError"] = "스크립트 오류: {0}",

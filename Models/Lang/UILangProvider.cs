@@ -1192,13 +1192,13 @@ public class UILangProvider : LangProviderBase
         ["Buttons.RepartEditor"] = "再分割エディターを開く",
         ["Buttons.StartEncode"] = "エンコード開始",
         ["Errors.ForkSnapshotLoadTitle"] = "フォーク状態エラー",
-        ["Errors.ForkSnapshotLoadMessage"] = "フォークしたインスタンスの状態を復元できないため、終了します。\n\n詳細: {0}",
+        ["Errors.ForkSnapshotLoadMessage"] = "フォークしたインスタンスの状態を復元できないため、終了します。\n\n詳細：{0}",
         ["EncInspect.InfoTitle"] = "エンコーダ事前チェック詳細",
         ["EncInspect.InfoMsg"] = "事前チェック問題はありません。",
         ["EncInspect.P1Title"] = "バッテリー駆動チェック",
         ["EncInspect.P1Text"] = "SystemInformation.PowerStatus により、コンピューターがバッテリー駆動中かどうかを検出します。バッテリー消耗の軽減、予期しないシャットダウンの防止、省電力スロットリングによる圧縮率や画質の低下回避に使います。",
         ["EncInspect.P2Title"] = "ディスク空き容量チェック",
-        ["EncInspect.P2Text"] = "使用可能なディスク容量をソースファイルサイズ × 1.5（フォールバック: 1 GiB）と比較し、エンコード出力に十分な空き容量があることを確認します。",
+        ["EncInspect.P2Text"] = "使用可能なディスク容量をソースファイルサイズ × 1.5（フォールバック：1 GiB）と比較し、エンコード出力に十分な空き容量があることを確認します。",
         ["EncInspect.P3Title"] = "書き込み権限チェック",
         ["EncInspect.P3Text"] = "ファイル一覧の取得を試みて出力ディレクトリへの書き込み権限を確認し、権限エラーによるエンコード失敗を防ぎます。",
         ["EncInspect.P4Title"] = "上書きチェック",
@@ -1253,7 +1253,7 @@ public class UILangProvider : LangProviderBase
         ["SourceQueue.FilterModeTitle"] = "キューの重み付きフィルタを実行しますか？",
         ["SourceQueue.FilterModeMessage"] = "キューの構造に従って選択してください\n確認：各ソースの再生時間が近く、フィルタは不要です\nキャンセル：BDMV/M3U のイントロ・予告編を重み付き投票で除外します\n先頭ストリームの比較除外を常に実行し、形式の整合性を保ちます\n\nBDMV の場合：BDInfo/ChapterTool を使用して、セグメント分割不足/過剰のエピソードを処理します",
         ["SourceQueue.ImportTitle"] = "ビデオソースキューのインポート",
-        ["SourceQueue.ImportPrompt"] = "BDプレイリストをインポート？\n\n確認：.mpls/ifo/xplを含むPLAYLISTフォルダを指定、プレイリスト順で参照メディアファイル（m2ts）をキューに追加します。\n取消：複数の動画ソースファイルを直接選択すると、選択順にキューへ追加します。\n\nどのクラスターを選べばいいか分からない場合、重分集モードまたはプレイヤープレビューで確認してください",
+        ["SourceQueue.ImportPrompt"] = "BD プレイリストをインポート？\n\n確認：.mpls/ifo/xpl を含む PLAYLIST フォルダを指定、プレイリスト順で参照メディアファイル（m2ts）をキューに追加します。\n取消：複数の動画ソースファイルを直接選択すると、選択順にキューへ追加します。\n\nどのクラスターを選べばいいか分からない場合、重分集モードまたはプレイヤープレビューで確認してください",
         ["SourceQueue.SelectPlaylistFolder"] = "BDMV PLAYLIST フォルダを選択",
         ["SourceQueue.SelectFilesTitle"] = "動画ソースファイルを選択",
         ["SourceQueue.ImportScanFailed"] = "{0} に使用可能な MPLS プレイリストが見つかりません",
@@ -1263,11 +1263,11 @@ public class UILangProvider : LangProviderBase
         ["SourceConcat.SelectFilesTitle"] = "連結する動画ファイルを選択",
         ["SourceConcat.OrderingTitle"] = "連結順序",
         ["SourceConcat.RestoreOriginalQueue"] = "すべての変更を取り消す",
-        ["SourceConcat.ExtensionMismatch"] = "連結インポートでは、すべてのファイル拡張子が同一である必要があります。\n\n想定: {0}\n不一致ファイル:\n{1}",
-        ["SourceConcat.Analyzed"] = "連結ソース解析が完了しました。{0} 個のファイルは互換です。\n\nすべての字幕とフォントファイルはドロップされます。ステップ6で字幕の追加が可能です。",
-        ["SourceConcat.IncompatibleVideo"] = "連結ソース #{0} は最初の動画ソースとパラメータが異なります。\n想定: {1}\n実際: {2}",
-        ["SourceConcat.IncompatibleFrameRate"] = "連結ソース #{0} は最初の動画ソースとフレームレートが異なります。\n想定: {1}\n実際: {2}",
-        ["SourceConcat.ResolutionMismatch"] = "連結ソース #{0} は最初の動画ソースと解像度が異なります。\n想定: {1}\n実際: {2}",
+        ["SourceConcat.ExtensionMismatch"] = "連結インポートでは、すべてのファイル拡張子が同一である必要があります。\n\n想定：{0}\n不一致ファイル:\n{1}",
+        ["SourceConcat.Analyzed"] = "連結ソース解析が完了しました。{0} 個のファイルは互換です。\n\nすべての字幕とフォントファイルはドロップされます。ステップ 6 で字幕の追加が可能です。",
+        ["SourceConcat.IncompatibleVideo"] = "連結ソース #{0} は最初の動画ソースとパラメータが異なります。\n想定：{1}\n実際：{2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "連結ソース #{0} は最初の動画ソースとフレームレートが異なります。\n想定：{1}\n実際：{2}",
+        ["SourceConcat.ResolutionMismatch"] = "連結ソース #{0} は最初の動画ソースと解像度が異なります。\n想定：{1}\n実際：{2}",
         ["SourceConcat.VariableFrameRate"] = "連結モードでは可変フレームレート (VFR) を直接使用できません。Filter Scribe で VFR→CFR 修復フィルタを追加してください。",
 
         // Dialogs
@@ -1327,7 +1327,7 @@ public class UILangProvider : LangProviderBase
 
         // Checklist - Best Practices 1 (Hardware)
         ["Checklist.Best1.SlowDisk"] = "低速ディスク接続を避ける (USB2, Bluetooth 等)",
-        ["Checklist.Best1.DiskThrashing"] = "ディスクスラッシングを避ける (同HDDでR&W)",
+        ["Checklist.Best1.DiskThrashing"] = "ディスクスラッシングを避ける (同 HDD で R&W)",
         ["Checklist.Best1.BiosDriver"] = "最新の BIOS、チップセット、HDD ファームウェアを使用",
         ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
         ["Checklist.Best1.SMR"] = "SMR HDD に書き込まない",
@@ -1352,8 +1352,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "分析はソースインポート時に開始されます（≈70～100 ms/ソース、Repartモードはより時間がかかります）",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA ノード CPU 使用率は、マウスクリックまたはキー入力時に更新されます。",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg は任意ですが、動画フレームのプレビューと自動 MKV マージングには必要です",
-        ["ScriptQueueImport.RejectedPrefix"] = "取込を拒否しました: ベース名不一致 {0} 件、パス不一致 {1} 件。",
-        ["ScriptQueueImport.DetailsHeader"] = "詳細:",
+        ["ScriptQueueImport.RejectedPrefix"] = "取込を拒否しました：ベース名不一致 {0} 件、パス不一致 {1} 件。",
+        ["ScriptQueueImport.DetailsHeader"] = "詳細：",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — ベース名に一致する動画ソースがありません",
         ["ScriptQueueImport.DetailNoScript"] = "'{0}' — ベース名に一致するスクリプトファイルがありません",
         ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — スクリプト形式を認識できず、ソースパスを確認できません",
@@ -1361,7 +1361,7 @@ public class UILangProvider : LangProviderBase
         ["ScriptQueueImport.MoreCount"] = "...他 {0} 件",
         ["ScriptQueueImport.CountMismatchTitle"] = "スクリプト数が不一致",
         ["ScriptQueueImport.MissingSummary"] = "選択した上流で {0}/{1} 個のスクリプトが不足しています。",
-        ["ScriptQueueImport.MissingLabel"] = "不足:",
+        ["ScriptQueueImport.MissingLabel"] = "不足：",
         ["ScriptQueueImport.SourceMismatchTitle"] = "スクリプト元不一致",
         ["ScriptQueueImport.SourceMismatchSummary"] = "{0} 個のスクリプトが別の動画ソースを参照しています。",
         ["Hint.QueueRouteSampleClipDisabled"] = "動画ソースキュー/連結モードはサンプル切り出し非対応のため、サンプル実行を無効化しました。",
@@ -1391,8 +1391,8 @@ public class UILangProvider : LangProviderBase
         ["SrcInspect.ProgressiveP1Text"] = "このツールはフレーム間パターンを解析して IVTC フィルタを設定することができません。詳細は https://iavoe.github.io/deint-ivtc-web-tutorial/HTML を参照してください。",
         ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 は 12bit 動画をサポートしていません。SVT-AV1 が選択されていない場合、この問題は警告として処理され、エンコード開始ボタンは無効になりません。",
         ["SrcInspect.FramerateP1Text"] = "フィルタエディタを使用して VFR→CFR 変換フィルタを追加してください。VFR のままエンコードすると、時間経過とともに音声と映像の同期がずれる可能性があります。",
-        ["SrcInspect.AspectRatioP1Text"] = "このツールは非正方形ピクセルを補正できません。続行すると予期しない映像サイズになる可能性があります。ソースを修正するには、ffmpeg で -aspect <現在のSAR> を指定して FFV1 にトランスコードしてください。",
-        ["SrcInspect.ColorMetadataP1Text"] = "カラーマトリックス、伝達特性、カラープライマリのメタデータがない場合、プレーヤーは多くの場合 BT.709 にフォールバックしますが、有効な値は複数あり、ソースに対して正しい組み合わせは1つだけです。",
+        ["SrcInspect.AspectRatioP1Text"] = "このツールは非正方形ピクセルを補正できません。続行すると予期しない映像サイズになる可能性があります。ソースを修正するには、ffmpeg で -aspect <現在の SAR> を指定して FFV1 にトランスコードしてください。",
+        ["SrcInspect.ColorMetadataP1Text"] = "カラーマトリックス、伝達特性、カラープライマリのメタデータがない場合、プレーヤーは多くの場合 BT.709 にフォールバックしますが、有効な値は複数あり、ソースに対して正しい組み合わせは 1 つだけです。",
         ["SrcInspect.ChromaSubsamplingP1Text"] = "クロマサンプル位置が正しくない場合、カラーボーダーがぼやけるか、オブジェクトの境界からずれることがあります。AVC や HEVC とは異なり、AV1 は限定的なクロマサンプル位置のみをサポートしています。"
     };
     private static void AddRussian() => Data["ru"] = new(Data["en"])
@@ -1875,7 +1875,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.ConcatSourceFilter"] = "연결 소스 필터",
         ["Cards.ConcatSourceFilterSubtitle"] = "연결 일관성 유지",
         ["Cards.SrcIncompatOrCorrupted"] = "호환 안 됨 / 손상됨 (빨강)",
-        ["Cards.SrcQualityIssues"] = "품질 문제 (노랑-주황)",
+        ["Cards.SrcQualityIssues"] = "품질 문제 (노랑 - 주황)",
         ["Cards.EncPrerequisites"] = "인코딩 전제조건",
         ["Cards.EncHardware"] = "하드웨어",
         ["Cards.EncSoftware"] = "소프트웨어",
@@ -1901,15 +1901,15 @@ public class UILangProvider : LangProviderBase
         ["EncInspect.InfoTitle"] = "인코더 사전 점검 상세",
         ["EncInspect.InfoMsg"] = "인코더 사전 점검에서 문제가 발견되지 않았습니다.",
         ["EncInspect.P1Title"] = "배터리 점검",
-        ["EncInspect.P1Text"] = "SystemInformation.PowerStatus로 PC가 배터리로 동작 중인지 확인해 마모를 줄이고, 예기치 않은 종료를 막고, 전원 제한으로 인한 화질 저하를 피합니다.",
+        ["EncInspect.P1Text"] = "SystemInformation.PowerStatus 로 PC 가 배터리로 동작 중인지 확인해 마모를 줄이고, 예기치 않은 종료를 막고, 전원 제한으로 인한 화질 저하를 피합니다.",
         ["EncInspect.P2Title"] = "디스크 공간 점검",
-        ["EncInspect.P2Text"] = "사용 가능한 디스크 공간과 소스 파일 크기 × 1.5(대체: 1 GiB)를 비교합니다. 인코딩 출력에 충분한 공간이 있는지 확인합니다.",
+        ["EncInspect.P2Text"] = "사용 가능한 디스크 공간과 소스 파일 크기 × 1.5(대체: 1 GiB) 를 비교합니다. 인코딩 출력에 충분한 공간이 있는지 확인합니다.",
         ["EncInspect.P3Title"] = "쓰기 권한 점검",
         ["EncInspect.P3Text"] = "파일 목록을 시도해 출력 폴더 쓰기 권한을 확인합니다. 권한 오류로 인한 인코딩 실패를 막습니다.",
         ["EncInspect.P4Title"] = "덮어쓰기 점검",
         ["EncInspect.P4Text"] = "출력 파일이 이미 존재하는지 확인하고, 실수로 데이터를 잃지 않도록 덮어쓰기 시작을 더 어렵게 만듭니다.",
         ["EncInspect.P5Title"] = "L-SMASH 플러그인 점검 (Avs2Yuv)",
-        ["EncInspect.P5Text"] = "LSMASHSource.dll이 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\에 있는지 확인합니다(libvslsmashsource.dll 아님). 소스 프레임을 읽기 위해 필요합니다.",
+        ["EncInspect.P5Text"] = "LSMASHSource.dll 이 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\에 있는지 확인합니다 (libvslsmashsource.dll 아님). 소스 프레임을 읽기 위해 필요합니다.",
         ["EncInspect.P6Title"] = "NUMA 노드 CPU 부하 점검",
         ["EncInspect.P6Text"] = "선택한 NUMA 노드의 최근 CPU 부하가 낮은지 확인합니다. 높은 부하는 안내용이며 인코딩을 막지 않습니다.",
 
@@ -1924,7 +1924,7 @@ public class UILangProvider : LangProviderBase
 
         ["Import.NoSelection"] = "선택 없음",
         ["Import.VersionDetectTimeoutTitle"] = "도구 가져오기 실패",
-        ["Import.VersionDetectTimeoutMessage"] = "{0}이(가) 3초 내에 버전 정보를 반환하지 않아 가져오기를 거부했습니다.",
+        ["Import.VersionDetectTimeoutMessage"] = "{0}이 (가) 3 초 내에 버전 정보를 반환하지 않아 가져오기를 거부했습니다.",
 
         // ItemCard separator
         ["ItemCard.Separator"] = "：",
@@ -1956,24 +1956,24 @@ public class UILangProvider : LangProviderBase
 
         // Source queue card
         ["SourceQueue.FilterModeTitle"] = "큐 가중 필터를 실행하시겠습니까?",
-        ["SourceQueue.FilterModeMessage"] = "큐 구조에 따라 선택하세요\n확인: 비슷한 길이의 소스, 필터 불필요\n취소: BDMV/M3U 도입부와 트레일러를 가중 투표로 제외\n형식 일관성을 위해 첫 번째 스트림 비교 제외는 항상 실행됩니다\n\nBDMV는 BDInfo/ChapterTool로 과소/과대 분절 에피소드를 처리하세요",
+        ["SourceQueue.FilterModeMessage"] = "큐 구조에 따라 선택하세요\n확인: 비슷한 길이의 소스, 필터 불필요\n취소: BDMV/M3U 도입부와 트레일러를 가중 투표로 제외\n형식 일관성을 위해 첫 번째 스트림 비교 제외는 항상 실행됩니다\n\nBDMV 는 BDInfo/ChapterTool로 과소/과대 분절 에피소드를 처리하세요",
         ["SourceQueue.ImportTitle"] = "비디오 소스 큐 가져오기",
-        ["SourceQueue.ImportPrompt"] = "블루레이 플레이리스트를 가져올까요?\n\n확인: PLAYLIST 폴더(.mpls/ifo/xpl)를 지정하면, 시스템이 참조된 미디어 파일(m2ts)을 플레이리스트 순서대로 큐에 추가합니다.\n취소: 여러 비디오 소스 파일을 직접 선택하면 선택한 순서대로 큐에 추가됩니다.\n\n어떤 클러스터를 선택할지 확실하지 않으면 Repart 모드나 플레이어 미리보기로 확인하세요",
+        ["SourceQueue.ImportPrompt"] = "블루레이 플레이리스트를 가져올까요?\n\n확인: PLAYLIST 폴더 (.mpls/ifo/xpl) 를 지정하면, 시스템이 참조된 미디어 파일 (m2ts) 을 플레이리스트 순서대로 큐에 추가합니다.\n취소: 여러 비디오 소스 파일을 직접 선택하면 선택한 순서대로 큐에 추가됩니다.\n\n어떤 클러스터를 선택할지 확실하지 않으면 Repart 모드나 플레이어 미리보기로 확인하세요",
         ["SourceQueue.SelectPlaylistFolder"] = "BDMV PLAYLIST 폴더 선택",
         ["SourceQueue.SelectFilesTitle"] = "비디오 소스 파일 선택",
         ["SourceQueue.ImportScanFailed"] = "다음 위치에서 사용 가능한 MPLS 플레이리스트를 찾지 못했습니다: {0}",
         ["SourceQueue.ChapterImportFailed"] = "다음에서 챕터 읽기 실패: {0}",
-        ["SourceQueue.ChapterSourcesMissing"] = "플레이리스트가 기존 비디오 소스 파일을 찾지 못했습니다. 플레이리스트가 참조하는 미디어 파일(m2ts)이 있는지 확인하세요",
+        ["SourceQueue.ChapterSourcesMissing"] = "플레이리스트가 기존 비디오 소스 파일을 찾지 못했습니다. 플레이리스트가 참조하는 미디어 파일 (m2ts) 이 있는지 확인하세요",
 
         ["SourceConcat.SelectFilesTitle"] = "연결할 비디오 파일 선택",
         ["SourceConcat.OrderingTitle"] = "연결 순서",
         ["SourceConcat.RestoreOriginalQueue"] = "모든 변경 취소",
         ["SourceConcat.ExtensionMismatch"] = "연결 가져오기는 모든 파일의 확장자가 같아야 합니다.\n\n예상: {0}\n불일치 파일:\n{1}",
-        ["SourceConcat.Analyzed"] = "연결 소스 분석 완료. 호환되는 파일은 {0}개입니다.\n\n모든 자막과 글꼴 파일이 제거되며, 6단계에서 자막을 추가할 수 있습니다.",
+        ["SourceConcat.Analyzed"] = "연결 소스 분석 완료. 호환되는 파일은 {0}개입니다.\n\n모든 자막과 글꼴 파일이 제거되며, 6 단계에서 자막을 추가할 수 있습니다.",
         ["SourceConcat.IncompatibleVideo"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 다릅니다.\n예상: {1}\n실제: {2}",
         ["SourceConcat.IncompatibleFrameRate"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 프레임레이트가 다릅니다.\n예상: {1}\n실제: {2}",
         ["SourceConcat.ResolutionMismatch"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 해상도가 다릅니다.\n예상: {1}\n실제: {2}",
-        ["SourceConcat.VariableFrameRate"] = "연결 모드는 가변 프레임레이트(VFR)를 직접 사용할 수 없습니다. Filter Scribe에서 VFR→CFR 복구 필터를 추가하세요.",
+        ["SourceConcat.VariableFrameRate"] = "연결 모드는 가변 프레임레이트 (VFR) 를 직접 사용할 수 없습니다. Filter Scribe 에서 VFR→CFR 복구 필터를 추가하세요.",
 
         // Dialogs
         ["Dialog.SelectTitle"] = "{0} 선택",
@@ -1991,20 +1991,20 @@ public class UILangProvider : LangProviderBase
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "가져오기가 {0}과 일치하지 않습니다",
-        ["ConfirmProvider.ProceedToRun"] = "버전을 확인하려면 {0}을(를) 실행할까요?",
-        ["ConfirmProvider.WrongTool"] = "{0}을(를) {1}로 가져올까요?",
+        ["ConfirmProvider.ProceedToRun"] = "버전을 확인하려면 {0}을 (를) 실행할까요?",
+        ["ConfirmProvider.WrongTool"] = "{0}을 (를) {1}로 가져올까요?",
 
         // Checklist - Tools
-        ["Checklist.Tools.Upstream"] = "업스트림 프로그램 1개 가져옴",
-        ["Checklist.Tools.Downstream"] = "다운스트림 프로그램 1개 가져옴",
-        ["Checklist.Tools.Analysis"] = "분석 프로그램 1개 가져옴",
+        ["Checklist.Tools.Upstream"] = "업스트림 프로그램 1 개 가져옴",
+        ["Checklist.Tools.Downstream"] = "다운스트림 프로그램 1 개 가져옴",
+        ["Checklist.Tools.Analysis"] = "분석 프로그램 1 개 가져옴",
         ["Checklist.Tools.UpstreamPicked"] = "업스트림 프로그램 선택",
         ["Checklist.Tools.DownstreamPicked"] = "다운스트림 프로그램 선택",
         ["Checklist.Tools.AnalysisPicked"] = "분석 프로그램 선택",
         ["Checklist.Tools.CompleteSourceAnalysis"] = "소스 분석 완료",
         ["Checklist.Tools.DependenciesPicked"] = "의존성 프로그램 선택",
         ["Checklist.Tools.VideoSourcePicked"] = "비디오 소스 또는 큐 선택",
-        ["Checklist.Tools.ScriptSourcePicked"] = "스크립트 소스 선택(VS/AVS/SVFI 업스트림)",
+        ["Checklist.Tools.ScriptSourcePicked"] = "스크립트 소스 선택 (VS/AVS/SVFI 업스트림)",
 
         // Checklist - Source Validation 1 (Severe)
         ["Checklist.Source1.Metadata"] = "메타데이터 및 SEI 데이터 읽기 가능",
@@ -2024,18 +2024,18 @@ public class UILangProvider : LangProviderBase
         ["Checklist.Enc1.NumaCpuLoad"] = "선택한 NUMA 노드 CPU 부하 낮음",
 
         // Checklist - Encoding Prerequisites 2 (Software)
-        ["Checklist.Enc2.OSFilename"] = "출력 파일명이 OS에서 유효함",
-        ["Checklist.Enc2.FTPFilename"] = "출력 파일명이 FTP에서 유효할 수도 있음",
+        ["Checklist.Enc2.OSFilename"] = "출력 파일명이 OS 에서 유효함",
+        ["Checklist.Enc2.FTPFilename"] = "출력 파일명이 FTP 에서 유효할 수도 있음",
         ["Checklist.Enc2.WritePermission"] = "출력 폴더 쓰기 권한 있음",
         ["Checklist.Enc2.Overwrite"] = "출력이 기존 파일을 덮어쓰지 않음",
-        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 경로에 LSMASHSource.dll 존재(Avs2Yuv)",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 경로에 LSMASHSource.dll 존재 (Avs2Yuv)",
 
         // Checklist - Best Practices 1 (Hardware)
-        ["Checklist.Best1.SlowDisk"] = "느린 디스크 연결(USB2, Bluetooth 등) 피하기",
-        ["Checklist.Best1.DiskThrashing"] = "디스크 스래싱 피하기(같은 HDD의 읽기/쓰기)",
+        ["Checklist.Best1.SlowDisk"] = "느린 디스크 연결 (USB2, Bluetooth 등) 피하기",
+        ["Checklist.Best1.DiskThrashing"] = "디스크 스래싱 피하기 (같은 HDD 의 읽기/쓰기)",
         ["Checklist.Best1.BiosDriver"] = "최신 BIOS, 칩셋 드라이버, 디스크 펌웨어 사용",
         ["Checklist.Best1.Temperature"] = "온도: SSD/RAM 75(167) 미만, HDD 55(131) 미만",
-        ["Checklist.Best1.SMR"] = "SMR HDD에 쓰지 않음",
+        ["Checklist.Best1.SMR"] = "SMR HDD 에 쓰지 않음",
 
         // Checklist - Best Practices 2 (Software)
         ["Checklist.Best2.EncoderVersion"] = "최신 인코더 버전 사용",
@@ -2045,18 +2045,18 @@ public class UILangProvider : LangProviderBase
         // FilterScribeModal
 
         // FFProbeJsonUpdateResolver
-        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON이 비어 있습니다.",
+        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON 이 비어 있습니다.",
         ["FFProbeJsonUpdate.DimensionsNotPositive"] = "해상도 값은 양수여야 합니다.",
         ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON 루트가 객체가 아닙니다.",
-        ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON에서 비디오 스트림을 찾지 못했습니다.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON 에서 비디오 스트림을 찾지 못했습니다.",
 
         // FilenameScribeModal
 
         // Hints
-        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs는 샘플 클리핑을 지원하지 않으므로, 샘플 실행을 비활성화했습니다.",
-        ["Hint.AnalyzeRunConditionDuration"] = "분석은 소스 가져오기 시 시작됩니다(≈70～100 ms/소스, Repart 모드는 더 오래 걸립니다)",
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 는 샘플 클리핑을 지원하지 않으므로, 샘플 실행을 비활성화했습니다.",
+        ["Hint.AnalyzeRunConditionDuration"] = "분석은 소스 가져오기 시 시작됩니다 (≈70～100 ms/소스, Repart 모드는 더 오래 걸립니다)",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA 노드 CPU 사용량은 마우스 클릭 또는 키보드 입력 이벤트 시 업데이트됩니다.",
-        ["Hint.FFmpegOptionalBut"] = "FFmpeg는 선택 사항이지만, 비디오 프레임 미리보기와 자동 MKV 멀티플렉싱에 필요합니다",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg 는 선택 사항이지만, 비디오 프레임 미리보기와 자동 MKV 멀티플렉싱에 필요합니다",
         ["ScriptQueueImport.RejectedPrefix"] = "가져오기가 거부되었습니다: 일치하지 않는 기본 이름 {0}개, 경로 불일치 {1}개.",
         ["ScriptQueueImport.DetailsHeader"] = "세부 정보:",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 기본 이름으로 일치하는 비디오 소스를 찾을 수 없습니다",
@@ -2070,8 +2070,8 @@ public class UILangProvider : LangProviderBase
         ["ScriptQueueImport.SourceMismatchTitle"] = "스크립트 소스 불일치",
         ["ScriptQueueImport.SourceMismatchSummary"] = "{0}개의 스크립트가 다른 비디오 소스를 참조합니다.",
         ["Hint.QueueRouteSampleClipDisabled"] = "비디오 소스 큐/연결 모드는 샘플 클리핑을 지원하지 않습니다. 샘플 실행이 비활성화되었습니다.",
-        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs는 스크립트 생성을 지원하지 않으므로, Filter Scribe를 비활성화했습니다.",
-        ["Hint.MinDurationFilter"] = "최소 길이 필터(초):",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs 는 스크립트 생성을 지원하지 않으므로, Filter Scribe 를 비활성화했습니다.",
+        ["Hint.MinDurationFilter"] = "최소 길이 필터 (초):",
         ["Hint.DurationFilterAllFiltered"] = "모든 비디오가 길이 필터로 걸러졌습니다.",
         ["Hint.DurationFilterCount"] = "{0}/{1}개의 비디오가 걸러졌습니다.",
 
@@ -2082,7 +2082,7 @@ public class UILangProvider : LangProviderBase
         // Source analysis result ConfirmationModal
         ["SrcAnalysis.Completed"] = "소스 분석 완료.",
         ["SrcAnalysis.RunAfterReplace"] = "지금 소스 분석을 실행할까요?",
-        ["SrcAnalysis.Copied"] = "원본 ffprobe JSON이 클립보드에 복사되었습니다.",
+        ["SrcAnalysis.Copied"] = "원본 ffprobe JSON 이 클립보드에 복사되었습니다.",
 
         ["ScriptGen.RunAfterReplace"] = "지금 AVS 및 VPY 스크립트를 생성할까요?",
         ["ScriptGen.ScriptsSaved"] = "저장된 스크립트:\n{0}",
@@ -2094,11 +2094,11 @@ public class UILangProvider : LangProviderBase
         ["SrcInspect.WarnTitle"] = "소스 중간 문제",
         ["SrcInspect.MetadataP1Text"] = "소스 메타데이터를 읽을 수 없습니다. 파일이 손상되었거나 비디오 파일이 아닐 수 있으며, 이 도구는 안전한 인코딩 설정을 위해 메타데이터에 의존하므로 계속할 수 없습니다.",
         ["SrcInspect.ProgressiveP1Text"] = "이 도구는 프레임 간 패턴을 검사하여 IVTC 필터를 구성할 수 없습니다. 안내: https://iavoe.github.io/deint-ivtc-web-tutorial/HTML",
-        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1은 12비트 비디오를 지원하지 않습니다. SVT-AV1이 선택되지 않았다면 경고로 처리되며 인코딩 시작 버튼은 비활성화되지 않습니다.",
-        ["SrcInspect.FramerateP1Text"] = "Filter Scribe 편집기로 VFR→CFR 변환 필터를 추가하세요. VFR을 직접 인코딩하면 오디오/비디오 싱크가 어긋날 수 있습니다.",
-        ["SrcInspect.AspectRatioP1Text"] = "이 도구는 비정사각 픽셀을 보정할 수 없습니다. 계속하면 예상치 못한 영상 크기가 나올 수 있습니다. 소스를 고치려면 ffmpeg로 FFV1으로 트랜스코드하고 -aspect <현재 SAR>를 사용하세요.",
-        ["SrcInspect.ColorMetadataP1Text"] = "색상 매트릭스, 전송 특성, 원색 메타데이터가 없으면 플레이어는 BT.709로 되돌아가는 경우가 많지만, 유효한 값은 여러 개이며 소스에 맞는 조합은 하나뿐입니다.",
-        ["SrcInspect.ChromaSubsamplingP1Text"] = "크로마 샘플 위치가 잘못되면 색 경계가 번지거나 객체 경계에서 어긋날 수 있습니다. AVC/HEVC와 달리 AV1은 제한된 크로마 샘플 위치만 지원합니다."
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 은 12 비트 비디오를 지원하지 않습니다. SVT-AV1 이 선택되지 않았다면 경고로 처리되며 인코딩 시작 버튼은 비활성화되지 않습니다.",
+        ["SrcInspect.FramerateP1Text"] = "Filter Scribe 편집기로 VFR→CFR 변환 필터를 추가하세요. VFR 을 직접 인코딩하면 오디오/비디오 싱크가 어긋날 수 있습니다.",
+        ["SrcInspect.AspectRatioP1Text"] = "이 도구는 비정사각 픽셀을 보정할 수 없습니다. 계속하면 예상치 못한 영상 크기가 나올 수 있습니다. 소스를 고치려면 ffmpeg 로 FFV1 으로 트랜스코드하고 -aspect <현재 SAR>를 사용하세요.",
+        ["SrcInspect.ColorMetadataP1Text"] = "색상 매트릭스, 전송 특성, 원색 메타데이터가 없으면 플레이어는 BT.709 로 되돌아가는 경우가 많지만, 유효한 값은 여러 개이며 소스에 맞는 조합은 하나뿐입니다.",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "크로마 샘플 위치가 잘못되면 색 경계가 번지거나 객체 경계에서 어긋날 수 있습니다. AVC/HEVC와 달리 AV1 은 제한된 크로마 샘플 위치만 지원합니다."
     };
     private static void AddPortuguese() => Data["pt-br"] = new(Data["en"])
     {

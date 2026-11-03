@@ -49,8 +49,8 @@ public class FFProbeVideoAnalysisLangProvider : LangProviderBase
         },
         ["ja"] = new()
         {
-            ["FfprobeNotFound"] = "ffprobe.exe が見つかりません: {0}",
-            ["InputVideoNotFound"] = "入力動画が見つかりません: {0}",
+            ["FfprobeNotFound"] = "ffprobe.exe が見つかりません：{0}",
+            ["InputVideoNotFound"] = "入力動画が見つかりません：{0}",
             ["FfprobeTimedOut"] = "ffprobe がソース動画の解析中にタイムアウトしました",
             ["FfprobeFailedOrEmpty"] = "ffprobe が失敗したか、有効なデータを返しませんでした",
             ["NoVideoStreamInfo"] = "ffprobe がビデオストリーム情報を返しませんでした",
@@ -73,11 +73,11 @@ public class FFProbeVideoAnalysisLangProvider : LangProviderBase
         },
         ["ko"] = new()
         {
-            ["FfprobeNotFound"] = "ffprobe.exe가 존재하지 않습니다: {0}",
+            ["FfprobeNotFound"] = "ffprobe.exe 가 존재하지 않습니다: {0}",
             ["InputVideoNotFound"] = "입력 비디오가 존재하지 않습니다: {0}",
-            ["FfprobeTimedOut"] = "ffprobe가 소스 비디오를 분석하는 동안 시간 초과되었습니다",
-            ["FfprobeFailedOrEmpty"] = "ffprobe가 실패했거나 유효한 데이터를 반환하지 않았습니다",
-            ["NoVideoStreamInfo"] = "ffprobe가 비디오 스트림 정보를 반환하지 않았습니다",
+            ["FfprobeTimedOut"] = "ffprobe 가 소스 비디오를 분석하는 동안 시간 초과되었습니다",
+            ["FfprobeFailedOrEmpty"] = "ffprobe 가 실패했거나 유효한 데이터를 반환하지 않았습니다",
+            ["NoVideoStreamInfo"] = "ffprobe 가 비디오 스트림 정보를 반환하지 않았습니다",
         },
         ["pt-br"] = new()
         {

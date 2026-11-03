@@ -94,7 +94,7 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
             ["SrcReviser.InvalidInput"] = "解像度は 1 から 65535 までの整数の幅と高さで指定してください。",
             ["SrcReviser.EvenResolutionHint"] = "解像度の幅と高さは偶数である必要があります。",
             ["SrcReviser.NoFfprobeJson"] = "現在のソースに利用可能な ffprobe JSON がありません。先にソース解析を実行してください。",
-            ["SrcReviser.UpdateFailed"] = "ffprobe JSON の更新に失敗しました: {0}",
+            ["SrcReviser.UpdateFailed"] = "ffprobe JSON の更新に失敗しました：{0}",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -132,7 +132,7 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
             ["SrcReviser.Confirm"] = "ffprobe JSON 업데이트",
             ["SrcReviser.InvalidInput"] = "해상도는 1~65535 사이의 정수 치수여야 합니다",
             ["SrcReviser.EvenResolutionHint"] = "해상도의 너비와 높이는 짝수여야 합니다",
-            ["SrcReviser.NoFfprobeJson"] = "현재 소스에 사용할 수 있는 ffprobe JSON이 없습니다. 먼저 소스 분석을 실행하세요",
+            ["SrcReviser.NoFfprobeJson"] = "현재 소스에 사용할 수 있는 ffprobe JSON 이 없습니다. 먼저 소스 분석을 실행하세요",
             ["SrcReviser.UpdateFailed"] = "ffprobe JSON 업데이트 실패: {0}",
         };
         Data["pt-br"] = new(Data["en"])

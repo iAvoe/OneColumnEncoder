@@ -74,7 +74,7 @@ public class SrcQueueLangProvider : LangProviderBase
         Data["ja"] = new(Data["en"])
         {
             ["SourceQueue.SelectFolderTitle"] = "ビデオソースキューのフォルダを選択",
-            ["SourceQueue.EmptyFolderWarnMessage"] = "動画ファイルが選択されていません。少なくとも1つの動画ソースを選択してください。",
+            ["SourceQueue.EmptyFolderWarnMessage"] = "動画ファイルが選択されていません。少なくとも 1 つの動画ソースを選択してください。",
             ["SourceQueue.MixedFolderErrorMessage"] = "選択したファイルは同じフォルダ内にある必要があります。",
             ["SourceQueue.Analyzed"] = "キューソース分析が完了しました。差異が大きいため {0} 個の動画を除外しました。\n\nキューデータ JSON:\n{1}\n\n除外リスト:\n{2}",
             ["SourceQueue.AnalyzedNoEx"] = "キューソース分析が完了しました。除外された動画はありません。\n\nキューデータ JSON:\n{0}",

@@ -61,9 +61,9 @@ public class CpuSetsLangProvider : LangProviderBase
         {
             ["UnavailableOnNonWindows"] = "CPU Sets は Windows でのみ利用できます。",
             ["NoCpuSetsFound"] = "NUMA ノード {0} の CPU Sets が見つかりません。",
-            ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets に失敗: {0}。",
-            ["BoundSuccess"] = "PID {0} を NUMA ノード {1} へ {2} CPU Set でバインド;\n既存スレッド {3} 件を更新しました。パイプバッファサイズ: {4}KB。",
-            ["BindingFailed"] = "CPU Sets バインド失敗: {0}",
+            ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets に失敗：{0}。",
+            ["BoundSuccess"] = "PID {0} を NUMA ノード {1} へ {2} CPU Set でバインド;\n既存スレッド {3} 件を更新しました。パイプバッファサイズ：{4}KB。",
+            ["BindingFailed"] = "CPU Sets バインド失敗：{0}",
             ["SkippedPrefix"] = "CPU Sets バインドをスキップしました。 "
         };
         Data["ru"] = new(Data["en"])
@@ -86,10 +86,10 @@ public class CpuSetsLangProvider : LangProviderBase
         };
         Data["ko"] = new(Data["en"])
         {
-            ["UnavailableOnNonWindows"] = "CPU Sets는 Windows에서만 사용할 수 있습니다.",
-            ["NoCpuSetsFound"] = "NUMA 노드 {0}의 CPU Sets를 찾을 수 없습니다.",
+            ["UnavailableOnNonWindows"] = "CPU Sets 는 Windows 에서만 사용할 수 있습니다.",
+            ["NoCpuSetsFound"] = "NUMA 노드 {0}의 CPU Sets 를 찾을 수 없습니다.",
             ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets 실패: {0}.",
-            ["BoundSuccess"] = "PID {0}을(를) NUMA 노드 {1}에 {2} CPU Set으로 바인딩했습니다.\n기존 스레드 {3}개를 업데이트했습니다. 파이프 버퍼 크기: {4}KB.",
+            ["BoundSuccess"] = "PID {0}을 (를) NUMA 노드 {1}에 {2} CPU Set 으로 바인딩했습니다.\n기존 스레드 {3}개를 업데이트했습니다. 파이프 버퍼 크기: {4}KB.",
             ["BindingFailed"] = "CPU Sets 바인딩 실패: {0}",
             ["SkippedPrefix"] = "CPU Sets 바인딩을 건너뜁니다. "
         };
