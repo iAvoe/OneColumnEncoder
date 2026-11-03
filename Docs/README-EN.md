@@ -47,7 +47,7 @@ A next-gen smart video encoding utility based on .NET 9/WPF, focused on tool/enc
    - **Concat Mode**: Concatenate and filter a group of video sources
    - **Repart Mode**: Re-slice, filter, and encode a group of video sources to fix episode splits
 
-**Editable Blu-Ray Chapter Import**
+**Editable Blu-ray Chapter Import**
 - Parse and build a list from the PLAYLIST folder in BDMV
 - Wired to Queue Mode and Repart Mode
 
@@ -56,7 +56,7 @@ A next-gen smart video encoding utility based on .NET 9/WPF, focused on tool/enc
 - GUI to clip time or frame ranges
 
 **Encode Monitoring**
-- Monitor memory use during encoding
+- Watch memory use during encoding
 - View upstream and downstream logs separately
 - Interrupt upstream or downstream processes
 
@@ -129,7 +129,7 @@ If you need a quick start, you can use the tools in the download package (not re
 
 ## NuGet package usage
 
-- Blu-Ray playlist parser by [tautcony](https://github.com/tautcony): [ChapterTool Core](https://github.com/tautcony/ChapterTool/pkgs/nuget/ChapterTool.Core)
+- Blu-ray playlist parser by [tautcony](https://github.com/tautcony): [ChapterTool Core](https://github.com/tautcony/ChapterTool/pkgs/nuget/ChapterTool.Core)
 
 ---
 
@@ -188,7 +188,7 @@ It is not easy to develop these tools. If this software helps, please consider s
 #### ffprobe Source Analysis and Inspection
 
 - JSON analysis of `ffprobe` has been implemented, and the original analysis results can be copied
-- The source inspection card has parsed and displayed progressive, bit depth, frame rate, SAR, color metadata, chroma, HDR / Dolby Vision source info, and other inspection items
+- The source inspection card has parsed and displayed progressive, bit-depth, frame rate, SAR, color metadata, chroma, HDR / Dolby Vision source info, and other inspection items
 - Viewing source inspection issues, refreshing the checklist status, and manually bypassing them have been integrated into the main workflow
 
 #### Pre-coding Inspection
@@ -232,7 +232,7 @@ It is not easy to develop these tools. If this software helps, please consider s
 
 #### Multiple Instances (Run multiple instances)
 
-- A single 1cenc instance can only bind the downstream encoder threads to one NUMA node at a time. If you have more encode jobs than one instance can handle and the machine still has spare NUMA nodes, start as many program instances as available NUMA nodes, then let each instance take a portion of the queue so every node stays busy.
+- A single 1cenc instance can only bind the downstream encoder threads to one NUMA node at a time. If you have more encode jobs than one instance can handle and the machine still has spare NUMA nodes, start as many program instances as available NUMA nodes, then let each instance take a portion of the queue, so every node stays busy.
 - The instances are easy to tell apart: look at the `1cenc · PID xxxxx · vX.Y.Z` text in the title bar or taskbar button. The PID is the process's temporary identifier, unique while it is running and not reused across instances.
 
 #### Application Configuration and Persistence

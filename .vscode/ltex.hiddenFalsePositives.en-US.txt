@@ -1,0 +1,4 @@
+{"rule":"NUMBERS_IN_WORDS","sentence":"^\\QSupported pipe upstream programs (decoding and filtering tools):\nffmpeg\nvspipe (supports API 3.0 and 4.0 automatic recognition)\navs2yuv\navs2pipemod\nSVFI\\E$"}
+{"rule":"SENTENCE_WHITESPACE","sentence":"^\\QLocalized)” Update \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-|Atrapa-|Dummy\\+|Dummy's\\+)[0-9]+\\Q method in \\E(?:Dummy|Ina|Jimmy-|Dummy-|Maniquí-|Maniquíes-|Atrapa-|Dummy\\+|Dummy's\\+)[0-9]+$"}
+{"rule":"NUMBERS_IN_WORDS","sentence":"^\\Q支持的管道上游程序（解码与滤镜工具）\nffmpeg\nvspipe（支持 API 3.0、4.0 自动识别）\navs2yuv\navs2pipemod\nSVFI\\E$"}
+{"rule":"NUMBERS_IN_WORDS","sentence":"^\\Q支持的管道上遊程序（解碼與濾鏡工具）\nffmpeg\nvspipe（支持 API 3.0、4.0 自動識別）\navs2yuv\navs2pipemod\nSVFI\\E$"}

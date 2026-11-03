@@ -149,4 +149,4 @@ private static string ResolveSupportedLanguageCode(string cultureName)
 | Missing translation exception | See which key was missing on the Exception Window, and add it |
 | Language not appearing in dropdown | Check `Codes` array in `UICaptionProvider.cs` |
 | Some UI elements still in English | Check for hardcoded strings or missing provider files |
-| Display name shows "pt-br (!Localized)" | Update `GetDisplayName` method in `UICaptionProvider.cs` |
+| Display name shows “pt-br (!Localized)” | Update `GetDisplayName` method in `UICaptionProvider.cs` |
