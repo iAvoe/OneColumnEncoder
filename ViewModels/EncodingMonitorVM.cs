@@ -1868,7 +1868,7 @@ public partial class EncodingMonitorVM : BaseVM
             string savePath = SaveLoadBase<AppConfM>.GetEncodingLogsDirectory();
             Directory.CreateDirectory(savePath);
             SaveLogFile(UpstreamReportText, savePath, "upstream-stderr", _appConfM.Logs.MaxUpstreamLogFiles);
-            SaveLogFile(DownstreamReportText, savePath, "downstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
+            SaveLogFile(DownstreamReportText, savePath, "dnstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
         }
         catch { } // Log persistence must not change the encoding result.
     }
@@ -1885,7 +1885,7 @@ public partial class EncodingMonitorVM : BaseVM
         if (string.IsNullOrEmpty(text)) return;
 
         int limit = Math.Max(1, maxFileCount);
-        string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss-fff", CultureInfo.InvariantCulture);
+        string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss_fff", CultureInfo.InvariantCulture);
         string path = Path.Combine(savePath, $"{filePrefix}-{timestamp}-{Guid.NewGuid():N}.txt");
         File.WriteAllText(path, text, Encoding.UTF8);
 

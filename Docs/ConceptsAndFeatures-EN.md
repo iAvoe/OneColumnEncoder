@@ -383,10 +383,10 @@ All major persistent configuration is stored in the `1cenc` folder under the app
 
 Queue source analysis generates timestamped JSON files in the `1cenc` config directory:
 
-- `source_queue_yyyyMMdd_HHmmss.json`: Accepted queue sources with their ffprobe JSON.
-- `source_queue_excluded_yyyyMMdd_HHmmss.json`: Filtered or excluded sources.
+- `queue_yyyy-MM-dd_HH-mm-ss.json`: Accepted queue sources with their ffprobe JSON.
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`: Filtered or excluded sources.
 
-The settings interface can clean `source_queue_*.json` files older than 7 days.
+The settings interface can clean `queue_*.json` files older than 7 days.
 
 ### Concat Mode
 

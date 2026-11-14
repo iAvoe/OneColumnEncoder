@@ -385,14 +385,14 @@ ffmpeg 自带视频编码器，但 1cenc 的正式压制流程故意不以 ffmpe
 
 队列源分析会在 `1cenc` 配置目录下生成时间戳 JSON：
 
-- `source_queue_yyyyMMdd_HHmmss.json`：被接受的队列源及对应 ffprobe JSON。
-- `source_queue_excluded_yyyyMMdd_HHmmss.json`：被过滤或排除的源。
+- `queue_yyyy-MM-dd_HH-mm-ss.json`：被接受的队列源及对应 ffprobe JSON。
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`：被过滤或排除的源。
 
-设置界面可以清理 7 天前生成的 `source_queue_*.json` 文件。
+设置界面可以清理 7 天前生成的 `queue_*.json` 文件。
 
 ### 合并模式
 
-合并模式会在 `1cenc/SourceQueues` 目录下生成 `source_concat_{timestamp}.txt`
+合并模式会在 `1cenc/SourceQueues` 目录下生成 `concat_{timestamp}.txt`
 
 该文件使用 ffmpeg concat demuxer 格式，记录当前合并片段顺序。用户在滤镜编辑器中调整顺序或删除片段时会重新生成。
 

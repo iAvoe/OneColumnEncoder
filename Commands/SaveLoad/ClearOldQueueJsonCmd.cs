@@ -11,7 +11,7 @@ public class ClearOldQueueJsonCmd(ModalNavS modalNavS) : BaseCmd
     private readonly ModalNavS _modalNavS = modalNavS;
 
     /// <summary>
-    /// Try to delete all the source_queue_*.json files in the /1cenc/SourceQueues folder older than 7 days
+    /// Try to delete all the queue_*.json files in the /1cenc/SourceQueues folder older than 7 days
     /// If no config folder exists, show a info modal to user
     /// </summary>
     /// <param name="parameter">No parameters are used, actually</param>
@@ -26,7 +26,7 @@ public class ClearOldQueueJsonCmd(ModalNavS modalNavS) : BaseCmd
             return;
         }
 
-        string[] files = Directory.GetFiles(directory, "source_queue_*.json");
+        string[] files = Directory.GetFiles(directory, "queue_*.json");
         DateTime cutoff = DateTime.Now.AddDays(-7);
         int deletedCount = 0;
 
@@ -34,10 +34,10 @@ public class ClearOldQueueJsonCmd(ModalNavS modalNavS) : BaseCmd
         {
             try
             {
-                FileInfo fi = new(file);
-                if (fi.LastWriteTime < cutoff)
+                FileInfo f = new(file);
+                if (f.LastWriteTime < cutoff)
                 {
-                    fi.Delete();
+                    f.Delete();
                     deletedCount++;
                 }
             }

@@ -82,7 +82,7 @@ After import:
 - `P1TextData` stores a compact label such as `firstFile..lastFile`.
 - `P1TooltipText` stores the full selected file list for hover text.
 - `SrcConcatState` stores the ordered full file paths.
-- `source_concat_{timestamp}.txt` is generated under the SourceQueues folder (`1cenc/SourceQueues`), using ffmpeg concat-demuxer syntax with absolute paths:
+- `concat_{timestamp}.txt` is generated under the SourceQueues folder (`1cenc/SourceQueues`), using ffmpeg concat-demuxer syntax with absolute paths:
 
 ```text
 file 'G:/media/part01.mkv'
@@ -115,8 +115,8 @@ When `AnalyzeSrcVideoCmd` runs in queue mode with filtering enabled, the user ch
 4. Apply FirstStream cleanup checks on the remaining group.
 
 The analysis writes timestamped JSON files under `1cenc/`:
-- `source_queue_yyyyMMdd_HHmmss.json` for accepted files.
-- `source_queue_excluded_yyyyMMdd_HHmmss.json` when files are filtered out.
+- `queue_yyyy-MM-dd_HH-mm-ss.json` for accepted files.
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json` when files are filtered out.
 
 ### 5.3 Concat Analysis Details
 
@@ -248,12 +248,12 @@ The monitor does not fabricate `nb_frames` or guess a total frame count from `du
 |-------|------------|
 | Single | `SourceVideoPath` |
 | Queue | Each request's individual `SourceVideoPath` |
-| Concat | Concat filelist (`source_concat_*.txt`) as second ffmpeg input |
+| Concat | Concat filelist (`concat_*.txt`) as second ffmpeg input |
 | Repart | Concat filelist as second ffmpeg input, clipped to the output time range when audio muxing is enabled. |
 
 Concat never muxes audio from `SourceVideoPath` (set to `null`). After video encoding, the mux command uses:
 ```text
--i encoded_video -f concat -safe 0 -i source_concat_{timestamp}.txt -map 0:v:0 {audio-map-and-codec} -c:v copy ... output
+-i encoded_video -f concat -safe 0 -i concat_{timestamp}.txt -map 0:v:0 {audio-map-and-codec} -c:v copy ... output
 ```
 Audio is intentionally not loaded by AVS/VPY concat scripts. `EncodingAudioMuxMode` controls `{audio-map-and-codec}` for concat and repart source timelines:
 

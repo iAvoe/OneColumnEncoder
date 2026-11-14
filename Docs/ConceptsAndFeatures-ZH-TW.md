@@ -385,10 +385,10 @@ ffmpeg 自帶影片編碼器，但 1cenc 的正式壓制流程故意不以 ffmpe
 
 隊列源分析會在 `1cenc` 配置目錄下生成時間戳 JSON：
 
-- `source_queue_yyyyMMdd_HHmmss.json`：被接受的隊列源及對應 ffprobe JSON。
-- `source_queue_excluded_yyyyMMdd_HHmmss.json`：被過濾或排除的源。
+- `queue_yyyy-MM-dd_HH-mm-ss.json`：被接受的隊列源及對應 ffprobe JSON。
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`：被過濾或排除的源。
 
-設置界面可以清理 7 天前生成的 `source_queue_*.json` 文件。
+設置界面可以清理 7 天前生成的 `queue_*.json` 文件。
 
 ### 合併模式
 

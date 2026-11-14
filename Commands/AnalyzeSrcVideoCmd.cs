@@ -232,12 +232,10 @@ public class AnalyzeSrcVideoCmd(
         string referencePath = referenceCandidate.Entry.FilePath;
         queueCard.ApplyFfprobeAnalysisJson(referenceRawJson);
 
-        string sourceQueuesDirectory = SaveLoadBase<SaveLoadPlaceholder>.GetSourceQueuesDirectory();
-        Directory.CreateDirectory(sourceQueuesDirectory);
-        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-        string queueJsonPath = Path.Combine(sourceQueuesDirectory, $"source_queue_{timestamp}.json");
+        string queueJsonPath = SourceQueueFileNames.CreateQueueJsonPath();
+        Directory.CreateDirectory(Path.GetDirectoryName(queueJsonPath)!);
         string? excludedJsonPath = excluded.Count > 0
-            ? Path.Combine(sourceQueuesDirectory, $"source_queue_excluded_{timestamp}.json")
+            ? SourceQueueFileNames.CreateQueueExcludedJsonPath()
             : null;
 
         UTF8Encoding utf8NoBom = new(false);
@@ -452,12 +450,6 @@ public class AnalyzeSrcVideoCmd(
             _modalNavS,
             UILangProvider.SrcAnalysisWindowTitle,
             message).Execute(null);
-    }
-
-    // Placeholder type needed to resolve the source queues directory from SaveLoadBase.
-    private sealed class SaveLoadPlaceholder : SaveLoadBase<SaveLoadPlaceholder>
-    {
-        protected override string FilePath => string.Empty;
     }
 
     // Determines how the reference candidate is chosen from the queue.
