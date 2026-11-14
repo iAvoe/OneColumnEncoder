@@ -1,4 +1,5 @@
 using System.IO;
+using System.Runtime.Intrinsics.X86;
 
 namespace OneColumnEncoder.ToolManagement;
 
@@ -6,6 +7,25 @@ public static class AutoToolImport
 {
     public sealed record Candidate(string ExeName, string FilePath, string Version);
 
+    /// <summary>
+    /// True when the CPU and OS both support AVX-512 (Avx512F.IsSupported validates CPUID flags
+    /// and OS XSAVE/ZMM state enablement). Guarded by try/catch: exotic hosts or old OSes must
+    /// never make the startup import pass crash, in which case AVX-512 is assumed unsupported.
+    /// </summary>
+    public static bool SupportsAvx512 { get; } = DetectAvx512Support();
+
+    private static bool DetectAvx512Support()
+    {
+        try { return Avx512F.IsSupported; }
+        catch { return false; }
+    }
+
+    /// <summary>
+    /// x265 is intentionally excluded: the jpsdr/Patman builds come in AVX-512 and AVX2 variants,
+    /// and importing an AVX-512 build on a machine without AVX-512 crashes x265 with 0xC000001D
+    /// (illegal instruction). x265 therefore always requires manual import so the user can pick
+    /// the variant that matches this machine. See StartupAutoToolImportService for the notice.
+    /// </summary>
     private static readonly string[] DetectableTools =
     [
         "ffmpeg.exe",
@@ -14,7 +34,6 @@ public static class AutoToolImport
         "avs2pipemod.exe",
         "one_line_shot_args.exe",
         "x264.exe",
-        "x265.exe",
         "svtav1encapp.exe",
         "ffprobe.exe",
         "avisynth.dll"

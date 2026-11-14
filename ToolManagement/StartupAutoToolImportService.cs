@@ -38,19 +38,43 @@ public static class StartupAutoToolImportService
                     modalNavS,
                     UILangProvider.Current["AutoImport.Title"],
                     UILangProvider.Current["AutoImport.NotFoundMessage"]).Execute(null);
+                ShowAvx512Notice(modalNavS);
                 return;
             }
 
-            if (!ShowAutoImportConfirmation(candidates, modalNavS)) return;
+            if (!ShowAutoImportConfirmation(candidates, modalNavS))
+            {
+                ShowAvx512Notice(modalNavS);
+                return;
+            }
 
             foreach (AutoToolImport.Candidate candidate in candidates)
                 await onToolImported(candidate.ExeName, candidate.FilePath, candidate.Version);
+
+            ShowAvx512Notice(modalNavS);
         }
         finally
         {
             appConf.Reimport = false;
             appConf.Save();
         }
+    }
+
+    /// <summary>
+    /// Shows the end-of-pass AVX-512 capability notice. x265 is never auto-imported because an
+    /// AVX-512 build crashes with 0xC000001D on machines without the instruction set, so the
+    /// user is told which variant to import manually.
+    /// </summary>
+    private static void ShowAvx512Notice(ModalNavS modalNavS)
+    {
+        string messageKey = AutoToolImport.SupportsAvx512
+            ? "AutoImport.Avx512Supported"
+            : "AutoImport.Avx512Unsupported";
+
+        new OpenInfoModalCmd(
+            modalNavS,
+            UILangProvider.Current["AutoImport.Title"],
+            UILangProvider.Current[messageKey]).Execute(null);
     }
 
     /// <summary>

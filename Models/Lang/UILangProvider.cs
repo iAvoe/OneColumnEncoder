@@ -137,6 +137,8 @@ public class UILangProvider : LangProviderBase
             ["AutoImport.Title"] = "Auto Tool Import",
             ["AutoImport.FoundMessage"] = "Detected following verified executable files. Import them now?\n\n{0}",
             ["AutoImport.NotFoundMessage"] = "No importable tools were detected in this app's directory. To recheck later, enable Settings → Init Mode → Auto-import tools on next launch.",
+            ["AutoImport.Avx512Supported"] = "This machine supports the AVX-512 instruction set; any x265 build (AVX-512 or AVX2) can run here. x265 is not auto-imported — please import your preferred build manually.",
+            ["AutoImport.Avx512Unsupported"] = "This machine does NOT support the AVX-512 instruction set. Running an AVX-512 build of x265 crashes it with 0xC000001D. x265 is not auto-imported — please import the AVX2 build manually.",
 
             // Confirmation provider messages (with {0} / {1} format placeholders)
             ["ConfirmProvider.SuspiciousImportTitle"] = "Import does not match {0}",
@@ -364,6 +366,8 @@ public class UILangProvider : LangProviderBase
             ["AutoImport.Title"] = "自动导入工具",
             ["AutoImport.FoundMessage"] = "发现以下已验证的可执行文件，是否现在导入？\n\n{0}",
             ["AutoImport.NotFoundMessage"] = "未检测到位于本软件所在目录下有可导入的工具。在设置中勾选“初始化模式 → 下次打开尝试自动导入工具”即可复查。",
+            ["AutoImport.Avx512Supported"] = "本机支持 AVX-512 指令集，任何版本的 x265（AVX-512 或 AVX2）均可运行。x265 不会被自动导入，请手动导入所需的版本。",
+            ["AutoImport.Avx512Unsupported"] = "本机不支持 AVX-512 指令集。运行 AVX-512 版本的 x265 会触发 0xC000001D 崩溃。x265 不会被自动导入，请手动导入 AVX2 版本。",
 
             ["ConfirmProvider.SuspiciousImportTitle"] = "导入内容对不上 {0}",
             ["ConfirmProvider.ProceedToRun"] = "继续运行 {0} 以获取其版本？",
@@ -577,6 +581,8 @@ public class UILangProvider : LangProviderBase
             ["AutoImport.Title"] = "自動導入工具",
             ["AutoImport.FoundMessage"] = "發現以下已驗證的可執行文件，是否現在導入？\n\n{0}",
             ["AutoImport.NotFoundMessage"] = "未檢測到位於本軟件所在目錄下有可導入的工具。在設定中勾選「初始化模式 → 下次打開嘗試自動導入工具」即可複查。",
+            ["AutoImport.Avx512Supported"] = "本機支援 AVX-512 指令集，任何版本的 x265（AVX-512 或 AVX2）均可執行。x265 不會被自動導入，請手動導入所需的版本。",
+            ["AutoImport.Avx512Unsupported"] = "本機不支援 AVX-512 指令集。執行 AVX-512 版本的 x265 會觸發 0xC000001D 當機。x265 不會被自動導入，請手動導入 AVX2 版本。",
 
             ["ConfirmProvider.SuspiciousImportTitle"] = "導入內容對不上 {0}",
             ["ConfirmProvider.ProceedToRun"] = "繼續運行 {0} 以獲取其版本？",
@@ -813,6 +819,8 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Import automatique d'outils",
         ["AutoImport.FoundMessage"] = "Fichiers exécutables vérifiés trouvés. Les importer maintenant ?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "Aucun outil importable n'a été détecté dans le dossier de l'application. Pour revérifier plus tard, activez Réglages → Mode initial → Importer outils au prochain démarrage.",
+        ["AutoImport.Avx512Supported"] = "Cette machine prend en charge le jeu d'instructions AVX-512 ; toutes les versions de x265 (AVX-512 ou AVX2) peuvent s'exécuter ici. x265 n'est pas importé automatiquement — importez manuellement la version souhaitée.",
+        ["AutoImport.Avx512Unsupported"] = "Cette machine ne prend PAS en charge le jeu d'instructions AVX-512. Exécuter une version AVX-512 de x265 provoque un crash 0xC000001D. x265 n'est pas importé automatiquement — importez manuellement la version AVX2.",
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "Import ne correspond pas à {0}",
@@ -1048,6 +1056,8 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Importación automática",
         ["AutoImport.FoundMessage"] = "Se encontraron estos ejecutables verificados. ¿Importarlos ahora?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "No se detectaron herramientas importables en la carpeta de la aplicación. Para revisar de nuevo, active Ajustes → Modo inicial → Auto-importar herramientas al inicio.",
+        ["AutoImport.Avx512Supported"] = "Esta máquina admite el conjunto de instrucciones AVX-512; cualquier versión de x265 (AVX-512 o AVX2) puede ejecutarse aquí. x265 no se importa automáticamente: importe manualmente la versión que prefiera.",
+        ["AutoImport.Avx512Unsupported"] = "Esta máquina NO admite el conjunto de instrucciones AVX-512. Ejecutar una versión AVX-512 de x265 provoca un fallo 0xC000001D. x265 no se importa automáticamente: importe manualmente la versión AVX2.",
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "Importación no coincide con {0}",
@@ -1283,6 +1293,8 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "ツール自動取込",
         ["AutoImport.FoundMessage"] = "検証済みの実行ファイルが見つかりました。今すぐ取り込みますか？\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "このアプリのフォルダに取込可能なツールは見つかりませんでした。再確認するには、設定 → 初期化モード → 次回起動時にツールを自動取込 を有効にしてください。",
+        ["AutoImport.Avx512Supported"] = "このマシンは AVX-512 命令セットに対応しています。どのビルドの x265（AVX-512 / AVX2）でも実行できます。x265 は自動取込されないため、必要なビルドを手動で取込してください。",
+        ["AutoImport.Avx512Unsupported"] = "このマシンは AVX-512 命令セットに対応していません。AVX-512 ビルドの x265 を実行すると 0xC000001D でクラッシュします。x265 は自動取込されないため、AVX2 ビルドを手動で取込してください。",
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "インポート内容が {0} と一致しません",
@@ -1518,6 +1530,8 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Автоимпорт инструментов",
         ["AutoImport.FoundMessage"] = "Найдены проверенные исполняемые файлы. Импортировать сейчас?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "В папке приложения не найдены инструменты для импорта. Чтобы проверить снова, включите Настр. → Режим инициализации → Автоимпорт инструментов при запуске.",
+        ["AutoImport.Avx512Supported"] = "Этот компьютер поддерживает набор инструкций AVX-512: здесь работает любая сборка x265 (AVX-512 или AVX2). x265 не импортируется автоматически — импортируйте нужную сборку вручную.",
+        ["AutoImport.Avx512Unsupported"] = "Этот компьютер НЕ поддерживает набор инструкций AVX-512. Запуск сборки x265 для AVX-512 приводит к сбою 0xC000001D. x265 не импортируется автоматически — импортируйте сборку AVX2 вручную.",
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "Импорт не соответствует {0}",
@@ -1753,6 +1767,8 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Automatischer Tool-Import",
         ["AutoImport.FoundMessage"] = "Verifizierte ausführbare Dateien gefunden. Jetzt importieren?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "Keine importierbaren Tools im Anwendungsordner erkannt. Zum späteren Prüfen: Einstellungen → Initialisierungsmodus → Tools beim nächsten Start automatisch importieren aktivieren.",
+        ["AutoImport.Avx512Supported"] = "Dieser Rechner unterstützt den AVX-512-Befehlssatz; jede x265-Version (AVX-512 oder AVX2) kann hier ausgeführt werden. x265 wird nicht automatisch importiert — bitte die gewünschte Version manuell importieren.",
+        ["AutoImport.Avx512Unsupported"] = "Dieser Rechner unterstützt den AVX-512-Befehlssatz NICHT. Das Ausführen einer AVX-512-Version von x265 führt zu einem Absturz mit 0xC000001D. x265 wird nicht automatisch importiert — bitte die AVX2-Version manuell importieren.",
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "Import stimmt nicht mit {0} überein",
@@ -1988,6 +2004,8 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "도구 자동 가져오기",
         ["AutoImport.FoundMessage"] = "다음 검증된 실행 파일을 찾았습니다. 지금 가져올까요?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "애플리케이션 폴더에서 가져올 수 있는 도구를 찾지 못했습니다. 나중에 다시 검사하려면 설정 → 초기화 모드 → 다음 실행 시 도구 자동 가져오기를 켜세요.",
+        ["AutoImport.Avx512Supported"] = "이 컴퓨터는 AVX-512 명령어 집합을 지원하므로 어떤 x265 빌드(AVX-512 또는 AVX2)든 실행할 수 있습니다. x265는 자동으로 가져오지 않으므로 원하는 빌드를 수동으로 가져오세요.",
+        ["AutoImport.Avx512Unsupported"] = "이 컴퓨터는 AVX-512 명령어 집합을 지원하지 않습니다. AVX-512 빌드의 x265를 실행하면 0xC000001D 오류로 크래시가 발생합니다. x265는 자동으로 가져오지 않으므로 AVX2 빌드를 수동으로 가져오세요.",
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "가져오기가 {0}과 일치하지 않습니다",
@@ -2223,6 +2241,8 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Importação automática de ferramentas",
         ["AutoImport.FoundMessage"] = "Detectados os seguintes arquivos executáveis verificados. Importá-los agora?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "Nenhuma ferramenta importável foi detectada no diretório deste aplicativo. Para verificar posteriormente, habilite Configurações → Modo de Inicialização → Auto-importar ferramentas na próxima execução.",
+        ["AutoImport.Avx512Supported"] = "Esta máquina suporta o conjunto de instruções AVX-512; qualquer build do x265 (AVX-512 ou AVX2) pode ser executada aqui. O x265 não é importado automaticamente — importe manualmente o build desejado.",
+        ["AutoImport.Avx512Unsupported"] = "Esta máquina NÃO suporta o conjunto de instruções AVX-512. Executar um build AVX-512 do x265 causa falha com 0xC000001D. O x265 não é importado automaticamente — importe manualmente o build AVX2.",
 
         // Confirmation provider messages (with {0} / {1} format placeholders)
         ["ConfirmProvider.SuspiciousImportTitle"] = "A importação não corresponde a {0}",
