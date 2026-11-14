@@ -201,12 +201,14 @@
             </ScrollViewer>
 
             <StackPanel Grid.Row="2">
-                <Button Content="{Binding QueueSidebarLang.QueueSidebarCancelAllText}"
-                        Command="{Binding CancelAllQueueCommand}"
+                <Button Command="{Binding CancelAllQueueCommand}"
                         IsEnabled="{Binding IsCancelAllEnabled}"
                         Height="30"
                         HorizontalAlignment="Stretch"
-                        Style="{StaticResource PrimaryButton}" />
+                        Style="{StaticResource PrimaryButton}">
+                    <TextBlock Text="{Binding QueueSidebarLang.QueueSidebarCancelAllText}"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                </Button>
                 <TextBlock Text="{Binding QueueSidebar.StatsText}"
                            FontSize="10"
                            Height="12.5"
