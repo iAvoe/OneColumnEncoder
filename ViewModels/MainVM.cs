@@ -3138,14 +3138,14 @@ public class MainVM : BaseVM
         if (string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath) || !File.Exists(_appDataM.Tools.FFmpegPath))
             throw new FileNotFoundException(RepartLangProvider.Current.FfmpegRequired, _appDataM.Tools.FFmpegPath);
 
-        Guid executionId = Guid.NewGuid();
-        string fileListPath = _SrcRepart.RegenerateFileList(executionId);
-        string configDirectory = Path.GetDirectoryName(fileListPath) ?? AppContext.BaseDirectory;
+        string fileListPath = _SrcRepart.RegenerateFileList();
+        // Input scripts reuse the file list's base name, so they carry the same
+        // source_repart_{timestamp} stamp and only differ by extension.
         string[] srcPaths = [.. plan.Sources.Select(source => source.FilePath)];
         string inputPath;
         if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
         {
-            inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.vpy");
+            inputPath = Path.ChangeExtension(fileListPath, ".vpy");
             string script = srcPaths.Length == 1
                 ? ScriptTemplate.BuildVpyExportScript(srcPaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput)
                 : ScriptTemplate.BuildConcatVpyExportScript(srcPaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput);
@@ -3154,7 +3154,7 @@ public class MainVM : BaseVM
         else if (upstreamExeName.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase)
                  || upstreamExeName.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase))
         {
-            inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.avs");
+            inputPath = Path.ChangeExtension(fileListPath, ".avs");
             string script = srcPaths.Length == 1
                 ? ScriptTemplate.BuildAvsExportScript(srcPaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput)
                 : ScriptTemplate.BuildConcatAvsExportScript(srcPaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput);

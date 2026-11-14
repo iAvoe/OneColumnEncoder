@@ -10,9 +10,7 @@ public sealed class SrcConcatState
     // ItemCard View, path for each source, and filelist write path
     private readonly ToolItemCardVM? _SrcConcatCard;
     private string[] _filePaths = [];
-    private readonly string _fileListPath =
-        Path.Combine(SaveLoadBase<ConcatFileListPathPlaceholder>.GetConfigDirectory(),
-            $"source_concat_filelist_{Environment.ProcessId}_{Guid.NewGuid():N}.txt");
+    private readonly string _fileListPath = SourceQueueFileNames.CreateConcatFileListPath();
 
     // Constructor: bind state, set R1Text as Add or Replace
     public SrcConcatState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
@@ -121,10 +119,5 @@ public sealed class SrcConcatState
         if (_SrcConcatCard == null) return;
         _SrcConcatCard.UseAutoAddReplaceText = false;
         RefreshTitle();
-    }
-
-    private sealed class ConcatFileListPathPlaceholder : SaveLoadBase<ConcatFileListPathPlaceholder>
-    {
-        protected override string FilePath => string.Empty;
     }
 }

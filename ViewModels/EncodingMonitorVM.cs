@@ -1865,24 +1865,31 @@ public partial class EncodingMonitorVM : BaseVM
 
         try
         {
-            string directory = SaveLoadBase<AppConfM>.GetConfigDirectory();
-            Directory.CreateDirectory(directory);
-            SaveLogFile(UpstreamReportText, directory, "upstream-stderr", _appConfM.Logs.MaxUpstreamLogFiles);
-            SaveLogFile(DownstreamReportText, directory, "downstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
+            string savePath = SaveLoadBase<AppConfM>.GetEncodingLogsDirectory();
+            Directory.CreateDirectory(savePath);
+            SaveLogFile(UpstreamReportText, savePath, "upstream-stderr", _appConfM.Logs.MaxUpstreamLogFiles);
+            SaveLogFile(DownstreamReportText, savePath, "downstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
         }
         catch { } // Log persistence must not change the encoding result.
     }
 
-    private static void SaveLogFile(string text, string directory, string filePrefix, int maxFileCount)
+    /// <summary>
+    /// Save a log text to file in UTF-8 with timestamp on filename
+    /// </summary>
+    /// <param name="text">Log text</param>
+    /// <param name="savePath">Path to save to</param>
+    /// <param name="filePrefix">Filename prefix</param>
+    /// <param name="maxFileCount">Window delete mechanism (user setting value)</param>
+    private static void SaveLogFile(string text, string savePath, string filePrefix, int maxFileCount)
     {
         if (string.IsNullOrEmpty(text)) return;
 
         int limit = Math.Max(1, maxFileCount);
         string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss-fff", CultureInfo.InvariantCulture);
-        string path = Path.Combine(directory, $"{filePrefix}-{timestamp}-{Guid.NewGuid():N}.txt");
+        string path = Path.Combine(savePath, $"{filePrefix}-{timestamp}-{Guid.NewGuid():N}.txt");
         File.WriteAllText(path, text, Encoding.UTF8);
 
-        FileInfo[] files = [.. Directory.EnumerateFiles(directory, $"{filePrefix}-*.txt")
+        FileInfo[] files = [.. Directory.EnumerateFiles(savePath, $"{filePrefix}-*.txt")
             .Select(path => new FileInfo(path))
             .OrderByDescending(file => file.LastWriteTimeUtc)];
         foreach (FileInfo file in files.Skip(limit))

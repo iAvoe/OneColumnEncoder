@@ -82,7 +82,7 @@ After import:
 - `P1TextData` stores a compact label such as `firstFile..lastFile`.
 - `P1TooltipText` stores the full selected file list for hover text.
 - `SrcConcatState` stores the ordered full file paths.
-- `source_concat_filelist.txt` is generated under the app config directory (`1cenc`), using ffmpeg concat-demuxer syntax with absolute paths:
+- `source_concat_{timestamp}.txt` is generated under the SourceQueues folder (`1cenc/SourceQueues`), using ffmpeg concat-demuxer syntax with absolute paths:
 
 ```text
 file 'G:/media/part01.mkv'
@@ -248,12 +248,12 @@ The monitor does not fabricate `nb_frames` or guess a total frame count from `du
 |-------|------------|
 | Single | `SourceVideoPath` |
 | Queue | Each request's individual `SourceVideoPath` |
-| Concat | Concat filelist (`source_concat_filelist.txt`) as second ffmpeg input |
+| Concat | Concat filelist (`source_concat_*.txt`) as second ffmpeg input |
 | Repart | Concat filelist as second ffmpeg input, clipped to the output time range when audio muxing is enabled. |
 
 Concat never muxes audio from `SourceVideoPath` (set to `null`). After video encoding, the mux command uses:
 ```text
--i encoded_video -f concat -safe 0 -i source_concat_filelist.txt -map 0:v:0 {audio-map-and-codec} -c:v copy ... output
+-i encoded_video -f concat -safe 0 -i source_concat_{timestamp}.txt -map 0:v:0 {audio-map-and-codec} -c:v copy ... output
 ```
 Audio is intentionally not loaded by AVS/VPY concat scripts. `EncodingAudioMuxMode` controls `{audio-map-and-codec}` for concat and repart source timelines:
 

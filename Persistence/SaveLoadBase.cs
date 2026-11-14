@@ -9,6 +9,12 @@ internal static class PersistencePaths
     public static string GetConfigDirectory() => Path.IsPathRooted(ConfigSubFolder)
         ? ConfigSubFolder
         : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigSubFolder);
+
+    // Runtime artifacts (queue lists, logs) live in sub-folders of the config
+    // directory so its root only holds configuration files. Deriving them from
+    // GetConfigDirectory() also keeps rooted ConfigSubFolder values (forks) correct.
+    public static string GetSourceQueuesDirectory() => Path.Combine(GetConfigDirectory(), "SourceQueues");
+    public static string GetEncodingLogsDirectory() => Path.Combine(GetConfigDirectory(), "EncodingLogs");
 }
 
 public abstract class SaveLoadBase<T> : INotifyPropertyChanged where T : SaveLoadBase<T>, new()
@@ -31,10 +37,9 @@ public abstract class SaveLoadBase<T> : INotifyPropertyChanged where T : SaveLoa
         set => PersistencePaths.ConfigSubFolder = value;
     }
 
-    public static string GetConfigDirectory()
-    {
-        return PersistencePaths.GetConfigDirectory();
-    }
+    public static string GetConfigDirectory() => PersistencePaths.GetConfigDirectory();
+    public static string GetEncodingLogsDirectory() => PersistencePaths.GetEncodingLogsDirectory();
+    public static string GetSourceQueuesDirectory() => PersistencePaths.GetSourceQueuesDirectory();
 
     // File level save-load
     public void Save()

@@ -11,14 +11,14 @@ public class ClearOldQueueJsonCmd(ModalNavS modalNavS) : BaseCmd
     private readonly ModalNavS _modalNavS = modalNavS;
 
     /// <summary>
-    /// Try to delete all the source_queue_*.json files in the config (/1cenc) folder older than 7 days
+    /// Try to delete all the source_queue_*.json files in the /1cenc/SourceQueues folder older than 7 days
     /// If no config folder exists, show a info modal to user
     /// </summary>
     /// <param name="parameter">No parameters are used, actually</param>
     public override void Execute(object? parameter)
     {
         AppConfLangProvider lang = AppConfLangProvider.Current;
-        string directory = SaveLoadBase<AppConfM>.GetConfigDirectory();
+        string directory = SaveLoadBase<AppConfM>.GetSourceQueuesDirectory();
         if (!Directory.Exists(directory))
         {
             new OpenInfoModalCmd(_modalNavS, lang["AppConf.ClearOldQueueJsonTitle"], lang["AppConf.NoOldQueueJson"])

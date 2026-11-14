@@ -5,6 +5,7 @@ namespace OneColumnEncoder.Models;
 /// <summary>
 /// Persisted queue job list and queue state.
 /// </summary>
+/// <remarks>The path should be config directory, since this is a config file, not a history log</remarks>
 public class QueueJobsStoreM : SaveLoadBase<QueueJobsStoreM>
 {
     public List<QueueJobItemM> Jobs { get; set; } = [];

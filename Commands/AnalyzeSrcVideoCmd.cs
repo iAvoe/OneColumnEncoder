@@ -196,13 +196,13 @@ public class AnalyzeSrcVideoCmd(
             : QueueFilterMode.WeightedVoteThenFirstStream;
     }
 
-    // Step 1: Initialize ffprobe path and queue file list. Abort if empty
-    // Step 2: For each file, run ffprobe analysis and build a candidate signature + vote weight.
-    // Step 3: Select a reference candidate (first-stream or weighted-vote-then-first-stream)
-    // Step 4: Filter candidates: accepted if signature matches reference, otherwise excluded
-    // Step 5: Serialize accepted/excluded lists to JSON files in config directory
-    // Step 6: Update analysis model with reference file results and raw JSON for all files
-    // Step 7: Notify caller via _onQueueAccepted and show completion modal with summary
+    // 1. Initialize ffprobe path and queue file list. Abort if empty
+    // 2. For each file, run ffprobe analysis and build a candidate signature + vote weight.
+    // 3. Select a reference candidate (first-stream or weighted-vote-then-first-stream)
+    // 4. Filter candidates: accepted if signature matches reference, otherwise excluded
+    // 5. Serialize accepted/excluded lists to JSON files in the SourceQueues directory
+    // 6. Update analysis model with reference file results and raw JSON for all files
+    // 7. Notify caller via _onQueueAccepted and show completion modal with summary
     private async Task ExecuteQueueAnalysisAsync()
     {
         string ffprobePath = _getFfprobePath();
@@ -232,12 +232,12 @@ public class AnalyzeSrcVideoCmd(
         string referencePath = referenceCandidate.Entry.FilePath;
         queueCard.ApplyFfprobeAnalysisJson(referenceRawJson);
 
-        string directory = SaveLoadBase<SaveLoadPlaceholder>.GetConfigDirectory();
-        Directory.CreateDirectory(directory);
+        string sourceQueuesDirectory = SaveLoadBase<SaveLoadPlaceholder>.GetSourceQueuesDirectory();
+        Directory.CreateDirectory(sourceQueuesDirectory);
         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-        string queueJsonPath = Path.Combine(directory, $"source_queue_{timestamp}.json");
+        string queueJsonPath = Path.Combine(sourceQueuesDirectory, $"source_queue_{timestamp}.json");
         string? excludedJsonPath = excluded.Count > 0
-            ? Path.Combine(directory, $"source_queue_excluded_{timestamp}.json")
+            ? Path.Combine(sourceQueuesDirectory, $"source_queue_excluded_{timestamp}.json")
             : null;
 
         UTF8Encoding utf8NoBom = new(false);
@@ -454,7 +454,7 @@ public class AnalyzeSrcVideoCmd(
             message).Execute(null);
     }
 
-    // Placeholder type needed to resolve the config directory from SaveLoadBase.
+    // Placeholder type needed to resolve the source queues directory from SaveLoadBase.
     private sealed class SaveLoadPlaceholder : SaveLoadBase<SaveLoadPlaceholder>
     {
         protected override string FilePath => string.Empty;

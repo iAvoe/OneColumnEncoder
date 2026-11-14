@@ -20,13 +20,11 @@ public sealed class SrcRepartState
     public RepartPlanM? CurrentPlan => _plan?.Clone();
     public string[] CurrentFilePaths => _plan?.Sources.Select(source => source.FilePath).ToArray() ?? [];
 
-    public string RegenerateFileList(Guid executionId)
+    public string RegenerateFileList()
     {
         if (_plan == null) return string.Empty;
-        string path = Path.Combine(
-            SaveLoadBase<RepartFileListPathPlaceholder>.GetConfigDirectory(),
-            $"source_rp_{_plan.PlanId:N}_{executionId:N}.txt");
-        return ConcatFileListGenerator.GenerateFileList(CurrentFilePaths, path);
+        return ConcatFileListGenerator.GenerateFileList(
+            CurrentFilePaths, SourceQueueFileNames.CreateRepartFileListPath());
     }
 
     public void ApplyPlan(RepartPlanM plan)
@@ -64,10 +62,5 @@ public sealed class SrcRepartState
     {
         if (_card == null) return;
         _card.Name = RepartLangProvider.Current.ToolSourceSrcRepart;
-    }
-
-    private sealed class RepartFileListPathPlaceholder : SaveLoadBase<RepartFileListPathPlaceholder>
-    {
-        protected override string FilePath => string.Empty;
     }
 }
