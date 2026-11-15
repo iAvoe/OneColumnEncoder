@@ -33,6 +33,17 @@ public class ReplaceToolCmd(ToolItemCardVM item, AppDataM appDataM, ModalNavS mo
                 string.Format(UILangProvider.Current["Import.VersionDetectTimeoutMessage"], def.ExeName)).Execute(null);
             return;
         }
+        catch (ToolVersionDetectCrashException crash)
+        {
+            string messageKey = crash.IsIllegalInstruction
+                ? "Import.VersionDetectIllegalInstructionMessage"
+                : "Import.VersionDetectCrashMessage";
+            new OpenErrModalCmd(
+                _modalNavS,
+                UILangProvider.Current["Import.VersionDetectCrashTitle"],
+                string.Format(UILangProvider.Current[messageKey], def.ExeName, crash.UnsignedExitCode.ToString("X8"))).Execute(null);
+            return;
+        }
 
         await ToolManagementProviderM.DetectAndStoreVspipeY4mArgAsync(
             def.ExeName,

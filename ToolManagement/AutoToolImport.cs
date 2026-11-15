@@ -21,10 +21,11 @@ public static class AutoToolImport
     }
 
     /// <summary>
-    /// x265 is intentionally excluded: the jpsdr/Patman builds come in AVX-512 and AVX2 variants,
-    /// and importing an AVX-512 build on a machine without AVX-512 crashes x265 with 0xC000001D
-    /// (illegal instruction). x265 therefore always requires manual import so the user can pick
-    /// the variant that matches this machine. See StartupAutoToolImportService for the notice.
+    /// x265 is auto-imported again because version probing now rejects binaries that crash with
+    /// 0xC000001D. If the probe crashes, scanning for x265 stops entirely (no silent fallback to
+    /// another build) and <see cref="X265RequiresManualImport"/> is set so the user is asked to
+    /// import a matching build manually: the compiled instruction set of an x265 binary cannot be
+    /// determined reliably from its file name.
     /// </summary>
     private static readonly string[] DetectableTools =
     [
@@ -34,6 +35,7 @@ public static class AutoToolImport
         "avs2pipemod.exe",
         "one_line_shot_args.exe",
         "x264.exe",
+        "x265.exe",
         "svtav1encapp.exe",
         "ffprobe.exe",
         "avisynth.dll"
@@ -56,20 +58,41 @@ public static class AutoToolImport
     };
 
     /// <summary>
+    /// Set during the last <see cref="FindImportableToolsAsync"/> pass when an x265 build crashed
+    /// while being probed (typically 0xC000001D from an AVX-512 build on a machine without
+    /// AVX-512). x265 is then left for manual import instead of trying other candidate builds.
+    /// </summary>
+    public static bool X265RequiresManualImport { get; private set; }
+
+    /// <summary>
+    /// Records that the current x265 scan hit a crashing build; all further x265 candidates are
+    /// skipped so a different build (e.g. AVX2) is never chosen automatically.
+    /// </summary>
+    private static bool _x265CrashDetected;
+
+    /// <summary>
     /// Scans each known tool: skips already-configured ones, then searches for the executable in the app dir,
     /// the upstream tree, and finally the system PATH. Returns everything that was found with a version.
     /// </summary>
     public static async Task<IReadOnlyList<Candidate>> FindImportableToolsAsync(AppDataM.Importables tools)
     {
+        X265RequiresManualImport = false;
+
         List<Candidate> candidates = [];
         foreach (string exeName in DetectableTools)
         {
             if (!NeedsImport(exeName, tools)) continue;
 
-            Candidate? candidate = await FindTopLevelCandidateAsync(exeName)
-                ?? await FindUpstreamTreeCandidateAsync(exeName)
-                ?? await FindInstalledCandidateAsync(exeName);
+            _x265CrashDetected = false;
+
+            Candidate? candidate = await FindTopLevelCandidateAsync(exeName);
+            if (!_x265CrashDetected)
+                candidate ??= await FindUpstreamTreeCandidateAsync(exeName);
+            if (!_x265CrashDetected)
+                candidate ??= await FindInstalledCandidateAsync(exeName);
+
             if (candidate != null) candidates.Add(candidate);
+            if (_x265CrashDetected) X265RequiresManualImport = true;
         }
 
         return candidates;
@@ -127,8 +150,9 @@ public static class AutoToolImport
 
             foreach (FileInfo file in matches)
             {
-                Candidate? candidate = await TryBuildCandidateAsync(exeName, file.FullName);
+                (Candidate? candidate, bool crashed) = await TryBuildCandidateAsync(exeName, file.FullName);
                 if (candidate != null) return candidate;
+                if (crashed && IsX265(exeName)) return null;
             }
         }
 
@@ -169,8 +193,9 @@ public static class AutoToolImport
 
             foreach (FileInfo file in matches)
             {
-                Candidate? candidate = await TryBuildCandidateAsync(exeName, file.FullName);
+                (Candidate? candidate, bool crashed) = await TryBuildCandidateAsync(exeName, file.FullName);
                 if (candidate != null) return candidate;
+                if (crashed && IsX265(exeName)) return null;
             }
         }
 
@@ -193,14 +218,16 @@ public static class AutoToolImport
         string? directory = ToolCatalogProviderM.TryFindToolDirectory(exeName);
         if (!string.IsNullOrWhiteSpace(directory))
         {
-            Candidate? knownPathCandidate = await TryBuildCandidateAsync(exeName, Path.Combine(directory, exeName));
+            (Candidate? knownPathCandidate, bool crashed) = await TryBuildCandidateAsync(exeName, Path.Combine(directory, exeName));
             if (knownPathCandidate != null) return knownPathCandidate;
+            if (crashed && IsX265(exeName)) return null;
         }
 
         foreach (string pathDirectory in GetPathDirectories())
         {
-            Candidate? pathCandidate = await TryBuildCandidateAsync(exeName, Path.Combine(pathDirectory, exeName));
+            (Candidate? pathCandidate, bool pathCrashed) = await TryBuildCandidateAsync(exeName, Path.Combine(pathDirectory, exeName));
             if (pathCandidate != null) return pathCandidate;
+            if (pathCrashed && IsX265(exeName)) return null;
         }
 
         return null;
@@ -234,19 +261,33 @@ public static class AutoToolImport
     }
 
     /// <summary>
-    /// Probes the executable for its version; timeouts (and failed probes) mean the file is not usable.
+    /// True when the given tool is x265, whose compiled instruction set cannot be inferred from
+    /// its file name and which therefore is never auto-substituted by another candidate build.
     /// </summary>
-    private static async Task<Candidate?> TryBuildCandidateAsync(string exeName, string filePath)
+    private static bool IsX265(string exeName) =>
+        exeName.Equals("x265.exe", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Probes the executable for its version. Timeouts and probes that return no version mean the
+    /// file is not usable; an abnormal termination (e.g. 0xC000001D) is reported back as a crash so
+    /// callers can stop scanning that tool instead of importing it.
+    /// </summary>
+    private static async Task<(Candidate? Candidate, bool Crashed)> TryBuildCandidateAsync(string exeName, string filePath)
     {
         string? version;
         try
         {
             version = await ToolManagementProviderM.TryDetectAsync(exeName, filePath);
         }
-        catch (ToolVersionDetectTimeoutException) { return null; }
+        catch (ToolVersionDetectTimeoutException) { return (null, false); }
+        catch (ToolVersionDetectCrashException)
+        {
+            if (IsX265(exeName)) _x265CrashDetected = true;
+            return (null, true);
+        }
 
-        return string.IsNullOrWhiteSpace(version)
+        return (string.IsNullOrWhiteSpace(version)
             ? null
-            : new Candidate(exeName, filePath, version);
+            : new Candidate(exeName, filePath, version), false);
     }
 }

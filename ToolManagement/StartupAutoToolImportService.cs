@@ -61,15 +61,19 @@ public static class StartupAutoToolImportService
     }
 
     /// <summary>
-    /// Shows the end-of-pass AVX-512 capability notice. x265 is never auto-imported because an
-    /// AVX-512 build crashes with 0xC000001D on machines without the instruction set, so the
-    /// user is told which variant to import manually.
+    /// Shows the end-of-pass AVX-512 capability notice. If x265 itself crashed during probing,
+    /// a dedicated message replaces it: x265 is never auto-imported from a different build because
+    /// the compiled instruction set of the binary cannot be determined from its file name.
     /// </summary>
     private static void ShowAvx512Notice(ModalNavS modalNavS)
     {
-        string messageKey = AutoToolImport.SupportsAvx512
-            ? "AutoImport.Avx512Supported"
-            : "AutoImport.Avx512Unsupported";
+        string messageKey;
+        if (AutoToolImport.X265RequiresManualImport)
+            messageKey = "AutoImport.X265ManualImportRequired";
+        else
+            messageKey = AutoToolImport.SupportsAvx512
+                ? "AutoImport.Avx512Supported"
+                : "AutoImport.Avx512Unsupported";
 
         new OpenInfoModalCmd(
             modalNavS,

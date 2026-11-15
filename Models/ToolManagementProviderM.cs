@@ -8,6 +8,20 @@ public class ToolVersionDetectTimeoutException(string exeName)
 {
 }
 
+/// <summary>
+/// Thrown when the probed executable terminated abnormally (NTSTATUS-style exit code 0xC0000000+),
+/// for example 0xC000001D (STATUS_ILLEGAL_INSTRUCTION) when an AVX-512 build of x265 runs on a
+/// machine without AVX-512 support. Such binaries must never be imported.
+/// </summary>
+public class ToolVersionDetectCrashException(string exeName, int exitCode)
+    : Exception($"Tool version detection crashed for {exeName} with exit code 0x{(uint)exitCode:X8}.")
+{
+    public string ExeName { get; } = exeName;
+    public int ExitCode { get; } = exitCode;
+    public uint UnsignedExitCode => (uint)ExitCode;
+    public bool IsIllegalInstruction => UnsignedExitCode == 0xC000001D;
+}
+
 public static class ToolManagementProviderM
 {
     private static readonly TimeSpan VersionDetectTimeout = TimeSpan.FromSeconds(3);
@@ -190,12 +204,25 @@ public static class ToolManagementProviderM
         };
 
         Stopwatch stopwatch = Stopwatch.StartNew();
-        string exePrints = await RunAndCaptureAsync(filePath, exeArgs, GetRemainingTimeout(stopwatch), outputEncoding: GetSystemTextEncoding());
-        string? version = ParseVersion(exeName, exePrints);
+        ToolRunResult firstRun = await RunAndCaptureResultAsync(filePath, exeArgs, GetRemainingTimeout(stopwatch), throwOnTimeout: true, outputEncoding: GetSystemTextEncoding());
+        ThrowIfAbnormalTermination(filePath, firstRun.ExitCode);
+
+        string? version = ParseVersion(exeName, firstRun.Output);
         if (version != null) return version;
 
-        exePrints = await RunAndCaptureAsync(filePath, exeArgs, GetRemainingTimeout(stopwatch), useUtf8: true);
-        return ParseVersion(exeName, exePrints);
+        ToolRunResult utf8Run = await RunAndCaptureResultAsync(filePath, exeArgs, GetRemainingTimeout(stopwatch), throwOnTimeout: true, useUtf8: true);
+        ThrowIfAbnormalTermination(filePath, utf8Run.ExitCode);
+        return ParseVersion(exeName, utf8Run.Output);
+    }
+
+    /// <summary>
+    /// Rejects executables that crashed during version probing instead of silently importing them.
+    /// NTSTATUS-style exit codes (0xC0000000 and above) never come from a normal CLI exit path.
+    /// </summary>
+    private static void ThrowIfAbnormalTermination(string filePath, int exitCode)
+    {
+        if ((uint)exitCode < 0xC0000000u) return;
+        throw new ToolVersionDetectCrashException(Path.GetFileName(filePath), exitCode);
     }
 
     public static string? TryReadProductVersion(string filePath)
@@ -219,15 +246,17 @@ public static class ToolManagementProviderM
 
     public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, bool useUtf8 = false, System.Text.Encoding? outputEncoding = null)
     {
-        return await RunAndCaptureAsync(filePath, exeArgs, TimeSpan.FromSeconds(5), false, useUtf8, outputEncoding);
+        return (await RunAndCaptureResultAsync(filePath, exeArgs, TimeSpan.FromSeconds(5), throwOnTimeout: false, useUtf8, outputEncoding)).Output;
     }
 
     public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, TimeSpan timeout, bool useUtf8 = false, System.Text.Encoding? outputEncoding = null)
     {
-        return await RunAndCaptureAsync(filePath, exeArgs, timeout, true, useUtf8, outputEncoding);
+        return (await RunAndCaptureResultAsync(filePath, exeArgs, timeout, throwOnTimeout: true, useUtf8, outputEncoding)).Output;
     }
 
-    private static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, TimeSpan timeout, bool throwOnTimeout, bool useUtf8 = false, System.Text.Encoding? outputEncoding = null)
+    private readonly record struct ToolRunResult(string Output, int ExitCode);
+
+    private static async Task<ToolRunResult> RunAndCaptureResultAsync(string filePath, string exeArgs, TimeSpan timeout, bool throwOnTimeout, bool useUtf8 = false, System.Text.Encoding? outputEncoding = null)
     {
         ProcessStartInfo psi = new()
         {
@@ -268,9 +297,11 @@ public static class ToolManagementProviderM
 
         string stdout = await stdoutTask;
         string stderr = await stderrTask;
-        return string.Join(
+        string output = string.Join(
             Environment.NewLine,
             new[] { stdout, stderr }.Where(s => !string.IsNullOrWhiteSpace(s)));
+
+        return new ToolRunResult(output, process.HasExited ? process.ExitCode : 0);
     }
 
     private static System.Text.Encoding? GetSystemTextEncoding()

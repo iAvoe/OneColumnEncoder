@@ -29,7 +29,7 @@
         </Style>
     </UserControl.Resources>
     <!--
-    | Title | Import dropdown | Import button | Toggle |
+    | Title | Import dropdown | Toggle |
     | P1: ChecklistContainer |
     -->
     <Grid>
@@ -83,7 +83,6 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -98,7 +97,7 @@
                            Style="{StaticResource H2}" />
 
                 <Button Grid.Row="0"
-                        Grid.Column="3"
+                        Grid.Column="2"
                         Command="{Binding ToggleCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         Tag="{Binding ToggleTag, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                         ToolTip="{Binding ToggleToolTip, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
@@ -108,58 +107,16 @@
                         Margin="5 0 0 0"
                         Style="{StaticResource ToolsImportCardToggleButton}" />
                  
-                <!-- Import dropdown -->
+                <!-- Import dropdown: picking a tool runs the import immediately -->
                 <comps:DropdownMenu Grid.Row="0"
                                      Grid.Column="1"
                                      MinWidth="180"
                                      Height="25"
                                      Margin="0 0 5 0"
                                      DataContext="{Binding ImportDropdown}" />
-                  
-                <!-- Import button -->
-                <Button Grid.Row="0"
-                        Grid.Column="2"
-                        MinWidth="90"
-                        Height="25"
-                        VerticalAlignment="Center"
-                        Margin="0"
-                        Style="{StaticResource PrimaryButton}"
-                        Command="{Binding ImportCommand}">
-                    <StackPanel Orientation="Horizontal"
-                                VerticalAlignment="Center">
-                        <Rectangle Width="13"
-                                   Height="13"
-                                   VerticalAlignment="Center"
-                                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameImport}"
-                                            Stretch="Uniform"
-                                            AlignmentX="Center"
-                                            AlignmentY="Center" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                        <TextBlock Text="/"
-                                   FontWeight="Black"
-                                   VerticalAlignment="Center"
-                                   Margin="5 0 0 0"
-                                   Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
-                        <Rectangle Width="13"
-                                   Height="13"
-                                   VerticalAlignment="Center"
-                                   Margin="5 0 0 0"
-                                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                            <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameReplace}"
-                                            Stretch="Uniform"
-                                            AlignmentX="Center"
-                                            AlignmentY="Center" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </StackPanel>
-                </Button>
 
                 <UniformGrid Grid.Row="1"
-                             Grid.ColumnSpan="4"
+                             Grid.ColumnSpan="3"
                              Columns="{Binding ActualWidth,
                                         RelativeSource={RelativeSource FindAncestor,
                                                                        AncestorType={x:Type ScrollViewer}},
@@ -188,7 +145,7 @@
                 </UniformGrid>
 
                 <TextBlock Grid.Row="2"
-                           Grid.Column="2"
+                           Grid.Column="1"
                            Grid.ColumnSpan="2"
                            Text="{Binding Version}"
                            HorizontalAlignment="Right"

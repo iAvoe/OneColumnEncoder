@@ -54,6 +54,13 @@ public class ToolsImportCardVM : BaseVM
                                },
                                getBrowseInitialDirectory,
                                setMainOverlayVisible);
+        // Clicking a dropdown item runs the import immediately.
+        ImportDropdown.SelectionChangedCommand = new ActionCmd(_ =>
+        {
+            DropdownItemM? item = ImportDropdown.SelectedItem;
+            if (item == null || item.IsSeparator || item.IsPlaceholder) return;
+            if (ImportCommand.CanExecute(null)) ImportCommand.Execute(null);
+        });
         _onDropdownPropertyChanged = (s, e) =>
         {
             if (e.PropertyName == nameof(ImportDropdown.SelectedItem))

@@ -47,6 +47,11 @@ public class ImportToolCmd(DropdownMenuVM dropdownVM,
                 ShowVersionDetectTimeoutError(toolToImport);
                 return;
             }
+            catch (ToolVersionDetectCrashException crash)
+            {
+                ShowVersionDetectCrashError(toolToImport, crash);
+                return;
+            }
 
             if (_onSuccess != null) await _onSuccess(toolToImport, filePath, version);
             foreach (ChecklistEntryVM t in _knownTools)
@@ -71,6 +76,18 @@ public class ImportToolCmd(DropdownMenuVM dropdownVM,
             _modalNavS,
             UILangProvider.Current["Import.VersionDetectTimeoutTitle"],
             string.Format(UILangProvider.Current["Import.VersionDetectTimeoutMessage"], toolName)).Execute(null);
+    }
+
+    internal void ShowVersionDetectCrashError(string toolName, ToolVersionDetectCrashException crash)
+    {
+        string messageKey = crash.IsIllegalInstruction
+            ? "Import.VersionDetectIllegalInstructionMessage"
+            : "Import.VersionDetectCrashMessage";
+
+        new OpenErrModalCmd(
+            _modalNavS,
+            UILangProvider.Current["Import.VersionDetectCrashTitle"],
+            string.Format(UILangProvider.Current[messageKey], toolName, crash.UnsignedExitCode.ToString("X8"))).Execute(null);
     }
 
     internal static bool ShouldSkipFileNameValidation(string toolName) =>
