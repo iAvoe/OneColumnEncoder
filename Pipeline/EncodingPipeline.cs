@@ -790,14 +790,14 @@ public static partial class EncodingPipeline
         return encoder switch
         {
             "x264.exe" => JoinArgs(
-                GetRateControlLookahead(fpsString, TryGetIntegerArg(baseEncoderParams, "--bframes") ?? 0),
+                GetRateControlLookahead(fpsString, TryGetIntegerArg(baseEncoderParams, "--bframes") ?? 0, request.EncoderConf?.X264AutoLookaheadPercent ?? 180),
                 GetColorSpaceSei(stream, isX264: true, isX265: false, isSvtAv1: false),
                 GetRangeChromaLocation(stream, isX264: true, isX265: false, isSvtAv1: false),
                 GetHdrParams(encoder, hdrInfo, customParams)),
             "x265.exe" => JoinArgs(
-                GetRateControlLookahead(fpsString, TryGetIntegerArg(baseEncoderParams, "--bframes") ?? 0),
-                GetX265MeRange(stream),
-                GetX265SubmotionEstimation(fpsString),
+                GetRateControlLookahead(fpsString, TryGetIntegerArg(baseEncoderParams, "--bframes") ?? 0, request.EncoderConf?.X265AutoLookaheadPercent ?? 180),
+                GetX265MeRange(stream, request.EncoderConf),
+                GetX265SubmotionEstimation(fpsString, request.EncoderConf),
                 GetColorSpaceSei(stream, isX264: false, isX265: true, isSvtAv1: false),
                 GetRangeChromaLocation(stream, isX264: false, isX265: true, isSvtAv1: false),
                 GetHdrParams(encoder, hdrInfo, customParams)),
@@ -866,14 +866,15 @@ public static partial class EncodingPipeline
         return optionNames.Any(optionName => parameters.Contains(optionName, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static string GetRateControlLookahead(string? fpsString, int bframes)
+    private static string GetRateControlLookahead(string? fpsString, int bframes, int lookaheadPercent)
     {
         if (!FrameRate.TryParseFrameRate(fpsString, out double fps)) return string.Empty;
-        int frames = Math.Max((int)Math.Round(fps * 1.8d), bframes + 1);
+        double ratio = Math.Clamp(lookaheadPercent, 1, 1000) / 100d;
+        int frames = Math.Max((int)Math.Round(fps * ratio), bframes + 1);
         return $"--rc-lookahead {frames}";
     }
 
-    private static string GetX265MeRange(JsonElement stream)
+    private static string GetX265MeRange(JsonElement stream, EncoderConfM? conf)
     {
         if (!TryGetInt(stream, "width", out int width) || !TryGetInt(stream, "height", out int height))
             return string.Empty;
@@ -881,20 +882,26 @@ public static partial class EncodingPipeline
         long pixels = (long)width * height;
         int merange = pixels switch
         {
-            >= 8294400 => 56,
-            >= 3686400 => 52,
-            >= 2073600 => 48,
-            >= 921600 => 40,
-            _ => 36
+            >= 8294400 => conf?.X265AutoMerange4K ?? 56,
+            >= 3686400 => conf?.X265AutoMerange1440P ?? 52,
+            >= 2073600 => conf?.X265AutoMerange1080P ?? 48,
+            >= 921600 => conf?.X265AutoMerange720P ?? 40,
+            _ => conf?.X265AutoMerangeSd ?? 36
         };
-        return $"--merange {merange}";
+        return $"--merange {Math.Clamp(merange, 0, 32768)}";
     }
 
-    private static string GetX265SubmotionEstimation(string? fpsString)
+    private static string GetX265SubmotionEstimation(string? fpsString, EncoderConfM? conf)
     {
         if (!FrameRate.TryParseFrameRate(fpsString, out double fps)) return string.Empty;
-        int subme = fps < 25 ? 3 : fps < 49 ? 4 : fps < 61 ? 5 : 6;
-        return $"--subme {subme}";
+        int subme = fps < 25
+            ? conf?.X265AutoSubmeUnder25 ?? 3
+            : fps < 49
+                ? conf?.X265AutoSubmeUnder49 ?? 4
+                : fps < 61
+                    ? conf?.X265AutoSubmeUnder61 ?? 5
+                    : conf?.X265AutoSubmeAtLeast61 ?? 6;
+        return $"--subme {Math.Clamp(subme, 0, 7)}";
     }
 
     private static long? GetClipFrameCount(EncodingClipRequest? clip)

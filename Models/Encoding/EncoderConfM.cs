@@ -55,6 +55,20 @@ public class EncoderConfM : SaveLoadBase<EncoderConfM>
     public string CustomParamsX265 { get; set; } = "";
     public string CustomParamsSvtAv1 { get; set; } = "";
 
+    // Tuning values for ffprobe-derived automatic parameters.
+    // Defaults mirror the constants that were previously hard-coded in EncodingPipeline.
+    public int X264AutoLookaheadPercent { get; set; } = 180;
+    public int X265AutoLookaheadPercent { get; set; } = 180;
+    public int X265AutoMerange4K { get; set; } = 56;
+    public int X265AutoMerange1440P { get; set; } = 52;
+    public int X265AutoMerange1080P { get; set; } = 48;
+    public int X265AutoMerange720P { get; set; } = 40;
+    public int X265AutoMerangeSd { get; set; } = 36;
+    public int X265AutoSubmeUnder25 { get; set; } = 3;
+    public int X265AutoSubmeUnder49 { get; set; } = 4;
+    public int X265AutoSubmeUnder61 { get; set; } = 5;
+    public int X265AutoSubmeAtLeast61 { get; set; } = 6;
+
     public string PreviewCustomParamsX264 { get; set; } = "";
     public string PreviewCustomParamsX265 { get; set; } = "";
     public string PreviewCustomParamsSvtAv1 { get; set; } = "";

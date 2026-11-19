@@ -208,6 +208,8 @@ The trade-off is that adapting new encoders is more complex. Each requires handl
 
 Not every parameter is exposed as a UI control. Commonly used parameters are sliders, presets, and toggles; more advanced or unstable options go to the custom parameters text box.
 
+The tuning values behind the numerical auto parameters are exposed in the encoder configuration dialog's **Auto Parameters** section (one tab per encoder): the x264/x265 lookahead ratio (percent of frame rate) and the x265 `merange` (per resolution tier) / `subme` (per frame rate tier) values. Tier thresholds stay fixed; custom parameters still override auto-generated arguments.
+
 #### Frame Count Policy
 
 When total frame count is missing from video metadata, 1cenc leaves it unknown instead of synthesizing a value from duration and average frame rate. That avoids feeding guessed counts into encoder frame limits or the encoding monitor's progress display. In that case, frame-based progress is omitted.

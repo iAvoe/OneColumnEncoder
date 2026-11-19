@@ -78,6 +78,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps (anti-rate-limit)",
             ["Hrd1TbpsText"] = "1Tbps (8K+ anti-rate-limit)",
             ["HrdManualText"] = "Manual Specify VBV",
+            ["AutoParamsTitle"] = "Auto Parameters (ffprobe)",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "Frames = frame rate × ratio, at least B-frames + 1. Values are generated at encode time.",
+            ["AutoMerangeText"] = "merange (by source resolution)",
+            ["AutoMerangeHint"] = "Search range per resolution tier; larger = slower encoding, better motion search on high-resolution sources.",
+            ["AutoSubmeText"] = "subme (by source frame rate)",
+            ["AutoSubmeHint"] = "Sub-pixel refinement per frame rate tier; higher = finer motion search, slower encoding.",
+            ["AutoFixedMappingHint"] = "Color/HDR/range/chroma values are mapped directly from ffprobe metadata; custom parameters still override them.",
+            ["AutoNoAdjustHint"] = "SVT-AV1 auto parameters are direct ffprobe metadata mappings (color, range, chroma location, HDR). Nothing to adjust here.",
         },
         ["zh-cn"] = new()
         {
@@ -149,6 +158,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps（防限码）",
             ["Hrd1TbpsText"] = "1Tbps（8K+ 防限码）",
             ["HrdManualText"] = "手动设置 VBV",
+            ["AutoParamsTitle"] = "自动参数（ffprobe）",
+            ["AutoLookaheadText"] = "rc-lookahead ×帧率",
+            ["AutoLookaheadHint"] = "帧数 = 帧率 × 倍率，至少为 B 帧数 + 1；数值在编码时生成。",
+            ["AutoMerangeText"] = "merange（按源分辨率分档）",
+            ["AutoMerangeHint"] = "按分辨率档位取搜索范围；越大编码越慢，高分辨率下运动搜索更充分。",
+            ["AutoSubmeText"] = "subme（按源帧率分档）",
+            ["AutoSubmeHint"] = "按帧率档位取亚像素精度；越高运动搜索越精细，编码越慢。",
+            ["AutoFixedMappingHint"] = "色彩/HDR/范围/色度位置参数由 ffprobe 元数据直接映射；自定义参数仍可覆盖。",
+            ["AutoNoAdjustHint"] = "SVT-AV1 的自动参数均为 ffprobe 元数据直接映射（色彩、范围、色度位置、HDR），此处无可调项。",
         },
         ["zh-tw"] = new()
         {
@@ -220,6 +238,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps（防限碼）",
             ["Hrd1TbpsText"] = "1Tbps（8K+ 防限碼）",
             ["HrdManualText"] = "手動設定 VBV",
+            ["AutoParamsTitle"] = "自動參數（ffprobe）",
+            ["AutoLookaheadText"] = "rc-lookahead ×幀率",
+            ["AutoLookaheadHint"] = "幀數 = 幀率 × 倍率，至少為 B 幀數 + 1；數值於編碼時產生。",
+            ["AutoMerangeText"] = "merange（按視訊源解析度分檔）",
+            ["AutoMerangeHint"] = "依解析度檔位取搜尋範圍；越大編碼越慢，高解析度下動態搜尋更充分。",
+            ["AutoSubmeText"] = "subme（按視訊源幀率分檔）",
+            ["AutoSubmeHint"] = "依幀率檔位取亞像素精度；越高動態搜尋越精細，編碼越慢。",
+            ["AutoFixedMappingHint"] = "色彩/HDR/範圍/色度位置參數由 ffprobe 中繼資料直接映射；自訂參數仍可覆蓋。",
+            ["AutoNoAdjustHint"] = "SVT-AV1 的自動參數均為 ffprobe 中繼資料直接映射（色彩、範圍、色度位置、HDR），此處無可調項。",
         }
     };
 
@@ -286,6 +313,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps (anti-limite)",
             ["Hrd1TbpsText"] = "1Tbps (8K+ anti-limite)",
             ["HrdManualText"] = "Spécifier le VBV",
+            ["AutoParamsTitle"] = "Paramètres automatiques (ffprobe)",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "Images = fréquence × ratio, au moins B-frames + 1. Les valeurs sont générées à l'encodage.",
+            ["AutoMerangeText"] = "merange (par résolution source)",
+            ["AutoMerangeHint"] = "Plage de recherche par palier de résolution ; plus grand = plus lent, meilleure recherche en haute résolution.",
+            ["AutoSubmeText"] = "subme (par fréquence source)",
+            ["AutoSubmeHint"] = "Précision sous-pixel par palier de fréquence ; plus élevé = plus fin mais plus lent.",
+            ["AutoFixedMappingHint"] = "Couleur/HDR/plage/chroma proviennent directement des métadonnées ffprobe ; les paramètres personnalisés restent prioritaires.",
+            ["AutoNoAdjustHint"] = "Les paramètres auto SVT-AV1 sont des métadonnées ffprobe directes (couleur, plage, position chroma, HDR). Rien à régler ici.",
         };
         Data["es"] = new(Data["en"])
         {
@@ -348,6 +384,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps (anti-límite)",
             ["Hrd1TbpsText"] = "1Tbps (8K+ anti-límite)",
             ["HrdManualText"] = "Especificar VBV",
+            ["AutoParamsTitle"] = "Parámetros automáticos (ffprobe)",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "Fotogramas = velocidad × ratio, mínimo B-frames + 1. Los valores se generan al codificar.",
+            ["AutoMerangeText"] = "merange (por resolución de origen)",
+            ["AutoMerangeHint"] = "Rango de búsqueda por nivel de resolución; mayor = más lento, mejor búsqueda en alta resolución.",
+            ["AutoSubmeText"] = "subme (por velocidad de fotogramas)",
+            ["AutoSubmeHint"] = "Precisión subpíxel por nivel de velocidad; mayor = búsqueda más fina, codificación más lenta.",
+            ["AutoFixedMappingHint"] = "Color/HDR/rango/croma se toman directamente de los metadatos ffprobe; los parámetros personalizados siguen teniendo prioridad.",
+            ["AutoNoAdjustHint"] = "Los parámetros automáticos de SVT-AV1 son metadatos ffprobe directos (color, rango, posición de croma, HDR). Nada que ajustar aquí.",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -410,6 +455,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps（制限回避）",
             ["Hrd1TbpsText"] = "1Tbps（8K+ 制限回避）",
             ["HrdManualText"] = "VBV を手動指定",
+            ["AutoParamsTitle"] = "自動パラメータ（ffprobe）",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "フレーム数 = フレームレート × 倍率（最低 B フレーム数 + 1）。値はエンコード時に生成されます。",
+            ["AutoMerangeText"] = "merange（入力解像度別）",
+            ["AutoMerangeHint"] = "解像度の段階ごとの探索範囲。大きいほど低速ですが高解像度で動き探索が向上します。",
+            ["AutoSubmeText"] = "subme（入力フレームレート別）",
+            ["AutoSubmeHint"] = "フレームレートの段階ごとのサブピクセル精度。高いほど精細ですが低速になります。",
+            ["AutoFixedMappingHint"] = "色/HDR/レンジ/クロマ位置は ffprobe メタデータから直接マッピングされます。カスタムパラメータは引き続き優先されます。",
+            ["AutoNoAdjustHint"] = "SVT-AV1 の自動パラメータは ffprobe メタデータの直接マッピング（色、レンジ、クロマ位置、HDR）です。ここで調整する項目はありません。",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -472,6 +526,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100 Гбит/с (без ограничения)",
             ["Hrd1TbpsText"] = "1 Тбит/с (8K+ без ограничения)",
             ["HrdManualText"] = "Указать VBV вручную",
+            ["AutoParamsTitle"] = "Автопараметры (ffprobe)",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "Кадры = частота × коэффициент, не менее B-кадров + 1. Значения формируются при кодировании.",
+            ["AutoMerangeText"] = "merange (по разрешению источника)",
+            ["AutoMerangeHint"] = "Диапазон поиска по уровню разрешения; больше = медленнее, лучше поиск на высоком разрешении.",
+            ["AutoSubmeText"] = "subme (по частоте кадров источника)",
+            ["AutoSubmeHint"] = "Субпиксельная точность по уровню частоты; выше = точнее, но медленнее.",
+            ["AutoFixedMappingHint"] = "Цвет/HDR/диапазон/положение цветности берутся из метаданных ffprobe; пользовательские параметры по-прежнему переопределяют их.",
+            ["AutoNoAdjustHint"] = "Автопараметры SVT-AV1 — прямое отображение метаданных ffprobe (цвет, диапазон, положение цветности, HDR). Здесь нечего настраивать.",
         };
         Data["de"] = new(Data["en"])
         {
@@ -534,6 +597,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100 Gbit/s (Limitierung vermeiden)",
             ["Hrd1TbpsText"] = "1 Tbit/s (8K+ Limitierung vermeiden)",
             ["HrdManualText"] = "VBV manuell festlegen",
+            ["AutoParamsTitle"] = "Automatische Parameter (ffprobe)",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "Frames = Bildrate × Faktor, mindestens B-Frames + 1. Werte werden beim Kodieren erzeugt.",
+            ["AutoMerangeText"] = "merange (nach Quellauflösung)",
+            ["AutoMerangeHint"] = "Suchbereich je Auflösungsstufe; größer = langsamer, bessere Bewegungssuche bei hoher Auflösung.",
+            ["AutoSubmeText"] = "subme (nach Quellbildrate)",
+            ["AutoSubmeHint"] = "Subpixel-Genauigkeit je Bildratenstufe; höher = feiner, aber langsamer.",
+            ["AutoFixedMappingHint"] = "Farbe/HDR/Range/Chroma-Position werden direkt aus ffprobe-Metadaten übernommen; benutzerdefinierte Parameter haben weiterhin Vorrang.",
+            ["AutoNoAdjustHint"] = "SVT-AV1-Auto-Parameter sind direkte ffprobe-Metadaten-Zuordnungen (Farbe, Range, Chroma-Position, HDR). Hier gibt es nichts einzustellen.",
         };
         Data["ko"] = new(Data["en"])
         {
@@ -605,6 +677,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps(비트레이트 제한 우회)",
             ["Hrd1TbpsText"] = "1Tbps(8K+ 비트레이트 제한 우회)",
             ["HrdManualText"] = "수동 VBV 지정",
+            ["AutoParamsTitle"] = "자동 매개변수(ffprobe)",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "프레임 수 = 프레임률 × 배율, 최소 B-프레임 + 1. 값은 인코딩 시 생성됩니다.",
+            ["AutoMerangeText"] = "merange(소스 해상도별)",
+            ["AutoMerangeHint"] = "해상도 단계별 탐색 범위. 클수록 느리지만 고해상도에서 움직임 탐색이 향상됩니다.",
+            ["AutoSubmeText"] = "subme(소스 프레임률별)",
+            ["AutoSubmeHint"] = "프레임률 단계별 서브픽셀 정밀도. 높을수록 정밀하지만 느려집니다.",
+            ["AutoFixedMappingHint"] = "색상/HDR/범위/크로마 위치는 ffprobe 메타데이터에서 직접 매핑됩니다. 사용자 지정 매개변수는 계속 우선합니다.",
+            ["AutoNoAdjustHint"] = "SVT-AV1 자동 매개변수는 ffprobe 메타데이터 직접 매핑(색상, 범위, 크로마 위치, HDR)입니다. 여기서 조정할 항목이 없습니다.",
         };
         Data["pt-br"] = new(Data["en"])
         {
@@ -667,6 +748,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["Hrd100GbpsText"] = "100Gbps (anti-limite)",
             ["Hrd1TbpsText"] = "1Tbps (8K+ anti-limite)",
             ["HrdManualText"] = "Especificar VBV manualmente",
+            ["AutoParamsTitle"] = "Parâmetros automáticos (ffprobe)",
+            ["AutoLookaheadText"] = "rc-lookahead ×fps",
+            ["AutoLookaheadHint"] = "Quadros = taxa × proporção, no mínimo B-frames + 1. Os valores são gerados na codificação.",
+            ["AutoMerangeText"] = "merange (por resolução da fonte)",
+            ["AutoMerangeHint"] = "Faixa de busca por nível de resolução; maior = mais lento, melhor busca em alta resolução.",
+            ["AutoSubmeText"] = "subme (por taxa de quadros da fonte)",
+            ["AutoSubmeHint"] = "Precisão subpixel por nível de taxa; maior = busca mais fina, codificação mais lenta.",
+            ["AutoFixedMappingHint"] = "Cor/HDR/faixa/croma vêm diretamente dos metadados ffprobe; parâmetros personalizados continuam tendo prioridade.",
+            ["AutoNoAdjustHint"] = "Os parâmetros automáticos do SVT-AV1 são metadados ffprobe diretos (cor, faixa, posição de croma, HDR). Nada a ajustar aqui.",
         };
     }
 
@@ -749,6 +839,15 @@ public class EncoderConfLangProvider : LangProviderBase
     public string Hrd100GbpsText { get; }
     public string Hrd1TbpsText { get; }
     public string HrdManualText { get; }
+    public string AutoParamsTitle { get; }
+    public string AutoLookaheadText { get; }
+    public string AutoLookaheadHint { get; }
+    public string AutoMerangeText { get; }
+    public string AutoMerangeHint { get; }
+    public string AutoSubmeText { get; }
+    public string AutoSubmeHint { get; }
+    public string AutoFixedMappingHint { get; }
+    public string AutoNoAdjustHint { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
 
@@ -831,6 +930,15 @@ public class EncoderConfLangProvider : LangProviderBase
         Hrd100GbpsText = this["Hrd100GbpsText"];
         Hrd1TbpsText = this["Hrd1TbpsText"];
         HrdManualText = this["HrdManualText"];
+        AutoParamsTitle = this["AutoParamsTitle"];
+        AutoLookaheadText = this["AutoLookaheadText"];
+        AutoLookaheadHint = this["AutoLookaheadHint"];
+        AutoMerangeText = this["AutoMerangeText"];
+        AutoMerangeHint = this["AutoMerangeHint"];
+        AutoSubmeText = this["AutoSubmeText"];
+        AutoSubmeHint = this["AutoSubmeHint"];
+        AutoFixedMappingHint = this["AutoFixedMappingHint"];
+        AutoNoAdjustHint = this["AutoNoAdjustHint"];
         CancelButtonText = this["CancelButtonText"];
         ConfirmButtonText = this["ConfirmButtonText"];
         Current = this;

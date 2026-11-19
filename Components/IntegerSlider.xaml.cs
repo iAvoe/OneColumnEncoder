@@ -36,6 +36,12 @@ public partial class IntegerSlider : UserControl
     public static readonly DependencyProperty TickLabelsProperty = DependencyProperty.Register(
         nameof(TickLabels), typeof(IEnumerable<string>), typeof(IntegerSlider), new PropertyMetadata(null));
 
+    // Optional numeric values paired with TickLabels by index. When supplied, a tick label is
+    // positioned by value instead of by parsing the leading number out of the label text, which
+    // lets labels be formatted freely (e.g. "×1.8" positioned at 180 on a 100–300 range).
+    public static readonly DependencyProperty TickLabelValuesProperty = DependencyProperty.Register(
+        nameof(TickLabelValues), typeof(IEnumerable<int>), typeof(IntegerSlider), new PropertyMetadata(null));
+
     // Declares the number of tick labels this slider should have to maintain consistency with the ViewModel;
     // actual rendering is driven by the TickLabels collection, and the Value will be re-clamped when it changes.
     public static readonly DependencyProperty TickCountProperty = DependencyProperty.Register(
@@ -65,6 +71,7 @@ public partial class IntegerSlider : UserControl
     public int Value { get => (int)GetValue(ValueProperty); set => SetValue(ValueProperty, value); }
     public bool IsLogarithmic { get => (bool)GetValue(IsLogarithmicProperty); set => SetValue(IsLogarithmicProperty, value); }
     public IEnumerable<string> TickLabels { get => (IEnumerable<string>)GetValue(TickLabelsProperty); set => SetValue(TickLabelsProperty, value); }
+    public IEnumerable<int> TickLabelValues { get => (IEnumerable<int>)GetValue(TickLabelValuesProperty); set => SetValue(TickLabelValuesProperty, value); }
     public int TickCount { get => (int)GetValue(TickCountProperty); set => SetValue(TickCountProperty, value); }
     public bool SnapToTicks { get => (bool)GetValue(SnapToTicksProperty); set => SetValue(SnapToTicksProperty, value); }
     public int Step { get => (int)GetValue(StepProperty); set => SetValue(StepProperty, value); }

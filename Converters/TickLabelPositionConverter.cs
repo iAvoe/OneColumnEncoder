@@ -12,7 +12,7 @@ public class TickLabelPositionConverter : IMultiValueConverter
             return 0d;
         }
 
-        if (!TryToDouble(values[2], out double value) ||
+        if (!TryGetTickValue(values, out double value) ||
             !TryToDouble(values[3], out double minimum) ||
             !TryToDouble(values[4], out double maximum) ||
             maximum <= minimum)
@@ -39,6 +39,29 @@ public class TickLabelPositionConverter : IMultiValueConverter
             results[index] = Binding.DoNothing;
 
         return results;
+    }
+
+    /// <summary>
+    /// Resolves the numeric position value for a tick label. When the slider supplies
+    /// TickLabelValues (paired with TickLabels by index), the paired value is used so labels
+    /// may be formatted freely; otherwise the leading number in the label text is parsed.
+    /// </summary>
+    private static bool TryGetTickValue(object[] values, out double value)
+    {
+        if (values.Length >= 8 &&
+            values[6] is int index &&
+            values[7] is IEnumerable<int> tickValues)
+        {
+            int current = 0;
+            foreach (int tickValue in tickValues)
+            {
+                if (current++ != index) continue;
+                value = tickValue;
+                return true;
+            }
+        }
+
+        return TryToDouble(values[2], out value);
     }
 
     private static double NormalizeLog(double value, double minimum, double maximum)

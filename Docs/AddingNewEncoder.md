@@ -39,6 +39,7 @@ If there is no Keyframe interval / max GOP size, CRF control or anything that br
 - HDR10 mastering display / content light level are read from stream side data when available, otherwise from the first decoded frame side data (`-show_frames -read_intervals "%+#1"`).
 - `x264` also gets `--rc-lookahead` and `--threads`.
 - `x265` also gets `--rc-lookahead`, `--merange`, `--subme`, and `--pools`.
+- The numerical tuning values (lookahead ratio, x265 `merange`/`subme` tiers) come from `EncoderConfM` (`XxxAuto...` properties) and are edited in `EncoderAutoParamsPanel`; tier thresholds stay hard-coded in `EncodingPipeline`.
 - `svtav1encapp` currently gets frame count plus color metadata, chroma location handling, and HDR mastering-display / content-light metadata.
 - Custom third-party toggles are filtered per encoder before command generation.
 

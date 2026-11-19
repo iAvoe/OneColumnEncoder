@@ -33,6 +33,7 @@
                           HorizontalScrollBarVisibility="Disabled">
                 <StackPanel>
                     <comps:EncoderRateControlPanel />
+                    <comps:EncoderAutoParamsPanel Margin="0 15 0 0" />
                     <comps:EncoderCustomParamsPanel Margin="0 15 0 0" />
                 </StackPanel>
             </ScrollViewer>

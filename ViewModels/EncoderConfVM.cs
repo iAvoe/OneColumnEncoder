@@ -88,6 +88,15 @@ public class EncoderConfVM : BaseVM
     public string DoviOnOff => Lang.DoviOnOff;
     public string X264HrdTitle => Lang.X264HrdTitle;
     public string X265HrdTitle => Lang.X265HrdTitle;
+    public string AutoParamsTitle => Lang.AutoParamsTitle;
+    public string AutoLookaheadText => Lang.AutoLookaheadText;
+    public string AutoLookaheadHint => Lang.AutoLookaheadHint;
+    public string AutoMerangeText => Lang.AutoMerangeText;
+    public string AutoMerangeHint => Lang.AutoMerangeHint;
+    public string AutoSubmeText => Lang.AutoSubmeText;
+    public string AutoSubmeHint => Lang.AutoSubmeHint;
+    public string AutoFixedMappingHint => Lang.AutoFixedMappingHint;
+    public string AutoNoAdjustHint => Lang.AutoNoAdjustHint;
 
     private string _freeTextParamsX264 = string.Empty;
     public string FreeTextParamsX264
@@ -181,6 +190,98 @@ public class EncoderConfVM : BaseVM
     {
         get => _svtAv1Abr; set => SetProperty(ref _svtAv1Abr, value);
     }
+
+    #region Auto parameter tuning (ffprobe)
+    private int _x264AutoLookaheadPercent = 180;
+    public int X264AutoLookaheadPercent
+    {
+        get => _x264AutoLookaheadPercent;
+        set
+        {
+            if (!SetProperty(ref _x264AutoLookaheadPercent, value)) return;
+            OnPropertyChanged(nameof(X264LookaheadDisplay));
+        }
+    }
+
+    private int _x265AutoLookaheadPercent = 180;
+    public int X265AutoLookaheadPercent
+    {
+        get => _x265AutoLookaheadPercent;
+        set
+        {
+            if (!SetProperty(ref _x265AutoLookaheadPercent, value)) return;
+            OnPropertyChanged(nameof(X265LookaheadDisplay));
+        }
+    }
+
+    private int _x265AutoMerange4K = 56;
+    public int X265AutoMerange4K
+    {
+        get => _x265AutoMerange4K;
+        set => SetProperty(ref _x265AutoMerange4K, value);
+    }
+
+    private int _x265AutoMerange1440P = 52;
+    public int X265AutoMerange1440P
+    {
+        get => _x265AutoMerange1440P;
+        set => SetProperty(ref _x265AutoMerange1440P, value);
+    }
+
+    private int _x265AutoMerange1080P = 48;
+    public int X265AutoMerange1080P
+    {
+        get => _x265AutoMerange1080P;
+        set => SetProperty(ref _x265AutoMerange1080P, value);
+    }
+
+    private int _x265AutoMerange720P = 40;
+    public int X265AutoMerange720P
+    {
+        get => _x265AutoMerange720P;
+        set => SetProperty(ref _x265AutoMerange720P, value);
+    }
+
+    private int _x265AutoMerangeSd = 36;
+    public int X265AutoMerangeSd
+    {
+        get => _x265AutoMerangeSd;
+        set => SetProperty(ref _x265AutoMerangeSd, value);
+    }
+
+    private int _x265AutoSubmeUnder25 = 3;
+    public int X265AutoSubmeUnder25
+    {
+        get => _x265AutoSubmeUnder25;
+        set => SetProperty(ref _x265AutoSubmeUnder25, value);
+    }
+
+    private int _x265AutoSubmeUnder49 = 4;
+    public int X265AutoSubmeUnder49
+    {
+        get => _x265AutoSubmeUnder49;
+        set => SetProperty(ref _x265AutoSubmeUnder49, value);
+    }
+
+    private int _x265AutoSubmeUnder61 = 5;
+    public int X265AutoSubmeUnder61
+    {
+        get => _x265AutoSubmeUnder61;
+        set => SetProperty(ref _x265AutoSubmeUnder61, value);
+    }
+
+    private int _x265AutoSubmeAtLeast61 = 6;
+    public int X265AutoSubmeAtLeast61
+    {
+        get => _x265AutoSubmeAtLeast61;
+        set => SetProperty(ref _x265AutoSubmeAtLeast61, value);
+    }
+
+    public string X264LookaheadDisplay => FormatLookaheadRatio(X264AutoLookaheadPercent);
+    public string X265LookaheadDisplay => FormatLookaheadRatio(X265AutoLookaheadPercent);
+
+    private static string FormatLookaheadRatio(int percent) => $"×{percent / 100d:0.0#}";
+    #endregion
 
     private int _x264Keyframe = 9;
     public int X264Keyframe
@@ -278,6 +379,10 @@ public class EncoderConfVM : BaseVM
     public static IEnumerable<string> X265KeyframeLabels => ["4", "7", "10", "13"];
     public static IEnumerable<string> SvtAv1KeyframeLabels => ["6", "9", "12", "15"];
     public static IEnumerable<string> VvencQpLabels => ["0", "16", "32", "48", "63"];
+    public static IEnumerable<string> AutoLookaheadLabels => ["×1.0", "×1.5", "×2.0", "×2.5", "×3.0"];
+    public static IEnumerable<int> AutoLookaheadValues => [100, 150, 200, 250, 300];
+    public static IEnumerable<string> AutoMerangeLabels => ["4", "32", "64", "96", "128"];
+    public static IEnumerable<string> AutoSubmeLabels => ["0", "2", "4", "6", "7"];
 
     public EncoderConfVM(
         Action closeAction,
@@ -397,6 +502,17 @@ public class EncoderConfVM : BaseVM
         X264Keyframe = _model.X264Keyframe;
         X265Keyframe = _model.X265Keyframe;
         SvtAv1Keyframe = _model.SvtAv1Keyframe;
+        X264AutoLookaheadPercent = _model.X264AutoLookaheadPercent;
+        X265AutoLookaheadPercent = _model.X265AutoLookaheadPercent;
+        X265AutoMerange4K = _model.X265AutoMerange4K;
+        X265AutoMerange1440P = _model.X265AutoMerange1440P;
+        X265AutoMerange1080P = _model.X265AutoMerange1080P;
+        X265AutoMerange720P = _model.X265AutoMerange720P;
+        X265AutoMerangeSd = _model.X265AutoMerangeSd;
+        X265AutoSubmeUnder25 = _model.X265AutoSubmeUnder25;
+        X265AutoSubmeUnder49 = _model.X265AutoSubmeUnder49;
+        X265AutoSubmeUnder61 = _model.X265AutoSubmeUnder61;
+        X265AutoSubmeAtLeast61 = _model.X265AutoSubmeAtLeast61;
         X264Mod = _model.X264Mod;
         X265Aq = _model.X265Aq;
         X265Dark = _model.X265Dark;
@@ -449,6 +565,17 @@ public class EncoderConfVM : BaseVM
         model.X264Keyframe = X264Keyframe;
         model.X265Keyframe = X265Keyframe;
         model.SvtAv1Keyframe = SvtAv1Keyframe;
+        model.X264AutoLookaheadPercent = X264AutoLookaheadPercent;
+        model.X265AutoLookaheadPercent = X265AutoLookaheadPercent;
+        model.X265AutoMerange4K = X265AutoMerange4K;
+        model.X265AutoMerange1440P = X265AutoMerange1440P;
+        model.X265AutoMerange1080P = X265AutoMerange1080P;
+        model.X265AutoMerange720P = X265AutoMerange720P;
+        model.X265AutoMerangeSd = X265AutoMerangeSd;
+        model.X265AutoSubmeUnder25 = X265AutoSubmeUnder25;
+        model.X265AutoSubmeUnder49 = X265AutoSubmeUnder49;
+        model.X265AutoSubmeUnder61 = X265AutoSubmeUnder61;
+        model.X265AutoSubmeAtLeast61 = X265AutoSubmeAtLeast61;
         model.X264Mod = X264Mod;
         model.X265Aq = X265Aq;
         model.X265Dark = X265Dark;
@@ -549,6 +676,15 @@ public class EncoderConfVM : BaseVM
         OnPropertyChanged(nameof(DoviOnOff));
         OnPropertyChanged(nameof(X264HrdTitle));
         OnPropertyChanged(nameof(X265HrdTitle));
+        OnPropertyChanged(nameof(AutoParamsTitle));
+        OnPropertyChanged(nameof(AutoLookaheadText));
+        OnPropertyChanged(nameof(AutoLookaheadHint));
+        OnPropertyChanged(nameof(AutoMerangeText));
+        OnPropertyChanged(nameof(AutoMerangeHint));
+        OnPropertyChanged(nameof(AutoSubmeText));
+        OnPropertyChanged(nameof(AutoSubmeHint));
+        OnPropertyChanged(nameof(AutoFixedMappingHint));
+        OnPropertyChanged(nameof(AutoNoAdjustHint));
         FinishButtons.B2_1Text = CancelButtonText;
         FinishButtons.B2_2Text = ConfirmButtonText;
     }

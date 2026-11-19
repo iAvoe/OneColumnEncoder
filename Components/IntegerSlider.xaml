@@ -155,6 +155,10 @@
                                              Path="Maximum" />
                                     <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
                                              Path="IsLogarithmic" />
+                                    <Binding RelativeSource="{RelativeSource Self}"
+                                             Path="(ItemsControl.AlternationIndex)" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
+                                             Path="TickLabelValues" />
                                 </MultiBinding>
                             </Setter.Value>
                         </Setter>

@@ -14,6 +14,7 @@ This document covers the reusable `IntegerSlider` control used across the app fo
 - `Components/VpyPreviewPanel.xaml` for VapourSynth preview position selection
 - `Components/EncoderRateControlPanel.xaml` for CRF and ABR controls
 - `Components/EncoderCustomParamsPanel.xaml` for keyframe interval controls
+- `Components/EncoderAutoParamsPanel.xaml` for ffprobe automatic-parameter tuning
 - `Components/EncodingMonitor.xaml` for sample interval control
 - `Views/SampleClipModal.xaml` for clip duration
 - `Views/ParallelismConfModal.xaml` for thread count
@@ -32,11 +33,25 @@ This document covers the reusable `IntegerSlider` control used across the app fo
                      HorizontalAlignment="Stretch" />
 ```
 
+When the tick labels are formatted rather than plain numbers, pair them with explicit values so the
+positions stay correct and the popup can show a different text:
+
+```xml
+<comps:IntegerSlider Minimum="100"
+                     Maximum="300"
+                     Step="10"
+                     Value="{Binding X264AutoLookaheadPercent, Mode=TwoWay}"
+                     ValueText="{Binding X264LookaheadDisplay, Mode=OneWay}"
+                     TickLabels="{Binding AutoLookaheadLabels}"
+                     TickLabelValues="{Binding AutoLookaheadValues}" />
+```
+
 ## Important properties
 
 - `Minimum` and `Maximum` define the integer range.
 - `Value` is the bound selection.
 - `TickLabels` supplies the displayed labels under the track.
+- `TickLabelValues` optionally pairs each label with a numeric value, so labels can be formatted freely (for example `×1.8`) instead of starting with the number used for positioning.
 - `TickCount` keeps the track layout stable when labels are present.
 - `Step` snaps movement to a fixed integer increment.
 - `SnapToTicks` keeps the selected value aligned to ticks.
