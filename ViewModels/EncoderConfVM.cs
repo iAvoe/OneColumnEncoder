@@ -281,6 +281,21 @@ public class EncoderConfVM : BaseVM
     public string X265LookaheadDisplay => FormatLookaheadRatio(X265AutoLookaheadPercent);
 
     private static string FormatLookaheadRatio(int percent) => $"×{percent / 100d:0.0#}";
+
+    /// <summary>
+    /// Tab shown first in the auto-parameter panel. Mirrors the preview panel: the encoder
+    /// selected in the main window decides the tab, and anything unknown falls back to the
+    /// first tab (x264), just like ImgPreviewerVM falls back to libx264.
+    /// </summary>
+    public int AutoParamsTabIndex { get; }
+
+    private static int ResolveAutoParamsTabIndex(PreviewEncoder? encoder) => encoder switch
+    {
+        PreviewEncoder.X265 => 1,
+        PreviewEncoder.SvtAv1 => 2,
+        // VVenC has no auto-parameter tab (preview-only encoder); keep the first tab.
+        _ => 0
+    };
     #endregion
 
     private int _x264Keyframe = 9;
@@ -397,6 +412,7 @@ public class EncoderConfVM : BaseVM
     {
         _model = EncoderConfM.Load();
         _targetItem = targetItem;
+        AutoParamsTabIndex = ResolveAutoParamsTabIndex(initialEncoder);
         CloseCmd = new CloseModalCmd(closeAction);
         ConfirmCmd = new ActionCmd(_ =>
         {

@@ -208,7 +208,7 @@ The trade-off is that adapting new encoders is more complex. Each requires handl
 
 Not every parameter is exposed as a UI control. Commonly used parameters are sliders, presets, and toggles; more advanced or unstable options go to the custom parameters text box.
 
-The tuning values behind the numerical auto parameters are exposed in the encoder configuration dialog's **Auto Parameters** section (one tab per encoder): the x264/x265 lookahead ratio (percent of frame rate) and the x265 `merange` (per resolution tier) / `subme` (per frame rate tier) values. Tier thresholds stay fixed; custom parameters still override auto-generated arguments.
+The tuning values behind the numerical auto parameters are exposed in the encoder configuration dialog's **Auto Parameters** section (one tab per encoder): the x264/x265 lookahead ratio (percent of frame rate) and the x265 `merange` (per resolution tier) / `subme` (per frame rate tier) values. Tier thresholds stay fixed; custom parameters still override auto-generated arguments. The panel opens on the tab that matches the encoder selected in the main window, falling back to the first tab when nothing is selected.
 
 #### Frame Count Policy
 
