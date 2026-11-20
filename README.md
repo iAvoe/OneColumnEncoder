@@ -6,6 +6,9 @@ OneColumnEncoder (1cenc) 以 UI 操作主导，呈现完整的视频滤镜与编
 
 <p align="center"><img src="./WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600"/></p>
 <p align="center"><img src="./WireframeMockups/1-Main-Page-v4D.png" alt="Main Window" width="600"/></p>
+<p align="center">
+    <a href="../../releases/latest"><img src="./assets/download.svg" alt="Download" width="400"/></a>
+</p>
 
 ## Docs
 
