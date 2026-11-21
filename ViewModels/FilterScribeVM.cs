@@ -12,6 +12,7 @@ namespace OneColumnEncoder.ViewModels;
 /// File save & ItemCard write back logic created by MainVM as OnSrcImported,
 /// passed in via OpenFilterScribeCmd constructor as Action<>
 /// </summary>
+/// <remarks>AviSynth source parameter is implicitly passed (do not add), VapourSynth source parameter is explicitly passed (add)</remarks>
 public class FilterScribeVM : BaseVM
 {
     private readonly ModalNavS _modalNavS;
@@ -711,9 +712,9 @@ public class FilterScribeVM : BaseVM
     public string AvsRotateFilter =>
         RotateMode switch
         {
-            1 => "TurnRight(src)",
-            2 => "Turn180(src)",
-            3 => "TurnLeft(src)",
+            1 => "TurnRight()",
+            2 => "Turn180()",
+            3 => "TurnLeft()",
             _ => LangProviderBase.NAText
         };
 
@@ -754,8 +755,8 @@ public class FilterScribeVM : BaseVM
                 ? "hflip,vflip"
                 : HorizontalFlipEnabled ? "hflip" : "vflip";
 
-    public static string AvsHFlipFilter => "FlipHorizontal(src)";
-    public static string AvsVFlipFilter => "FlipVertical(src)";
+    public static string AvsHFlipFilter => "FlipHorizontal()";
+    public static string AvsVFlipFilter => "FlipVertical()";
     public static string VpyHFlipFilter => "src = core.std.FlipHorizontal(src)";
     public static string VpyVFlipFilter => "src = core.std.FlipVertical(src)";
 
@@ -835,12 +836,22 @@ public class FilterScribeVM : BaseVM
     public static bool CanInsertVpyHFlipFilter => true;
     public static bool CanInsertVpyVFlipFilter => true;
 
-    public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
+    public static string AviSynthHqdn3dDenoiseFilter
+    {
+        get
+        {
+            string pluginsDir = Environment.Is64BitProcess
+                ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+                : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+            string hqdn3dPath = Path.Combine(pluginsDir, "hqdn3d.dll");
+            return $"LoadPlugin(\"{hqdn3dPath}\")\r\nhqdn3d(ls=4.0, cs=3.0, lt=6.0, ct=4.5, restart=7, y=3, u=3, v=3)";
+        }
+    }
     public static string FFmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
     public static string FFmpegHqdn3dDenoiseFilterDisplay => "hqdn3d";
     public string AviSynthAssRenderFilter =>
-        "SupTitle(src, \"x:\\path\\to\\DVD_BDMV.sup\", forcedOnly=false)\r\n" +
-        "assrender(src, \"x:\\path\\to\\subtitle.ass\", scale=1.0, frame_width=" +
+        "SupTitle(\"x:\\path\\to\\DVD_BDMV.sup\", forcedOnly=false)\r\n" +
+        "assrender(\"x:\\path\\to\\subtitle.ass\", scale=1.0, frame_width=" +
         FormatAviSynthAssRenderDimension(SourceWidth, "width") +
         ", frame_height=" +
         FormatAviSynthAssRenderDimension(SourceHeight, "height") +

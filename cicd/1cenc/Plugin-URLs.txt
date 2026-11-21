@@ -1,5 +1,5 @@
 fmtconv r31 (AVS+VS, x86-64)
-- https://gitlab.com/EleonoreMizo/fmtconv/-/releases
+- https://gitlab.com/EleonoreMizo/fmtconv
 
 ASharp (x86-64)
 - AVS: https://github.com/Asd-g/AviSynth-ASharp
@@ -9,4 +9,7 @@ libvs_placebo (VS, x64)
 - https://pypi.org/project/vs-placebo/#files
 
 libplacebo_Render (AVS, x64)
-- https://github.com/Asd-g/libplacebo_Render/
+- https://github.com/Asd-g/libplacebo_Render
+
+AviSynth-hqdn3d (AVS, x86-64)
+- https://github.com/Asd-g/AviSynth-hqdn3d
