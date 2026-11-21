@@ -1,4 +1,5 @@
 using System.IO;
+using OneColumnEncoder.ScriptGeneration;
 
 namespace OneColumnEncoder;
 
@@ -46,6 +47,9 @@ public partial class App : Application
 
             ApplyStartupLanguageOnce();
             _ = new UILangProvider(_appConfM.Lang.LanguageCode);
+
+            ScriptTemplate.CacheLwiToAppFolder = _appConfM.CacheLwiToAppFolder;
+            _ = ScriptTemplate.EnsureLwiCacheDirectory();
 
             // Apply saved theme
             UI.ThemeManager.ApplyTheme(_appConfM.Theme.ThemeName);

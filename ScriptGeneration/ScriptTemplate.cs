@@ -1,23 +1,71 @@
-﻿namespace OneColumnEncoder.ScriptGeneration;
+﻿using System.IO;
+
+namespace OneColumnEncoder.ScriptGeneration;
 
 public static class ScriptTemplate
 {
-    // TODO: add cachedir="" config
-    public static string BuildAvsSourceLine(string srcPath, int fpsnum = 0, int fpsden = 0)
+    public const string LwiCacheFolderName = "LSMASHCaches";
+
+    /// <summary>
+    /// When enabled, LwLibavVideoSource/LWLibavSource writes .lwi index files to
+    /// the application's 1cenc/LSMASHCaches folder instead of next to each source video.
+    /// </summary>
+    public static bool CacheLwiToAppFolder { get; set; }
+
+    /// <summary>
+    /// Creates the LWI cache folder when the option is enabled. Returns the folder
+    /// path, or null when the option is disabled or the folder cannot be created.
+    /// </summary>
+    public static string? EnsureLwiCacheDirectory()
     {
-        string line = $"LWLibavVideoSource(\"{srcPath}\")";
-        if (fpsnum > 0 && fpsden > 0)
-            line = $"LWLibavVideoSource(\"{srcPath}\", fpsnum={fpsnum}, fpsden={fpsden})";
-        return line;
+        if (!CacheLwiToAppFolder) return null;
+
+        string cacheDirectory = Path.Combine(
+            OneColumnEncoder.Persistence.SaveLoadBase<OneColumnEncoder.Models.AppConfM>.GetConfigDirectory(),
+            LwiCacheFolderName);
+        try
+        {
+            Directory.CreateDirectory(cacheDirectory);
+            return cacheDirectory;
+        }
+        catch
+        {
+            // Fall back to the default side-by-side .lwi behavior rather than
+            // emitting a cachedir the frame server cannot write to.
+            return null;
+        }
     }
 
-    // TODO: add cachedir="" config
+    private static string? BuildAvsCacheDirArgument()
+    {
+        string? cacheDirectory = EnsureLwiCacheDirectory();
+        return cacheDirectory is null
+            ? null
+            : $", cachedir=\"{cacheDirectory.Replace("\"", "\"\"")}\"";
+    }
+
+    private static string? BuildVpyCacheDirArgument()
+    {
+        string? cacheDirectory = EnsureLwiCacheDirectory();
+        return cacheDirectory is null
+            ? null
+            : $", cachedir=r\"{cacheDirectory}\"";
+    }
+
+    public static string BuildAvsSourceLine(string srcPath, int fpsnum = 0, int fpsden = 0)
+    {
+        string arguments = $"\"{srcPath}\"{BuildAvsCacheDirArgument()}";
+        if (fpsnum > 0 && fpsden > 0)
+            arguments += $", fpsnum={fpsnum}, fpsden={fpsden}";
+        return $"LWLibavVideoSource({arguments})";
+    }
+
     public static string BuildVpySourceHeader(string srcPath, int fpsnum = 0, int fpsden = 0)
     {
-        string header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{srcPath}\")";
+        string arguments = $"source=r\"{srcPath}\"{BuildVpyCacheDirArgument()}";
         if (fpsnum > 0 && fpsden > 0)
-            header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{srcPath}\", fpsnum={fpsnum}, fpsden={fpsden})";
-        return header;
+            arguments += $", fpsnum={fpsnum}, fpsden={fpsden}";
+        return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource({arguments})";
     }
 
     public static string BuildAvsExportScript(string srcPath, string avsPrefix2, string avsSuffix, string userInput = "", int fpsnum = 0, int fpsden = 0)
@@ -54,9 +102,13 @@ public static class ScriptTemplate
             throw new ArgumentException("Concat script generation requires at least two source paths.", nameof(filePaths));
 
         // Build an AviSynth header that assigns each concat segment to its own source variable.
-        string BuildSource(string path) => fpsnum > 0 && fpsden > 0
-            ? $"LWLibavVideoSource(\"{path.Replace("\"", "\"\"")}\", fpsnum={fpsnum}, fpsden={fpsden})"
-            : $"LWLibavVideoSource(\"{path.Replace("\"", "\"\"")}\")";
+        string BuildSource(string path)
+        {
+            string arguments = $"\"{path.Replace("\"", "\"\"")}\"{BuildAvsCacheDirArgument()}";
+            if (fpsnum > 0 && fpsden > 0)
+                arguments += $", fpsnum={fpsnum}, fpsden={fpsden}";
+            return $"LWLibavVideoSource({arguments})";
+        }
 
         List<string> lines =
         [
@@ -91,9 +143,8 @@ public static class ScriptTemplate
         for (int i = 2; i < filePaths.Length; i++)
             lines.Add($"    r\"{filePaths[i]}\"{(i == filePaths.Length - 1 ? "]" : ",")}");
 
-        string lwlibavCall = fpsnum > 0 && fpsden > 0
-            ? $"core.lsmas.LWLibavSource(source=f, fpsnum={fpsnum}, fpsden={fpsden})"
-            : "core.lsmas.LWLibavSource(source=f)";
+        string lwlibavCall = $"core.lsmas.LWLibavSource(source=f{BuildVpyCacheDirArgument()}"
+            + (fpsnum > 0 && fpsden > 0 ? $", fpsnum={fpsnum}, fpsden={fpsden})" : ")");
         lines.Add($"clips = [{lwlibavCall} for f in video_files]");
         lines.Add("src = core.std.Splice(clips=clips)");
         return string.Join("\r\n", lines);

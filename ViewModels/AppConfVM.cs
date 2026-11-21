@@ -79,6 +79,7 @@ public class AppConfVM : BaseVM
             [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM,
             [UICaptionProvider.AppConf.Groups.Fonts] = _appConfM.Font,
             [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs,
+            [UICaptionProvider.AppConf.Groups.LwiCache] = _appConfM,
             [UICaptionProvider.AppConf.Groups.AutoMux] = _appConfM.AutoMux,
             [UICaptionProvider.AppConf.Groups.AudioMux] = _appConfM.AudioMux,
             [UICaptionProvider.AppConf.Groups.TextEditor] = _appConfM.TextEditor,

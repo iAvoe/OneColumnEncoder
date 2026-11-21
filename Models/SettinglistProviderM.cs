@@ -13,6 +13,7 @@ public static class SettinglistProviderM
         .. GetInitModeSettings(),
         .. GetFontSettings(),
         .. GetLogSettings(),
+        .. GetLwiCacheSettings(),
         .. GetAutoMuxSettings(),
         .. GetAudioMuxSettings(),
         .. GetTextEditorSettings()
@@ -99,6 +100,14 @@ public static class SettinglistProviderM
             SettingControlType.TextBox,
             nameof(AppConfM.LogSettings.MaxDownstreamLogFiles),
             MinValue: 1)
+    ];
+
+    public static List<SettingItemDefinitionM> GetLwiCacheSettings() =>
+    [
+        new(UICaptionProvider.AppConf.Groups.LwiCache,
+            Lang["Setting.LwiCache.ToAppFolder"],
+            SettingControlType.CheckBox,
+            nameof(AppConfM.CacheLwiToAppFolder))
     ];
 
     public static List<SettingItemDefinitionM> GetAudioMuxSettings() =>

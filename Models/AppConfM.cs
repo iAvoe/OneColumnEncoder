@@ -11,6 +11,11 @@ public class AppConfM : SaveLoadBase<AppConfM>
         Path.Combine(GetConfigDirectory(), "appconfig.json");
     public bool Reimport { get; set; } = true;
     public bool InitLang { get; set; } = false;
+    /// <summary>
+    /// Store .lwi index files produced by LwLibavVideoSource/LWLibavSource in
+    /// the application's 1cenc/LSMASHCaches folder instead of beside each source.
+    /// </summary>
+    public bool CacheLwiToAppFolder { get; set; } = false;
     public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
     public Language Lang { get; set; } = new Language();
     public ThemeSettings Theme { get; set; } = new ThemeSettings();

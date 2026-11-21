@@ -1,3 +1,5 @@
+using OneColumnEncoder.ScriptGeneration;
+
 namespace OneColumnEncoder.Commands.SaveLoad;
 
 /// <summary>
@@ -15,6 +17,7 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
     {
         UILangProvider.ValidateMissingTranslations(_appConfStore.Lang.LanguageCode);
         ApplyLangFontAndTheme();
+        ApplyLwiCacheSetting();
         _appConfStore.Save();
         Debug.WriteLine($"[{GetType().Name}] Translation self-check passed for '{UILangProvider.Current.LanguageCode}'.");
     }
@@ -24,6 +27,13 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
         AppConfM loadedConfig = AppConfM.Load();
         ApplyToStore(loadedConfig);
         ApplyLangFontAndTheme();
+        ApplyLwiCacheSetting();
+    }
+
+    private void ApplyLwiCacheSetting()
+    {
+        ScriptTemplate.CacheLwiToAppFolder = _appConfStore.CacheLwiToAppFolder;
+        _ = ScriptTemplate.EnsureLwiCacheDirectory();
     }
 
     protected void ApplyLangFontAndTheme()
@@ -37,6 +47,7 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
     {
         _appConfStore.Reimport = loadedConfig.Reimport;
         _appConfStore.InitLang = loadedConfig.InitLang;
+        _appConfStore.CacheLwiToAppFolder = loadedConfig.CacheLwiToAppFolder;
         _appConfStore.Overwrite = loadedConfig.Overwrite;
         _appConfStore.Lang = loadedConfig.Lang;
         _appConfStore.Theme = loadedConfig.Theme;

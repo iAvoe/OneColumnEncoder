@@ -434,6 +434,8 @@ Default script file names use the source file name. Queue mode generates identic
 
 When AviSynth and VapourSynth scripts use L-SMASH / LWLibav for video reading, the underlying plugin may generate index files (`.lwi`) in the video source directory. This is decoder plugin behavior, not a 1cenc configuration file.
 
+In Settings → Source Index Cache, enabling "Put .lwi index in 1cenc/LSMASHCaches" makes generated scripts pass `cachedir` to `LWLibavVideoSource` / `LWLibavSource`, so new indexes are written to the `1cenc/LSMASHCaches` folder instead. The folder is created automatically; disabling the option restores the default side-by-side behavior.
+
 ### Preview & Logs
 
 Single-frame preview creates a `1cenc-image-preview-*` working directory under the system temp folder, cleaned up on window close.

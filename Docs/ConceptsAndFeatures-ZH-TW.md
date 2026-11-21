@@ -434,6 +434,8 @@ file 'G:/media/episode02.mkv'
 
 AviSynth 和 VapourSynth 腳本中使用 L-SMASH / LWLibav 讀取影片時，底層插件可能在影片源目錄生成索引文件（`.lwi`）。這是解碼插件行為，不是 1cenc 自己的設定檔。
 
+在「設定 → 來源索引快取」中啟用「將 .lwi 索引放入 1cenc/LSMASHCaches」後，生成的腳本會向 `LWLibavVideoSource` / `LWLibavSource` 傳入 `cachedir`，新的索引將寫入 `1cenc/LSMASHCaches` 資料夾。該資料夾會自動建立；關閉該選項即可恢復預設的源檔案旁存放行為。
+
 ### 預覽與日誌
 
 單圖預覽會在系統臨時目錄創建 `1cenc-image-preview-*` 工作目錄，窗口關閉時會嘗試刪除。

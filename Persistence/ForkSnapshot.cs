@@ -157,6 +157,7 @@ internal sealed class ForkSnapshot
 
         appConf.Reimport = AppConf.Reimport;
         appConf.InitLang = AppConf.InitLang;
+        appConf.CacheLwiToAppFolder = AppConf.CacheLwiToAppFolder;
         appConf.Overwrite = AppConf.Overwrite;
         appConf.Lang = AppConf.Lang;
         appConf.Theme = AppConf.Theme;
