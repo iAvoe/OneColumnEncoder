@@ -10,7 +10,7 @@
         <Platforms>AnyCPU;x64</Platforms>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ApplicationIcon>favicon.ico</ApplicationIcon>
-        <Version>2.23.31</Version>
+        <Version>2.24.32</Version>
     </PropertyGroup>
 
     <!-- App icon and BluRay MPLS parser -->
@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="cicd\1cenc\CustomFont\Default\" />
+        <Folder Include="cicd\1cenc\CustomFont\Default\" />
     </ItemGroup>
 
 </Project>
