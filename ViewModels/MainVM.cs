@@ -3140,7 +3140,7 @@ public class MainVM : BaseVM
 
         string fileListPath = _SrcRepart.RegenerateFileList();
         // Input scripts reuse the file list's base name, so they carry the same
-        // source_repart_{timestamp} stamp and only differ by extension.
+        // repart_{timestamp} stamp and only differ by extension.
         string[] srcPaths = [.. plan.Sources.Select(source => source.FilePath)];
         string inputPath;
         if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
@@ -3684,11 +3684,8 @@ public class MainVM : BaseVM
 
     private void SetOverlayBlocked(bool isBlocked)
     {
-        if (isBlocked)
-            _overlayBlockCount++;
-        else if (_overlayBlockCount > 0)
-            _overlayBlockCount--;
-
+        if (isBlocked) _overlayBlockCount++;
+        else if (_overlayBlockCount > 0) _overlayBlockCount--;
         RefreshOverlayVisibility();
     }
 

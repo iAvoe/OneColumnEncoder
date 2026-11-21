@@ -392,9 +392,33 @@ The settings interface can clean `queue_*.json` files older than 7 days.
 
 ### Concat Mode
 
-Concat mode generates `source_concat_{timestamp}.txt` in the `1cenc/SourceQueues` folder.
+Concat mode generates `concat_yyyy-MM-dd_HH-mm-ss.txt` in the `1cenc/SourceQueues` folder.
 
 This file uses ffmpeg concat demuxer format, recording the current concat fragment order. It is regenerated when users reorder or delete fragments in the filter editor.
+
+If the base name is taken, `_1`, `_2`, ... is appended before the extension. The path is fixed for the session; the file is rewritten on import, replacement, reorder, or removal, and again when encoding starts. When the fragment list becomes empty, the file is deleted instead of written.
+
+Content is UTF-8 without BOM with CRLF line endings, one line per fragment in the current order:
+
+```text
+file 'G:/media/part01.mkv'
+file 'G:/media/part02.mkv'
+```
+
+Each path is written as an absolute path with `\` converted to `/`, and any `'` escaped as `'\''`. The same file list is also used as the audio source for ffmpeg concat muxing.
+
+### Repart Mode
+
+Each Repart encoding start generates a fresh `repart_{timestamp}.txt` in the `1cenc/SourceQueues` folder, using the same ffmpeg concat demuxer format, encoding, and naming rules as the concat file list:
+
+If the base name is taken, `_1`, `_2`, ... is appended before the extension. The path is fixed for the session; the file is rewritten on import, replacement, reorder, or removal, and again when encoding starts. When the fragment list becomes empty, the file is deleted instead of written.
+
+```text
+file 'G:/media/episode01.mkv'
+file 'G:/media/episode02.mkv'
+```
+
+It records the committed Repart plan's source order, one line per source. The Repart `.vpy` / `.avs` input script generated for the same run reuses this file list's base name, so the list and script share one `repart_{timestamp}` stamp and differ only by extension. This file list is also the audio source used by the Repart mux step, with `-ss`/`-to` limiting it to the current output's time range.
 
 ### Script Files
 

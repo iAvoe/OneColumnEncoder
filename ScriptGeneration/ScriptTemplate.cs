@@ -2,6 +2,7 @@
 
 public static class ScriptTemplate
 {
+    // TODO: add cachedir="" config
     public static string BuildAvsSourceLine(string srcPath, int fpsnum = 0, int fpsden = 0)
     {
         string line = $"LWLibavVideoSource(\"{srcPath}\")";
@@ -10,6 +11,7 @@ public static class ScriptTemplate
         return line;
     }
 
+    // TODO: add cachedir="" config
     public static string BuildVpySourceHeader(string srcPath, int fpsnum = 0, int fpsden = 0)
     {
         string header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{srcPath}\")";

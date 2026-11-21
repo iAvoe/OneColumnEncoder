@@ -1,0 +1,59 @@
+This directory stores files needed for Queue mode, Concat mode, and Repart mode:
+- `queue_yyyy-MM-dd_HH-mm-ss.json`: accepted source videos with corresponding FFprobe analysis
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`: excluded source videos with corresponding FFprobe analysis
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`: file list for FFmpeg input
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`: file list for FFmpeg input
+
+本目录用于存放队列模式（Queue）、拼接模式（Concat）与重分集模式（Repart）所需的文件：
+- `queue_yyyy-MM-dd_HH-mm-ss.json`：接受的视频源与对应的 FFprobe 分析结果
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`：排除的视频源与对应的 FFprobe 分析结果
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`：FFmpeg 输入用文件列表
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`：FFmpeg 输入用文件列表
+
+本目錄用於存放隊列模式（Queue）、拼接模式（Concat）與重分集模式（Repart）所需的文件：
+- `queue_yyyy-MM-dd_HH-mm-ss.json`：接受的影片源與對應的 FFprobe 分析結果
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`：排除的影片源與對應的 FFprobe 分析結果
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`：FFmpeg 輸入用文件列表
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`：FFmpeg 輸入用文件列表
+
+Ce répertoire contient les fichiers nécessaires pour le mode file d'attente (Queue), le mode concat (Concat) et le mode repart (Repart) :
+- `queue_yyyy-MM-dd_HH-mm-ss.json` : vidéos sources acceptées avec l'analyse FFprobe correspondante
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json` : vidéos sources exclues avec l'analyse FFprobe correspondante
+- `concat_yyyy-MM-dd_HH-mm-ss.txt` : liste de fichiers en entrée pour FFmpeg
+- `repart_yyyy-MM-dd_HH-mm-ss.txt` : liste de fichiers en entrée pour FFmpeg
+
+Este directorio almacena los archivos necesarios para el modo de cola (Queue), el modo concat (Concat) y el modo repart (Repart):
+- `queue_yyyy-MM-dd_HH-mm-ss.json`: videos de origen aceptados con su correspondiente análisis de FFprobe
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`: videos de origen excluidos con su correspondiente análisis de FFprobe
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`: lista de archivos de entrada para FFmpeg
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`: lista de archivos de entrada para FFmpeg
+
+このディレクトリには、キューモード (Queue)、連結モード (Concat)、および再分割モード (Repart) に必要なファイルが格納されます：
+- `queue_yyyy-MM-dd_HH-mm-ss.json`：採用されたソース動画とそれに対応する FFprobe 解析結果
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`：除外されたソース動画とそれに対応する FFprobe 解析結果
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`：FFmpeg 入力用ファイルリスト
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`：FFmpeg 入力用ファイルリスト
+
+Этот каталог хранит файлы, необходимые для режима очереди (Queue), режима конкатенации (Concat) и режима репарта (Repart):
+- `queue_yyyy-MM-dd_HH-mm-ss.json`: принятые исходные видео с соответствующим анализом FFprobe
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`: исключённые исходные видео с соответствующим анализом FFprobe
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`: список файлов для ввода в FFmpeg
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`: список файлов для ввода в FFmpeg
+
+Dieses Verzeichnis speichert Dateien, die für den Warteschlangenmodus (Queue), den Concat-Modus und den Repart-Modus benötigt werden:
+- `queue_yyyy-MM-dd_HH-mm-ss.json`: akzeptierte Quellvideos mit zugehöriger FFprobe-Analyse
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`: ausgeschlossene Quellvideos mit zugehöriger FFprobe-Analyse
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`: Dateiliste für die FFmpeg-Eingabe
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`: Dateiliste für die FFmpeg-Eingabe
+
+이 디렉터리에는 대기열 모드 (Queue), 연결 모드 (Concat) 및 재분할 모드 (Repart)에 필요한 파일이 저장됩니다:
+- `queue_yyyy-MM-dd_HH-mm-ss.json`: 승인된 소스 비디오 및 해당 FFprobe 분석 결과
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`: 제외된 소스 비디오 및 해당 FFprobe 분석 결과
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`: FFmpeg 입력용 파일 목록
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`: FFmpeg 입력용 파일 목록
+
+Este diretório armazena os arquivos necessários para o Modo de fila (Queue), o Modo concat (Concat) e o Modo repart (Repart):
+- `queue_yyyy-MM-dd_HH-mm-ss.json`: vídeos de origem aceitos com a análise correspondente do FFprobe
+- `queue_exc_yyyy-MM-dd_HH-mm-ss.json`: vídeos de origem excluídos com a análise correspondente do FFprobe
+- `concat_yyyy-MM-dd_HH-mm-ss.txt`: lista de arquivos de entrada para o FFmpeg
+- `repart_yyyy-MM-dd_HH-mm-ss.txt`: lista de arquivos de entrada para o FFmpeg

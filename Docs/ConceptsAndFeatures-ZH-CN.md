@@ -398,6 +398,28 @@ ffmpeg 自带视频编码器，但 1cenc 的正式压制流程故意不以 ffmpe
 
 该文件使用 ffmpeg concat demuxer 格式，记录当前合并片段顺序。用户在滤镜编辑器中调整顺序或删除片段时会重新生成。
 
+确切文件名为本地时间的 `concat_yyyy-MM-dd_HH-mm-ss.txt`。若 `SourceQueues` 中已存在相同基名，会在扩展名之前追加 `_1`、`_2`……。该路径在会话期间固定，导入、替换、排序或移除片段时都会重写，开始编码时也会重新生成；片段列表为空时文件会被删除而不是写入。
+
+内容为不带 BOM 的 UTF-8，使用 CRLF 换行，按当前顺序每个片段一行：
+
+```text
+file 'G:/media/part01.mkv'
+file 'G:/media/part02.mkv'
+```
+
+每行路径写成绝对路径，`\` 转换为 `/`，其中的 `'` 转义为 `'\''`。同一份文件列表也会作为 ffmpeg concat 封装时的音频来源。
+
+### 重分集模式
+
+每次重分集开始编码都会在 `1cenc/SourceQueues` 目录下生成一份新的 `repart_{timestamp}.txt`，使用与合并文件列表相同的 ffmpeg concat demuxer 格式、编码方式和命名规则：
+
+```text
+file 'G:/media/episode01.mkv'
+file 'G:/media/episode02.mkv'
+```
+
+它记录已提交重分集方案的源顺序，每个源一行。同一次运行生成的重分集 `.vpy` / `.avs` 输入脚本会复用该文件列表的基名，因此两者共用同一个 `repart_{timestamp}` 时间戳，仅扩展名不同。该文件列表也是重分集封装步骤读取的音频来源，并通过 `-ss`/`-to` 限定到当前输出段的时间范围。
+
 ### 脚本文件
 
 滤镜编辑器和一键脚本生成会在用户选择的位置生成：

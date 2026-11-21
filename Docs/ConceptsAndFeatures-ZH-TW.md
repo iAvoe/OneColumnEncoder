@@ -394,9 +394,31 @@ ffmpeg 自帶影片編碼器，但 1cenc 的正式壓制流程故意不以 ffmpe
 
 ### 合併模式
 
-合併模式會在 `1cenc/SourceQueues` 目錄下生成 `source_concat_{timestamp}.txt`
+合併模式會在 `1cenc/SourceQueues` 目錄下生成 `concat_{timestamp}.txt`
 
 該文件使用 ffmpeg concat demuxer 格式，記錄當前合併片段順序。用戶在濾鏡編輯器中調整順序或刪除片段時會重新生成。
+
+確切檔案名為本地時間的 `concat_yyyy-MM-dd_HH-mm-ss.txt`。若 `SourceQueues` 中已存在相同基名，會在擴展名之前追加 `_1`、`_2`……。該路徑在會話期間固定，匯入、替換、排序或移除片段時都會重寫，開始編碼時也會重新生成；片段列表為空時檔案會被刪除而不是寫入。
+
+內容為不帶 BOM 的 UTF-8，使用 CRLF 換行，按當前順序每個片段一行：
+
+```text
+file 'G:/media/part01.mkv'
+file 'G:/media/part02.mkv'
+```
+
+每行路徑寫成絕對路徑，`\` 轉換為 `/`，其中的 `'` 轉義為 `'\''`。同一份檔案列表也會作為 ffmpeg concat 封裝時的音訊來源。
+
+### 重分集模式
+
+每次重分集開始編碼都會在 `1cenc/SourceQueues` 目錄下生成一份新的 `repart_{timestamp}.txt`，使用與合併檔案列表相同的 ffmpeg concat demuxer 格式、編碼方式和命名規則：
+
+```text
+file 'G:/media/episode01.mkv'
+file 'G:/media/episode02.mkv'
+```
+
+它記錄已提交重分集方案的源順序，每個源一行。同一次運行生成的重分集 `.vpy` / `.avs` 輸入腳本會複用該檔案列表的基名，因此兩者共用同一個 `repart_{timestamp}` 時間戳，僅擴展名不同。該檔案列表也是重分集封裝步驟讀取的音訊來源，並通過 `-ss`/`-to` 限定到當前輸出段的時間範圍。
 
 ### 腳本文件
 

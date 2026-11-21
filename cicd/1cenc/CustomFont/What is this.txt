@@ -1,0 +1,49 @@
+﻿This directory stores extra font files in 2 directories:
+- Code: Font for code textbox including AviSynth, VapourSynth and FFmpeg scripts
+- Default: UI font
+- You may customize it by adding new font files, and select in Settings
+
+本目录用于存放额外的字体文件，分为两处：
+- Code: 代码文本框字体，包括 AviSynth、VapourSynth 和 FFmpeg 脚本
+- Default: UI 字体
+- 你可以通过添加新的字体文件，并在设置中选中以进行自定义
+
+本目錄用於存放額外的字體檔案，分為兩處：
+- Code: 代碼文本框字體，包括 AviSynth、VapourSynth 和 FFmpeg 腳本
+- Default: UI 字體
+- 你可以通過添加新的字體檔案，並在設置中選中以進行自訂
+
+Ce répertoire stocke des fichiers de police supplémentaires dans 2 dossiers :
+- Code : Police pour la zone de texte de code, incluant les scripts AviSynth, VapourSynth et FFmpeg
+- Default : Police de l'interface utilisateur
+- Vous pouvez la personnaliser en ajoutant de nouveaux fichiers de police, puis en les sélectionnant dans les Paramètres
+
+Este directorio almacena archivos de fuentes adicionales en 2 carpetas:
+- Code: Fuente para el cuadro de texto de código, incluidos los scripts de AviSynth, VapourSynth y FFmpeg
+- Default: Fuente de la interfaz de usuario
+- Puedes personalizarla agregando nuevos archivos de fuentes y seleccionándolos en Configuración
+
+このディレクトリには、2つのフォルダーに追加のフォントファイルが保存されます：
+- Code: AviSynth、VapourSynth、FFmpeg スクリプトを含むコードテキストボックス用のフォント
+- Default: UI フォント
+- 新しいフォントファイルを追加し、「設定」から選択することでカスタマイズできます
+
+В этом каталоге хранятся дополнительные файлы шрифтов в 2 папках:
+- Code: Шрифт для текстового поля кода, включая скрипты AviSynth, VapourSynth и FFmpeg
+- Default: Шрифт интерфейса
+- Вы можете настроить это, добавив новые файлы шрифтов и выбрав их в Настройках
+
+Dieses Verzeichnis speichert zusätzliche Schriftdateien in 2 Ordnern:
+- Code: Schriftart für das Code-Textfeld, einschließlich AviSynth-, VapourSynth- und FFmpeg-Skripten
+- Default: Benutzeroberflächen-Schriftart (UI)
+- Sie können dies anpassen, indem Sie neue Schriftdateien hinzufügen und sie in den Einstellungen auswählen
+
+이 디렉터리에는 2개의 폴더에 추가 글꼴 파일이 저장됩니다:
+- Code: AviSynth, VapourSynth 및 FFmpeg 스크립트를 포함한 코드 텍스트 상자용 글꼴
+- Default: UI 글꼴
+- 새 글꼴 파일을 추가하고 설정에서 선택하여 사용자 지정할 수 있습니다
+
+Este diretório armazena arquivos de fontes extras em 2 pastas:
+- Code: Fonte para a caixa de texto de código, incluindo scripts AviSynth, VapourSynth e FFmpeg
+- Default: Fonte da interface do usuário (UI)
+- Você pode personalizá-la adicionando novos arquivos de fonte e selecionando-os nas Configurações

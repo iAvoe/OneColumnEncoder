@@ -22,4 +22,8 @@
         <PackageReference Include="ChapterTool.Core" Version="23.3.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="cicd\1cenc\CustomFont\Default\" />
+    </ItemGroup>
+
 </Project>
