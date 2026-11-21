@@ -48,8 +48,8 @@ public partial class App : Application
             ApplyStartupLanguageOnce();
             _ = new UILangProvider(_appConfM.Lang.LanguageCode);
 
-            ScriptTemplate.CacheLwiToAppFolder = _appConfM.CacheLwiToAppFolder;
-            _ = ScriptTemplate.EnsureLwiCacheDirectory();
+            LwiCacheDirectoryProvider.IsEnabled = _appConfM.CacheLwiToAppFolder;
+            _ = LwiCacheDirectoryProvider.EnsureDirectory();
 
             // Apply saved theme
             UI.ThemeManager.ApplyTheme(_appConfM.Theme.ThemeName);

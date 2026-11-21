@@ -32,8 +32,8 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
 
     private void ApplyLwiCacheSetting()
     {
-        ScriptTemplate.CacheLwiToAppFolder = _appConfStore.CacheLwiToAppFolder;
-        _ = ScriptTemplate.EnsureLwiCacheDirectory();
+        LwiCacheDirectoryProvider.IsEnabled = _appConfStore.CacheLwiToAppFolder;
+        _ = LwiCacheDirectoryProvider.EnsureDirectory();
     }
 
     protected void ApplyLangFontAndTheme()

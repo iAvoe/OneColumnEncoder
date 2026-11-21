@@ -1,44 +1,10 @@
-﻿using System.IO;
-
-namespace OneColumnEncoder.ScriptGeneration;
+﻿namespace OneColumnEncoder.ScriptGeneration;
 
 public static class ScriptTemplate
 {
-    public const string LwiCacheFolderName = "LSMASHCaches";
-
-    /// <summary>
-    /// When enabled, LwLibavVideoSource/LWLibavSource writes .lwi index files to
-    /// the application's 1cenc/LSMASHCaches folder instead of next to each source video.
-    /// </summary>
-    public static bool CacheLwiToAppFolder { get; set; }
-
-    /// <summary>
-    /// Creates the LWI cache folder when the option is enabled. Returns the folder
-    /// path, or null when the option is disabled or the folder cannot be created.
-    /// </summary>
-    public static string? EnsureLwiCacheDirectory()
-    {
-        if (!CacheLwiToAppFolder) return null;
-
-        string cacheDirectory = Path.Combine(
-            OneColumnEncoder.Persistence.SaveLoadBase<OneColumnEncoder.Models.AppConfM>.GetConfigDirectory(),
-            LwiCacheFolderName);
-        try
-        {
-            Directory.CreateDirectory(cacheDirectory);
-            return cacheDirectory;
-        }
-        catch
-        {
-            // Fall back to the default side-by-side .lwi behavior rather than
-            // emitting a cachedir the frame server cannot write to.
-            return null;
-        }
-    }
-
     private static string? BuildAvsCacheDirArgument()
     {
-        string? cacheDirectory = EnsureLwiCacheDirectory();
+        string? cacheDirectory = LwiCacheDirectoryProvider.EnsureDirectory();
         return cacheDirectory is null
             ? null
             : $", cachedir=\"{cacheDirectory.Replace("\"", "\"\"")}\"";
@@ -46,7 +12,7 @@ public static class ScriptTemplate
 
     private static string? BuildVpyCacheDirArgument()
     {
-        string? cacheDirectory = EnsureLwiCacheDirectory();
+        string? cacheDirectory = LwiCacheDirectoryProvider.EnsureDirectory();
         return cacheDirectory is null
             ? null
             : $", cachedir=r\"{cacheDirectory}\"";
