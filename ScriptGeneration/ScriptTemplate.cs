@@ -23,7 +23,7 @@ public static class ScriptTemplate
         string arguments = $"\"{srcPath}\"{BuildAvsCacheDirArgument()}";
         if (fpsnum > 0 && fpsden > 0)
             arguments += $", fpsnum={fpsnum}, fpsden={fpsden}";
-        return $"LWLibavVideoSource({arguments})";
+        return LsmashPluginPathProvider.WithAvsLoadPlugin($"LWLibavVideoSource({arguments})");
     }
 
     public static string BuildVpySourceHeader(string srcPath, int fpsnum = 0, int fpsden = 0)
@@ -31,7 +31,7 @@ public static class ScriptTemplate
         string arguments = $"source=r\"{srcPath}\"{BuildVpyCacheDirArgument()}";
         if (fpsnum > 0 && fpsden > 0)
             arguments += $", fpsnum={fpsnum}, fpsden={fpsden}";
-        return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource({arguments})";
+        return $"import vapoursynth as vs\r\ncore = vs.core\r\n{LsmashPluginPathProvider.BuildVpyLoadPluginSection()}src = core.lsmas.LWLibavSource({arguments})";
     }
 
     public static string BuildAvsExportScript(string srcPath, string avsPrefix2, string avsSuffix, string userInput = "", int fpsnum = 0, int fpsden = 0)
@@ -78,6 +78,7 @@ public static class ScriptTemplate
 
         List<string> lines =
         [
+            LsmashPluginPathProvider.BuildAvsLoadPluginLine(),
             $"v1 = {BuildSource(filePaths[0])}",
             $"v2 = {BuildSource(filePaths[1])}"
         ];
@@ -99,9 +100,13 @@ public static class ScriptTemplate
         List<string> lines =
         [
             "import vapoursynth as vs",
-            "core = vs.core",
-            "video_files = ["
+            "core = vs.core"
         ];
+
+        if (!LsmashPluginPathProvider.VapourSynthHasLsmashPlugin)
+            lines.Add(LsmashPluginPathProvider.BuildVpyLoadPluginLine());
+
+        lines.Add("video_files = [");
 
         lines.Add($"    r\"{filePaths[0]}\",");
         lines.Add($"    r\"{filePaths[1]}\"{(filePaths.Length == 2 ? "]" : ",")}");

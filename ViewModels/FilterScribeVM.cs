@@ -293,9 +293,10 @@ public class FilterScribeVM : BaseVM
                     ? ScriptTemplate.BuildConcatAvsSourceHeader(paths, fpsnum, fpsden)
                     : string.Empty;
             }
-            if (_isFrameRateVariable && _avsEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
-                return $"LWLibavVideoSource(\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
-            return _baseAvsPrefix;
+            string sourceLine = _isFrameRateVariable && _avsEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0
+                ? $"LWLibavVideoSource(\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})"
+                : _baseAvsPrefix;
+            return LsmashPluginPathProvider.WithAvsLoadPlugin(sourceLine);
         }
     }
     public static string AvsPrefix2 => FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix2"];
@@ -325,9 +326,10 @@ public class FilterScribeVM : BaseVM
                     ? ScriptTemplate.BuildConcatVpySourceHeader(paths, fpsnum, fpsden)
                     : string.Empty;
             }
-            if (_isFrameRateVariable && _vpyEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
-                return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
-            return _baseVpyPrefix;
+            string sourcePrefix = _isFrameRateVariable && _vpyEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0
+                ? $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})"
+                : _baseVpyPrefix;
+            return LsmashPluginPathProvider.WithVpyLoadPlugin(sourcePrefix);
         }
     }
     private string _vpyUserInput = "";

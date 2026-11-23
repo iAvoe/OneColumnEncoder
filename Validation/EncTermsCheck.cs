@@ -1,4 +1,5 @@
 using OneColumnEncoder.CPU;
+using OneColumnEncoder.ScriptGeneration;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -279,10 +280,14 @@ public static partial class EncTermsCheck
 
     #region Lsmash plugin detection
     /// <summary>
-    /// Returns true if LSMASHSource.dll can be found in known AviSynth+ plugin locations.
+    /// Returns true if LSMASHSource.dll is available. Generated scripts import the
+    /// bundled copy under the 1cenc plugin folder, so that always takes precedence;
+    /// the AviSynth+ install locations remain as a fallback for older setups.
     /// </summary>
     public static bool HasLsmashPlugin(string? avisynthDllPath)
     {
+        if (LsmashPluginPathProvider.PluginExists) return true;
+
         if (string.IsNullOrWhiteSpace(avisynthDllPath)) return false;
 
         try
