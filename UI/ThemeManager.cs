@@ -1,6 +1,3 @@
-using System.Windows;
-using System.Windows.Media;
-
 namespace OneColumnEncoder.UI;
 
 /// <summary>
@@ -22,7 +19,7 @@ public static class ThemeManager
         if (Application.Current == null) return;
 
         var mergedDicts = Application.Current.Resources.MergedDictionaries;
-        
+
         // Remove existing theme dictionaries
         RemoveThemeDictionaries(mergedDicts);
 
@@ -107,10 +104,10 @@ public static class ThemeManager
         if (Application.Current == null) return "Light";
 
         var mergedDicts = Application.Current.Resources.MergedDictionaries;
-        
+
         if (mergedDicts.Any(d => d.Source?.OriginalString.Contains("Dark.xaml") == true))
             return "Dark";
-        
+
         return "Light";
     }
 

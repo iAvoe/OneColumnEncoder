@@ -1,5 +1,5 @@
-using System.IO;
 using OneColumnEncoder.ScriptGeneration;
+using System.IO;
 
 namespace OneColumnEncoder;
 
@@ -18,8 +18,7 @@ public partial class App : Application
     private readonly string? _forkSnapshotLoadError;
     public App()
     {
-        string? forkSnapshotLoadError;
-        _forkSnapshot = ForkSnapshot.LoadFromCommandLine(out forkSnapshotLoadError);
+        _forkSnapshot = ForkSnapshot.LoadFromCommandLine(out string? forkSnapshotLoadError);
         _forkSnapshotLoadError = forkSnapshotLoadError;
         if (_forkSnapshot != null && !string.IsNullOrWhiteSpace(_forkSnapshot.ConfigSubFolder))
             PersistencePaths.ConfigSubFolder = _forkSnapshot.ConfigSubFolder;

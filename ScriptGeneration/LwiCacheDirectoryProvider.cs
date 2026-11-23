@@ -1,6 +1,4 @@
 using System.IO;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Persistence;
 
 namespace OneColumnEncoder.ScriptGeneration;
 
