@@ -761,11 +761,16 @@ public partial class EncodingMonitorVM : BaseVM
             QueueSidebar.MarkJobEncoding(jobVM);
             IsMonitoringEnabled = true;
 
-            // Log file lock status for the first job
+            // Log file lock status for each job
             if (isFirstJob)
             {
                 LogQueueFileLockStatus();
                 isFirstJob = false;
+            }
+            else if (!string.IsNullOrWhiteSpace(_queueFileLockStatusMessage))
+            {
+                // For subsequent jobs, also log the status so each job's log shows the lock state
+                EnqueueProcessLine(ProcessLogKind.UpstreamStderr, _queueFileLockStatusMessage);
             }
 
             await RunEncodingAsync(cancellationToken);

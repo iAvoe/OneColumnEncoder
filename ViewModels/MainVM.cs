@@ -1182,6 +1182,9 @@ public class MainVM : BaseVM
             return;
         }
 
+        // B3_1 (Fork) is always enabled when not indexing
+        EncStartButtons.B3_1IsEnabled = true;
+
         bool vspipeReady = UpstreamsZone.All(t =>
             !ToolDefinitionProviderM.IsImportedTool(t, "vspipe.exe") || t.IsEnabled);
 
