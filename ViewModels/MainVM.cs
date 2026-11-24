@@ -603,7 +603,6 @@ public class MainVM : BaseVM
             { // On source analysis complete
                 UpdateAnalyzeSrcButtonsState();
                 UpdateEncStartButtonsState();
-                TriggerLsmashIndexingIfNeeded();
             },
             IsConcatRouteActive,
             GetConcatFilePaths,
@@ -2475,6 +2474,12 @@ public class MainVM : BaseVM
         {
             AnalyzeSrcVideo.Execute(null);
         }
+        
+        // Trigger indexing after single-file video import and analysis
+        if (kind == SrcFileKind.Video)
+        {
+            TriggerLsmashIndexingIfNeeded();
+        }
     }
 
     private void PromptScriptGenerationAfterReplace()
@@ -2547,6 +2552,9 @@ public class MainVM : BaseVM
             if (AnalyzeSrcVideo.CanExecute(null))
                 AnalyzeSrcVideo.Execute(null);
         }
+        
+        // Trigger indexing after queue import and analysis complete
+        TriggerLsmashIndexingIfNeeded();
     }
 
     private void OnSrcQueueCleared(ToolItemCardVM item)
@@ -2583,6 +2591,9 @@ public class MainVM : BaseVM
             if (AnalyzeSrcVideo.CanExecute(null))
                 AnalyzeSrcVideo.Execute(null);
         }
+        
+        // Trigger indexing after concat import and analysis complete
+        TriggerLsmashIndexingIfNeeded();
     }
 
     private void OnSrcConcatCleared()
@@ -3903,7 +3914,11 @@ public class MainVM : BaseVM
         if (!_appConfM.PrefetchLsmashIndex) return false;
         if (!LwiCacheDirectoryProvider.IsEnabled) return false;
         if (!LsmashIndexRunner.CanRun) return false;
+        return true;
+    }
 
+    private bool HasFrameServerUpstreamSelected()
+    {
         // Check if a frame server upstream is selected and enabled (imported)
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled);
         if (upstream == null) return false;
@@ -3939,6 +3954,21 @@ public class MainVM : BaseVM
 
         string[] videos = GetVideosForIndexing();
         if (videos.Length == 0) return;
+
+        // If no frame server is selected, ask user if they want to proceed
+        if (!HasFrameServerUpstreamSelected())
+        {
+            LsmashIndexLangProvider lang = LsmashIndexLangProvider.Current;
+            OpenInfoModalCmd confirmCmd = new(
+                _modalNavS,
+                lang["LsmashIndex.ConfirmTitle"],
+                lang["LsmashIndex.ConfirmMessage"]);
+            confirmCmd.Execute(null);
+
+            // Only proceed if user confirmed
+            if (confirmCmd.DialogResult != true)
+                return;
+        }
 
         new OpenLsmashIndexProgressCmd(_modalNavS, videos).Execute(null);
     }
