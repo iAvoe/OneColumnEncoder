@@ -81,7 +81,8 @@ public class LsmashIndexProgressVM : BaseVM
         }
         finally
         {
-            _closeAction();
+            // Ensure window close happens on UI thread
+            Application.Current?.Dispatcher.Invoke(_closeAction);
         }
     }
 
