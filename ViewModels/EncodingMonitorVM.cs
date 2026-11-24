@@ -84,6 +84,7 @@ public partial class EncodingMonitorVM : BaseVM
     private Stream? _upstreamStdoutStream;
     private Stream? _encoderStdinStream;
     private FileLockManager? _fileLockManager;
+    private string? _queueFileLockStatusMessage;
 
     public ProgressVM Progress { get; } = new();
     public string WindowTitle => _isSample ? EncodingMonitorModalLangProvider.WindowTitleSampleMode : EncodingMonitorModalLangProvider.WindowTitle;
@@ -718,6 +719,8 @@ public partial class EncodingMonitorVM : BaseVM
         // Lock all source files at once for queue mode
         TryApplyFileLocksForQueue();
 
+        bool isFirstJob = true;
+
         while (true)
         {
             if (cancellationToken.IsCancellationRequested) break;
@@ -757,6 +760,13 @@ public partial class EncodingMonitorVM : BaseVM
             ResetActiveLogState(jobVM.JobId);
             QueueSidebar.MarkJobEncoding(jobVM);
             IsMonitoringEnabled = true;
+
+            // Log file lock status for the first job
+            if (isFirstJob)
+            {
+                LogQueueFileLockStatus();
+                isFirstJob = false;
+            }
 
             await RunEncodingAsync(cancellationToken);
 
@@ -1847,11 +1857,15 @@ public partial class EncodingMonitorVM : BaseVM
     /// <summary>
     /// Locks all source files for all queue items at once.
     /// Called at the start of queue mode processing.
+    /// Stores the status message for later logging.
     /// </summary>
     private void TryApplyFileLocksForQueue()
     {
         if (!_appConfM.Encoding.LockSourceFilesWhileEncoding || _queueItems == null)
+        {
+            _queueFileLockStatusMessage = null;
             return;
+        }
 
         HashSet<string> allFiles = new(StringComparer.OrdinalIgnoreCase);
 
@@ -1875,7 +1889,10 @@ public partial class EncodingMonitorVM : BaseVM
         }
 
         if (allFiles.Count == 0)
+        {
+            _queueFileLockStatusMessage = null;
             return;
+        }
 
         _fileLockManager = new FileLockManager();
         int lockedCount = 0;
@@ -1894,14 +1911,23 @@ public partial class EncodingMonitorVM : BaseVM
                 lockedCount++;
         }
 
-        // Log the result to the first job that will start encoding
-        string message = lockedCount > 0
+        // Store the status message for logging when the first job starts
+        _queueFileLockStatusMessage = lockedCount > 0
             ? Lang["FileLockEnabled"]
             : skippedCount > 0
                 ? Lang["FileLockUnavailable"]
                 : Lang["FileLockDisabled"];
+    }
 
-        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, message);
+    /// <summary>
+    /// Logs the queue file lock status message (called when first job starts).
+    /// </summary>
+    private void LogQueueFileLockStatus()
+    {
+        if (!string.IsNullOrWhiteSpace(_queueFileLockStatusMessage))
+        {
+            EnqueueProcessLine(ProcessLogKind.UpstreamStderr, _queueFileLockStatusMessage);
+        }
     }
 
     /// <summary>
