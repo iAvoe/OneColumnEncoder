@@ -25,4 +25,7 @@ public record SettingItemDefinitionM(
     int? MaxValue = null,
     string[]? Options = null,
     Func<string, string>? DisplayNameResolver = null,
-    IReadOnlyList<string>? CheckboxProperties = null);
+    IReadOnlyList<string>? CheckboxProperties = null,
+    // When set, the control is enabled only while the named bool property is true.
+    // Unchecking that property also unchecks this control.
+    string? EnabledWhenProperty = null);

@@ -603,6 +603,7 @@ public class MainVM : BaseVM
             { // On source analysis complete
                 UpdateAnalyzeSrcButtonsState();
                 UpdateEncStartButtonsState();
+                TriggerLsmashIndexingIfNeeded();
             },
             IsConcatRouteActive,
             GetConcatFilePaths,
@@ -814,6 +815,7 @@ public class MainVM : BaseVM
         _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
         RefreshOverlayVisibility();
         UILangProvider.CurrentChanged += OnLanguageChanged;
+        LsmashIndexRunner.RunningStateChanged += OnLsmashIndexingStateChanged;
         RefreshLanguage();
         SubToAllZoneItemChanges();
         RefreshAllZoneSelectedPaths();
@@ -1171,6 +1173,15 @@ public class MainVM : BaseVM
     public void UpdateEncStartButtonsState()
     {
         if (EncStartButtons == null) return;
+
+        // Disable all encode buttons while L-SMASH indexing is running
+        if (LsmashIndexRunner.IsRunning)
+        {
+            EncStartButtons.B3_1IsEnabled = false;
+            EncStartButtons.B3_2IsEnabled = false;
+            EncStartButtons.B3_3IsEnabled = false;
+            return;
+        }
 
         bool vspipeReady = UpstreamsZone.All(t =>
             !ToolDefinitionProviderM.IsImportedTool(t, "vspipe.exe") || t.IsEnabled);
@@ -2624,6 +2635,7 @@ public class MainVM : BaseVM
         OnSrcAnalysisCompleted(true);
         RefreshSelectedSrcStatus(resetAnalysis: false);
         _appDataM.Save();
+        TriggerLsmashIndexingIfNeeded();
     }
 
     private void OnSrcRepartCleared()
@@ -3879,10 +3891,64 @@ public class MainVM : BaseVM
         item.R2Command = null;
     #endregion
 
+    #region L-SMASH Index Prefetch
+    private void OnLsmashIndexingStateChanged()
+    {
+        UpdateEncStartButtonsState();
+        UpdateFilterScbButtonsState();
+    }
+
+    private bool ShouldTriggerLsmashIndexing()
+    {
+        if (!_appConfM.PrefetchLsmashIndex) return false;
+        if (!LwiCacheDirectoryProvider.IsEnabled) return false;
+        if (!LsmashIndexRunner.CanRun) return false;
+
+        // Check if a frame server upstream is selected and enabled (imported)
+        ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled);
+        if (upstream == null) return false;
+
+        string? exe = ToolCatalogProviderM.ResolveExeFromCard(upstream);
+        if (string.IsNullOrWhiteSpace(exe)) return false;
+
+        return exe.ToLowerInvariant() switch
+        {
+            "vspipe.exe" => true,
+            "avs2yuv.exe" => true,
+            "avs2pipemod.exe" => true,
+            _ => false
+        };
+    }
+
+    private string[] GetVideosForIndexing()
+    {
+        SrcRouteKind route = GetActiveSrcRoute();
+        return route switch
+        {
+            SrcRouteKind.Single => [GetCurrentVideoSrcPath()],
+            SrcRouteKind.Queue => GetCurrentQueueFilePaths(),
+            SrcRouteKind.Concat => GetConcatFilePaths(),
+            SrcRouteKind.Repart => GetRepartFilePaths(),
+            _ => []
+        };
+    }
+
+    private void TriggerLsmashIndexingIfNeeded()
+    {
+        if (!ShouldTriggerLsmashIndexing()) return;
+
+        string[] videos = GetVideosForIndexing();
+        if (videos.Length == 0) return;
+
+        new OpenLsmashIndexProgressCmd(_modalNavS, videos).Execute(null);
+    }
+    #endregion
+
     public override void Dispose()
     {
         // Release retained event handlers and command references so the VM can be collected.
         UILangProvider.CurrentChanged -= OnLanguageChanged;
+        LsmashIndexRunner.RunningStateChanged -= OnLsmashIndexingStateChanged;
         _modalNavS.CurrentViewModelChanged -= OnModalStateChanged;
         ToolsImportCard.ToolImported -= OnToolImported;
         AnalyticsZone.CollectionChanged -= OnAnalyticsZoneCollectionChanged;

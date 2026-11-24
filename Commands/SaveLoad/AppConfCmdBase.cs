@@ -32,6 +32,10 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
 
     private void ApplyLwiCacheSetting()
     {
+        // Pre-building indexes only makes sense when they are stored in the app folder.
+        if (!_appConfStore.CacheLwiToAppFolder)
+            _appConfStore.PrefetchLsmashIndex = false;
+
         LwiCacheDirectoryProvider.IsEnabled = _appConfStore.CacheLwiToAppFolder;
         _ = LwiCacheDirectoryProvider.EnsureDirectory();
     }
@@ -48,6 +52,7 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
         _appConfStore.Reimport = loadedConfig.Reimport;
         _appConfStore.InitLang = loadedConfig.InitLang;
         _appConfStore.CacheLwiToAppFolder = loadedConfig.CacheLwiToAppFolder;
+        _appConfStore.PrefetchLsmashIndex = loadedConfig.PrefetchLsmashIndex;
         _appConfStore.Overwrite = loadedConfig.Overwrite;
         _appConfStore.Lang = loadedConfig.Lang;
         _appConfStore.Theme = loadedConfig.Theme;

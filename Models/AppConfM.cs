@@ -16,6 +16,11 @@ public class AppConfM : SaveLoadBase<AppConfM>
     /// the application's 1cenc/LSMASHCaches folder instead of beside each source.
     /// </summary>
     public bool CacheLwiToAppFolder { get; set; } = false;
+    /// <summary>
+    /// Pre-build the .lwi index with LSMASHSource_indexing.exe right after a video
+    /// source import is accepted. Only effective while CacheLwiToAppFolder is on.
+    /// </summary>
+    public bool PrefetchLsmashIndex { get; set; } = false;
     public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
     public Language Lang { get; set; } = new Language();
     public ThemeSettings Theme { get; set; } = new ThemeSettings();

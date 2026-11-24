@@ -1907,9 +1907,9 @@ public class FilterScribeVM : BaseVM
     public ActionCmd InsertVpyCropFilterCommand { get; }
     public ActionCmd InsertFFmpegCropFilterCommand { get; }
     public ActionCmd ClearFiltersCommand { get; }
-    public bool CanOpenVpyPreview => GetVpyPreviewsrcPaths().Length > 0;
-    public bool CanOpenAvsPreview => GetAvsPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
-    public bool CanOpenFfmpegPreview => GetFfmpegPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
+    public bool CanOpenVpyPreview => !LsmashIndexRunner.IsRunning && GetVpyPreviewsrcPaths().Length > 0;
+    public bool CanOpenAvsPreview => !LsmashIndexRunner.IsRunning && GetAvsPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
+    public bool CanOpenFfmpegPreview => !LsmashIndexRunner.IsRunning && GetFfmpegPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
 
     public FilterScribeVM(
         ModalNavS modalNavS,
@@ -1991,6 +1991,7 @@ public class FilterScribeVM : BaseVM
         BuildButtonGroups();
         SelectedTabIndex = GetInitialTabIndex(_getSelectedUpstreamExeName());
         UILangProvider.CurrentChanged += OnLanguageChanged;
+        LsmashIndexRunner.RunningStateChanged += OnLsmashIndexingStateChanged;
     }
 
     private static int GetInitialTabIndex(string? upstreamExeName) => upstreamExeName?.ToLowerInvariant() switch
@@ -2889,11 +2890,22 @@ public class FilterScribeVM : BaseVM
         BuildButtonGroups();
         OnPropertyChanged(nameof(FinishScribeButtons));
     }
+
+    private void OnLsmashIndexingStateChanged()
+    {
+        OnPropertyChanged(nameof(CanOpenVpyPreview));
+        OnPropertyChanged(nameof(CanOpenAvsPreview));
+        OnPropertyChanged(nameof(CanOpenFfmpegPreview));
+        OpenVpyPreviewCommand.OnCanExecuteChanged();
+        OpenAvsPreviewCommand.OnCanExecuteChanged();
+        OpenFfmpegPreviewCommand.OnCanExecuteChanged();
+    }
     #endregion
 
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
+        LsmashIndexRunner.RunningStateChanged -= OnLsmashIndexingStateChanged;
         _cropRefreshTimer.Stop();
         base.Dispose();
         GC.SuppressFinalize(this);

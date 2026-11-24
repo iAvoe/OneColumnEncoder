@@ -107,7 +107,12 @@ public static class SettinglistProviderM
         new(UICaptionProvider.AppConf.Groups.LwiCache,
             Lang["Setting.LwiCache.ToAppFolder"],
             SettingControlType.CheckBox,
-            nameof(AppConfM.CacheLwiToAppFolder))
+            nameof(AppConfM.CacheLwiToAppFolder)),
+        new(UICaptionProvider.AppConf.Groups.LwiCache,
+            Lang["Setting.LwiCache.PrefetchIndex"],
+            SettingControlType.CheckBox,
+            nameof(AppConfM.PrefetchLsmashIndex),
+            EnabledWhenProperty: nameof(AppConfM.CacheLwiToAppFolder))
     ];
 
     public static List<SettingItemDefinitionM> GetAudioMuxSettings() =>

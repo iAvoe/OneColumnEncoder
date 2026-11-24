@@ -91,12 +91,18 @@ public class AppConfVM : BaseVM
         {
             AppConfContainer container = new() { Header = group.Key };
             object source = sourceMap[group.Key];
+            Dictionary<string, CheckBox> groupCheckboxes = [];
             foreach (SettingItemDefinitionM setting in group)
             {
                 switch (setting.ControlType)
                 {
                     case SettingControlType.CheckBox:
-                        AddCheckboxItem(container, setting.Label, source, setting.PropertyName);
+                        AddCheckboxItem(container,
+                            setting.Label,
+                            source,
+                            setting.PropertyName,
+                            setting.EnabledWhenProperty,
+                            groupCheckboxes);
                         break;
                     case SettingControlType.TextBox:
                         AddTextboxItem(container,
@@ -137,12 +143,30 @@ public class AppConfVM : BaseVM
     }
 
     #region Setting control elements
-    private static void AddCheckboxItem(AppConfContainer container, string text, object source, string propertyPath)
+    private static void AddCheckboxItem(AppConfContainer container, string text, object source, string propertyPath,
+        string? enabledWhenProperty, Dictionary<string, CheckBox> groupCheckboxes)
     {
         CheckBox cb = new() { HorizontalAlignment = HorizontalAlignment.Right };
         cb.SetBinding(
             CheckBox.IsCheckedProperty,
             new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
+
+        if (!string.IsNullOrWhiteSpace(enabledWhenProperty)
+            && groupCheckboxes.TryGetValue(enabledWhenProperty, out CheckBox? dependency))
+        {
+            // Enable only while the dependency is checked, and clear the dependent
+            // value as soon as the dependency is unchecked.
+            cb.SetBinding(
+                UIElement.IsEnabledProperty,
+                new Binding(nameof(CheckBox.IsChecked)) { Source = dependency, Mode = BindingMode.OneWay });
+
+            if (dependency.IsChecked != true)
+                cb.IsChecked = false;
+
+            dependency.Unchecked += (_, _) => cb.IsChecked = false;
+        }
+
+        groupCheckboxes[propertyPath] = cb;
         container.Items.Add(
             new AppConfItem { Text = text, Content = cb });
     }

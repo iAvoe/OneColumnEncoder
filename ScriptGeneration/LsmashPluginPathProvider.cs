@@ -11,6 +11,7 @@ namespace OneColumnEncoder.ScriptGeneration;
 public static class LsmashPluginPathProvider
 {
     public const string FileName = "LSMASHSource.dll";
+    public const string IndexingExecutableName = "LSMASHSource_indexing.exe";
     private const string VapourSynthOnlyFileName = "libvslsmashsource.dll";
 
     private static string? _cachedVspipePath;
@@ -22,6 +23,9 @@ public static class LsmashPluginPathProvider
         : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
 
     public static string PluginPath => Path.Combine(PluginsDirectory, FileName);
+
+    public static string IndexingExecutablePath =>
+        Path.Combine(PluginsDirectory, IndexingExecutableName);
 
     public static bool PluginExists => File.Exists(PluginPath);
 
