@@ -1,5 +1,6 @@
 using OneColumnEncoder.Converters;
 using OneColumnEncoder.CPU;
+using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models.Encoding;
 using System.Collections.Concurrent;
 using System.IO;
@@ -82,6 +83,7 @@ public partial class EncodingMonitorVM : BaseVM
     private bool _encoderInterruptButtonClicked;
     private Stream? _upstreamStdoutStream;
     private Stream? _encoderStdinStream;
+    private FileLockManager? _fileLockManager;
 
     public ProgressVM Progress { get; } = new();
     public string WindowTitle => _isSample ? EncodingMonitorModalLangProvider.WindowTitleSampleMode : EncodingMonitorModalLangProvider.WindowTitle;
@@ -518,6 +520,10 @@ public partial class EncodingMonitorVM : BaseVM
 
         try
         {
+            // Apply file locks if enabled (only for single mode, queue mode locks all at once)
+            if (_queueItems == null)
+                TryApplyFileLocks();
+
             StatusText = Lang.EncodingText;
             // Create the upstream decoder process (e.g. ffmpeg source)
             Encoding upstreamEncoding = EncodingMonitorHelpers.GetEncodingForProcess(_request.UpstreamExeName);
@@ -709,6 +715,9 @@ public partial class EncodingMonitorVM : BaseVM
             job.R3Command = new ActionCmd(_ => QueueSidebar.MoveJobDown(job));
         }
 
+        // Lock all source files at once for queue mode
+        TryApplyFileLocksForQueue();
+
         while (true)
         {
             if (cancellationToken.IsCancellationRequested) break;
@@ -750,6 +759,16 @@ public partial class EncodingMonitorVM : BaseVM
             IsMonitoringEnabled = true;
 
             await RunEncodingAsync(cancellationToken);
+
+            // Release locks for this specific job's files after encoding
+            if (_fileLockManager != null)
+            {
+                List<string> currentJobFiles = CollectSourceFilePaths();
+                foreach (string filePath in currentJobFiles)
+                {
+                    _fileLockManager.UnlockFile(filePath);
+                }
+            }
 
             if (_userInterruptRequested)
             {
@@ -1778,6 +1797,168 @@ public partial class EncodingMonitorVM : BaseVM
         IsWindowCloseEnabled = true;
         FinishButtons.B5_5IsEnabled = true;
         RefreshCancelAllBindings();
+        ReleaseFileLocks();
+    }
+
+    /// <summary>
+    /// Attempts to lock source files if the setting is enabled.
+    /// Logs the result to the upstream stderr.
+    /// </summary>
+    private void TryApplyFileLocks()
+    {
+        if (!_appConfM.Encoding.LockSourceFilesWhileEncoding)
+            return;
+
+        List<string> filesToLock = CollectSourceFilePaths();
+        if (filesToLock.Count == 0)
+            return;
+
+        _fileLockManager = new FileLockManager();
+        int lockedCount = 0;
+        int skippedCount = 0;
+
+        foreach (string filePath in filesToLock)
+        {
+            if (!File.Exists(filePath))
+                continue;
+
+            // Check if it's a network drive or unsupported filesystem
+            if (!IsLocalDrive(filePath))
+            {
+                skippedCount++;
+                continue;
+            }
+
+            bool success = _fileLockManager.TryLockFile(filePath);
+            if (success)
+                lockedCount++;
+        }
+
+        // Log the result
+        string message = lockedCount > 0
+            ? Lang["FileLockEnabled"]
+            : skippedCount > 0
+                ? Lang["FileLockUnavailable"]
+                : Lang["FileLockDisabled"];
+
+        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, message);
+    }
+
+    /// <summary>
+    /// Locks all source files for all queue items at once.
+    /// Called at the start of queue mode processing.
+    /// </summary>
+    private void TryApplyFileLocksForQueue()
+    {
+        if (!_appConfM.Encoding.LockSourceFilesWhileEncoding || _queueItems == null)
+            return;
+
+        HashSet<string> allFiles = new(StringComparer.OrdinalIgnoreCase);
+
+        // Collect all source files from all queue items
+        foreach (var (request, _) in _queueItems)
+        {
+            if (!string.IsNullOrWhiteSpace(request.UpstreamInputPath) && File.Exists(request.UpstreamInputPath))
+                allFiles.Add(request.UpstreamInputPath);
+
+            if (!string.IsNullOrWhiteSpace(request.SourceVideoPath) && File.Exists(request.SourceVideoPath))
+                allFiles.Add(request.SourceVideoPath);
+
+            if (request.ConcatVideoSourcePaths is { Length: > 0 })
+            {
+                foreach (string path in request.ConcatVideoSourcePaths)
+                {
+                    if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                        allFiles.Add(path);
+                }
+            }
+        }
+
+        if (allFiles.Count == 0)
+            return;
+
+        _fileLockManager = new FileLockManager();
+        int lockedCount = 0;
+        int skippedCount = 0;
+
+        foreach (string filePath in allFiles)
+        {
+            if (!IsLocalDrive(filePath))
+            {
+                skippedCount++;
+                continue;
+            }
+
+            bool success = _fileLockManager.TryLockFile(filePath);
+            if (success)
+                lockedCount++;
+        }
+
+        // Log the result to the first job that will start encoding
+        string message = lockedCount > 0
+            ? Lang["FileLockEnabled"]
+            : skippedCount > 0
+                ? Lang["FileLockUnavailable"]
+                : Lang["FileLockDisabled"];
+
+        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, message);
+    }
+
+    /// <summary>
+    /// Releases all file locks.
+    /// </summary>
+    private void ReleaseFileLocks()
+    {
+        _fileLockManager?.Dispose();
+        _fileLockManager = null;
+    }
+
+    /// <summary>
+    /// Collects all source file paths that should be locked during encoding.
+    /// </summary>
+    private List<string> CollectSourceFilePaths()
+    {
+        HashSet<string> paths = new(StringComparer.OrdinalIgnoreCase);
+
+        // Add main upstream input path
+        if (!string.IsNullOrWhiteSpace(_request.UpstreamInputPath) && File.Exists(_request.UpstreamInputPath))
+            paths.Add(_request.UpstreamInputPath);
+
+        // Add source video path
+        if (!string.IsNullOrWhiteSpace(_request.SourceVideoPath) && File.Exists(_request.SourceVideoPath))
+            paths.Add(_request.SourceVideoPath);
+
+        // Add concat video source paths (for concat/repart modes)
+        if (_request.ConcatVideoSourcePaths is { Length: > 0 })
+        {
+            foreach (string path in _request.ConcatVideoSourcePaths)
+            {
+                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                    paths.Add(path);
+            }
+        }
+
+        return [.. paths];
+    }
+
+    /// <summary>
+    /// Checks if a file path is on a local drive (not network or unknown).
+    /// </summary>
+    private static bool IsLocalDrive(string filePath)
+    {
+        try
+        {
+            string? root = Path.GetPathRoot(filePath);
+            if (string.IsNullOrWhiteSpace(root))
+                return false;
+
+            DriveInfo drive = new(root);
+            return drive.DriveType != DriveType.Network && drive.DriveType != DriveType.Unknown;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private void CancelAllQueue()

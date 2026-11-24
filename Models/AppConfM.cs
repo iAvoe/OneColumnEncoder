@@ -29,6 +29,7 @@ public class AppConfM : SaveLoadBase<AppConfM>
     public AudioMuxSettings AudioMux { get; set; } = new AudioMuxSettings();
     public AutoMuxSettings AutoMux { get; set; } = new AutoMuxSettings();
     public TextEditorSettings TextEditor { get; set; } = new TextEditorSettings();
+    public EncodingSettings Encoding { get; set; } = new EncodingSettings();
     #region Setting items
     public class OverwriteSettings
     {
@@ -66,6 +67,15 @@ public class AppConfM : SaveLoadBase<AppConfM>
     public class TextEditorSettings
     {
         public string TextEditorPath { get; set; } = "notepad.exe";
+    }
+
+    public class EncodingSettings
+    {
+        /// <summary>
+        /// When enabled, source files are locked with a write-lock (read-shared) during encoding
+        /// to prevent accidental deletion or modification. Only applies to local drives.
+        /// </summary>
+        public bool LockSourceFilesWhileEncoding { get; set; } = false;
     }
 
     /// <summary>

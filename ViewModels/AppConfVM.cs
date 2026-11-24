@@ -83,6 +83,7 @@ public class AppConfVM : BaseVM
             [UICaptionProvider.AppConf.Groups.AutoMux] = _appConfM.AutoMux,
             [UICaptionProvider.AppConf.Groups.AudioMux] = _appConfM.AudioMux,
             [UICaptionProvider.AppConf.Groups.TextEditor] = _appConfM.TextEditor,
+            [UICaptionProvider.AppConf.Groups.Encoding] = _appConfM.Encoding,
         };
 
         // Note: order of settings item sections are by SettinglistProviderM.GetAllSettings()

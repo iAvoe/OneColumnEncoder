@@ -16,7 +16,8 @@ public static class SettinglistProviderM
         .. GetLwiCacheSettings(),
         .. GetAutoMuxSettings(),
         .. GetAudioMuxSettings(),
-        .. GetTextEditorSettings()
+        .. GetTextEditorSettings(),
+        .. GetEncodingSettings()
     ];
 
     private static AppConfLangProvider Lang => AppConfLangProvider.Current;
@@ -193,5 +194,13 @@ public static class SettinglistProviderM
             Lang["Setting.TextEditor.Path"],
             SettingControlType.FilePath,
             nameof(AppConfM.TextEditorSettings.TextEditorPath))
+    ];
+
+    public static List<SettingItemDefinitionM> GetEncodingSettings() =>
+    [
+        new(UICaptionProvider.AppConf.Groups.Encoding,
+            Lang["Setting.Encoding.LockSourceFiles"],
+            SettingControlType.CheckBox,
+            nameof(AppConfM.EncodingSettings.LockSourceFilesWhileEncoding))
     ];
 }

@@ -116,6 +116,7 @@ public static class UICaptionProvider
             public static string AutoMux => Lang["AppConf.AutoMux"];
             public static string TextEditor => Lang["AppConf.TextEditor"];
             public static string LwiCache => Lang["AppConf.LwiCache"];
+            public static string Encoding => Lang["AppConf.Encoding"];
         }
 
         public static class Buttons

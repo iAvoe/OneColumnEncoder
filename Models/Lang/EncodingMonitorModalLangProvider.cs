@@ -76,6 +76,10 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
 
             ["StopQueueConfirmTitle"] = "Stop queue",
             ["StopQueueConfirmMessage"] = "The current job has been interrupted. Stop the entire queue?",
+
+            ["FileLockEnabled"] = "File lock: Enabled",
+            ["FileLockDisabled"] = "File lock: Disabled (setting off or file already locked)",
+            ["FileLockUnavailable"] = "File lock: Unavailable (network drive or unsupported filesystem)",
         },
         ["zh-cn"] = new()
         {
@@ -146,6 +150,10 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
 
             ["StopQueueConfirmTitle"] = "停止队列",
             ["StopQueueConfirmMessage"] = "当前任务已中断。是否停止整个队列？",
+
+            ["FileLockEnabled"] = "文件锁：已启用",
+            ["FileLockDisabled"] = "文件锁：已禁用（设置关闭或文件已被锁定）",
+            ["FileLockUnavailable"] = "文件锁：不可用（网络驱动器或不支持的文件系统）",
         },
         ["zh-tw"] = new()
         {
@@ -216,6 +224,10 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
 
             ["StopQueueConfirmTitle"] = "停止隊列",
             ["StopQueueConfirmMessage"] = "當前任務已中斷。是否停止整個隊列？",
+
+            ["FileLockEnabled"] = "檔案鎖：已啟用",
+            ["FileLockDisabled"] = "檔案鎖：已停用（設定關閉或檔案已被鎖定）",
+            ["FileLockUnavailable"] = "檔案鎖：不可用（網路磁碟機或不支援的檔案系統）",
         }
     };
 
