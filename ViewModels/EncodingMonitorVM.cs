@@ -1877,19 +1877,13 @@ public partial class EncodingMonitorVM : BaseVM
         // Collect all source files from all queue items
         foreach (var (request, _) in _queueItems)
         {
-            if (!string.IsNullOrWhiteSpace(request.UpstreamInputPath) && File.Exists(request.UpstreamInputPath))
-                allFiles.Add(request.UpstreamInputPath);
-
-            if (!string.IsNullOrWhiteSpace(request.SourceVideoPath) && File.Exists(request.SourceVideoPath))
-                allFiles.Add(request.SourceVideoPath);
+            AddSourceFilePaths(allFiles, request.UpstreamInputPath);
+            AddSourceFilePaths(allFiles, request.SourceVideoPath);
 
             if (request.ConcatVideoSourcePaths is { Length: > 0 })
             {
                 foreach (string path in request.ConcatVideoSourcePaths)
-                {
-                    if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
-                        allFiles.Add(path);
-                }
+                    AddSourceFilePaths(allFiles, path);
             }
         }
 
@@ -1946,30 +1940,70 @@ public partial class EncodingMonitorVM : BaseVM
 
     /// <summary>
     /// Collects all source file paths that should be locked during encoding.
+    /// Includes the video sources plus the AVS/VPY scripts that this run reads
+    /// or that the app may (re)generate for those sources.
     /// </summary>
     private List<string> CollectSourceFilePaths()
     {
         HashSet<string> paths = new(StringComparer.OrdinalIgnoreCase);
 
-        // Add main upstream input path
-        if (!string.IsNullOrWhiteSpace(_request.UpstreamInputPath) && File.Exists(_request.UpstreamInputPath))
-            paths.Add(_request.UpstreamInputPath);
-
-        // Add source video path
-        if (!string.IsNullOrWhiteSpace(_request.SourceVideoPath) && File.Exists(_request.SourceVideoPath))
-            paths.Add(_request.SourceVideoPath);
+        AddSourceFilePaths(paths, _request.UpstreamInputPath);
+        AddSourceFilePaths(paths, _request.SourceVideoPath);
 
         // Add concat video source paths (for concat/repart modes)
         if (_request.ConcatVideoSourcePaths is { Length: > 0 })
         {
             foreach (string path in _request.ConcatVideoSourcePaths)
-            {
-                if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
-                    paths.Add(path);
-            }
+                AddSourceFilePaths(paths, path);
         }
 
         return [.. paths];
+    }
+
+    /// <summary>
+    /// Adds a source file and any AVS/VPY scripts tied to it.
+    /// </summary>
+    private static void AddSourceFilePaths(HashSet<string> paths, string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return;
+
+        if (File.Exists(path))
+            paths.Add(path);
+
+        // A script path also locks its AVS/VPY counterpart. A video path also
+        // locks the default-named scripts the app generates next to it.
+        foreach (string scriptPath in EnumerateScriptCandidates(path))
+        {
+            if (File.Exists(scriptPath))
+                paths.Add(scriptPath);
+        }
+    }
+
+    /// <summary>
+    /// Yields the AVS/VPY script candidates associated with a source path.
+    /// For a script, this is the script itself plus its other-extension sibling;
+    /// for a video, it is the same-base-name .avs/.vpy scripts beside the video.
+    /// </summary>
+    private static IEnumerable<string> EnumerateScriptCandidates(string path)
+    {
+        string extension = Path.GetExtension(path);
+        bool isAvs = extension.Equals(".avs", StringComparison.OrdinalIgnoreCase);
+        bool isVpy = extension.Equals(".vpy", StringComparison.OrdinalIgnoreCase);
+
+        if (isAvs || isVpy)
+        {
+            yield return path;
+            yield return Path.ChangeExtension(path, isAvs ? ".vpy" : ".avs");
+            yield break;
+        }
+
+        string? directory = Path.GetDirectoryName(path);
+        string baseName = Path.GetFileNameWithoutExtension(path);
+        if (string.IsNullOrWhiteSpace(directory) || string.IsNullOrWhiteSpace(baseName))
+            yield break;
+
+        yield return Path.Combine(directory, baseName + ".avs");
+        yield return Path.Combine(directory, baseName + ".vpy");
     }
 
     /// <summary>
