@@ -3489,8 +3489,9 @@ public class MainVM : BaseVM
         AnalyticsZoneSelectedPath = GetZoneSelectedPath(AnalyticsZone);
         DependenciesZoneSelectedPath = GetZoneSelectedPath(DependenciesZone);
         EncodingConfZoneSelectedPath = GetOutputSettingPath();
-        // Import zones don't require selection — show the first item that has a path
-        VideoSrcImportZoneSelectedPath = GetFirstSrcPath(VideoSrcImportZone);
+        // The selected source card decides which route the hint describes;
+        // the first imported path is only a fallback when nothing is selected.
+        VideoSrcImportZoneSelectedPath = GetSelectedSrcImportPath(VideoSrcImportZone);
         ActiveScriptSrcImportZoneSelectedPath = GetFirstSrcPath(ActiveScriptSrcImportZone);
     }
 
@@ -3500,6 +3501,19 @@ public class MainVM : BaseVM
         if (selected == null || string.IsNullOrWhiteSpace(selected.P2TextData))
             return "!Path";
         return selected.P2TextData;
+    }
+
+    // Selection is the top-level condition: clicking a source ItemCard must retarget
+    // the hint to that card, even if another card still holds an older path.
+    // Only when no card is selected (e.g. before ffprobe confirms availability)
+    // do we fall back to the first imported path.
+    private static string GetSelectedSrcImportPath(ObservableCollection<ToolItemCardVM>? zone)
+    {
+        ToolItemCardVM? selected = zone?.FirstOrDefault(t => t.IsSelected);
+        if (selected != null)
+            return string.IsNullOrWhiteSpace(selected.P2TextData) ? "!Path" : selected.P2TextData;
+
+        return GetFirstSrcPath(zone);
     }
 
     // Returns P2TextData of the first item with a non-empty path, regardless of selection.
@@ -3618,8 +3632,9 @@ public class MainVM : BaseVM
     {
         bool hasVideoSrc = LoadSrcItem(VideoSrcImportZone[0], SrcFileKind.Video, _appDataM.Tools.VideoSourcePath);
         VideoSrcImportZone[0].IsSelected = hasVideoSrc;
-        // Use non-selection lookup so the path shows even before an explicit selection occurs
-        VideoSrcImportZoneSelectedPath = GetFirstSrcPath(VideoSrcImportZone);
+        // Selection-aware lookup keeps the hint consistent after restore; the helper
+        // still falls back to the imported path when nothing is selected yet.
+        VideoSrcImportZoneSelectedPath = GetSelectedSrcImportPath(VideoSrcImportZone);
         if (!hasVideoSrc && !string.IsNullOrWhiteSpace(_appDataM.Tools.VideoSourcePath))
         {
             _appDataM.Tools.VideoSourcePath = string.Empty;
