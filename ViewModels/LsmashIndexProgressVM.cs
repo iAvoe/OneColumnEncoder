@@ -7,7 +7,6 @@ namespace OneColumnEncoder.ViewModels;
 /// </summary>
 public class LsmashIndexProgressVM : BaseVM
 {
-    private readonly ModalNavS _modalNavS;
     private readonly Action _closeAction;
     private CancellationTokenSource? _cancellationTokenSource;
 
@@ -42,14 +41,10 @@ public class LsmashIndexProgressVM : BaseVM
         set => SetProperty(ref _hintText, value);
     }
 
-    public bool IsProgressTrackingAvailable => true;
-    public bool IsEncodingActive => true;
-
     public CloseModalCmd CloseCmd { get; }
 
-    public LsmashIndexProgressVM(ModalNavS modalNavS, Action closeAction)
+    public LsmashIndexProgressVM(Action closeAction)
     {
-        _modalNavS = modalNavS;
         _closeAction = closeAction;
         CloseCmd = new CloseModalCmd(closeAction);
     }
@@ -63,7 +58,7 @@ public class LsmashIndexProgressVM : BaseVM
         {
             Progress<LsmashIndexProgress> progress = new(p =>
             {
-                ProgressTitle = string.Format(lang["LsmashIndex.CountFormat"], p.CompletedVideos, p.TotalVideos);
+                ProgressTitle = $"{p.CompletedVideos}/{p.TotalVideos}";
                 ProgressValue = p.FilePercent;
                 ProgressText = $"{p.FilePercent}%";
                 HintText = string.IsNullOrWhiteSpace(p.CapturedLine)
@@ -72,8 +67,8 @@ public class LsmashIndexProgressVM : BaseVM
             });
 
             HintText = lang["LsmashIndex.Preparing"];
+            ProgressTitle = $"0/{videoPaths.Count}";
             await LsmashIndexRunner.RunAsync(videoPaths, progress, _cancellationTokenSource.Token);
-            HintText = lang["LsmashIndex.Done"];
         }
         catch (OperationCanceledException)
         {

@@ -19,8 +19,8 @@
                 ProgressTitle="{Binding ProgressTitle}"
                 ProgressValue="{Binding ProgressValue}"
                 ProgressText="{Binding ProgressText}"
-                IsProgressTrackingAvailable="{Binding IsProgressTrackingAvailable}"
-                IsEncodingActive="{Binding IsEncodingActive}"
+                IsProgressTrackingAvailable="True"
+                IsEncodingActive="True"
                 Margin="0 0 0 10" />
             <comps:HintPanel
                 Text="{Binding HintText}"

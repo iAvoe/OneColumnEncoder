@@ -21,7 +21,8 @@ public class AnalyzeSrcVideoCmd(
     Action? onCompleted = null,
     Func<bool>? isConcatRoute = null,
     Func<string[]>? getConcatFilePaths = null,
-    Action<string[]>? onConcatAccepted = null) : AsyncBaseCmd
+    Action<string[]>? onConcatAccepted = null,
+    Action<bool>? onAnalysisFinished = null) : AsyncBaseCmd
 {
     private readonly Func<string> _getFfprobePath = getFfprobePath;
     private readonly Func<string> _getsrcPath = getsrcPath;
@@ -36,6 +37,7 @@ public class AnalyzeSrcVideoCmd(
     private readonly Func<bool>? _isConcatRoute = isConcatRoute;
     private readonly Func<string[]>? _getConcatFilePaths = getConcatFilePaths;
     private readonly Action<string[]>? _onConcatAccepted = onConcatAccepted;
+    private readonly Action<bool>? _onAnalysisFinished = onAnalysisFinished;
 
     private static AnalyzeSrcVideoCmdLangProvider Lang => new(UILangProvider.Current.LanguageCode);
     private static readonly JsonSerializerOptions CachedJsonOptions = CreateJsonSerializerOptions();
@@ -111,8 +113,11 @@ public class AnalyzeSrcVideoCmd(
         }
         finally
         {
-            _onAnalysisCompleted?.Invoke(!string.IsNullOrWhiteSpace(_analysis.RawJson));
+            bool isSuccess = !string.IsNullOrWhiteSpace(_analysis.RawJson);
+            _onAnalysisCompleted?.Invoke(isSuccess);
             _onCompleted?.Invoke();
+            // Runs once the analysis flow (including its dialogs) has fully finished.
+            _onAnalysisFinished?.Invoke(isSuccess);
         }
     }
 

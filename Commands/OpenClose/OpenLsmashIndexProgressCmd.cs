@@ -15,7 +15,7 @@ public class OpenLsmashIndexProgressCmd(ModalNavS modalNavS, IReadOnlyList<strin
             return;
 
         LsmashIndexProgressModal window = new();
-        LsmashIndexProgressVM vm = new(ModalNavS, window.Close);
+        LsmashIndexProgressVM vm = new(window.Close);
         AttachModal(window, vm);
         window.Show();
 

@@ -606,7 +606,8 @@ public class MainVM : BaseVM
             },
             IsConcatRouteActive,
             GetConcatFilePaths,
-            OnSrcConcatAcceptedFiles);
+            OnSrcConcatAcceptedFiles,
+            OnSrcAnalysisFinished);
         SampleClip = new OpenSampleClipCmd(
             modalNavS,
             appConfM,
@@ -2473,16 +2474,14 @@ public class MainVM : BaseVM
     {
         OnSrcImported(item, kind, filePath);
 
-        if (kind == SrcFileKind.Video && AnalyzeSrcVideo.CanExecute(null))
-        {
+        if (kind != SrcFileKind.Video) return;
+
+        // Indexing starts after source analysis finishes; if analysis cannot run,
+        // index the imported file directly.
+        if (AnalyzeSrcVideo.CanExecute(null))
             AnalyzeSrcVideo.Execute(null);
-        }
-        
-        // Trigger indexing after single-file video import and analysis
-        if (kind == SrcFileKind.Video)
-        {
-            TriggerLsmashIndexingIfNeeded();
-        }
+        else
+            TriggerLsmashIndexingIfNeeded([filePath]);
     }
 
     private void PromptScriptGenerationAfterReplace()
@@ -2521,6 +2520,14 @@ public class MainVM : BaseVM
         UpdateFilterScbButtonsState();
     }
 
+    // Runs once the source analysis flow has finished and any excluded files have
+    // been removed from the active route's source list.
+    private void OnSrcAnalysisFinished(bool isSuccess)
+    {
+        if (isSuccess)
+            TriggerLsmashIndexingIfNeeded();
+    }
+
     private void OnSrcCleared(SrcFileKind kind)
     {
         SaveSrcPath(kind, string.Empty);
@@ -2550,14 +2557,14 @@ public class MainVM : BaseVM
         _appDataM.Save();
         RefreshSelectedSrcStatus(resetAnalysis: true);
         RefreshDurationFilterStatus();
-        if (filePaths.Length > 0)
-        {
-            if (AnalyzeSrcVideo.CanExecute(null))
-                AnalyzeSrcVideo.Execute(null);
-        }
-        
-        // Trigger indexing after queue import and analysis complete
-        TriggerLsmashIndexingIfNeeded();
+        if (filePaths.Length == 0) return;
+
+        // Indexing starts after queue analysis has applied its exclusions; if
+        // analysis cannot run, index the imported files directly.
+        if (AnalyzeSrcVideo.CanExecute(null))
+            AnalyzeSrcVideo.Execute(null);
+        else
+            TriggerLsmashIndexingIfNeeded(filePaths);
     }
 
     private void OnSrcQueueCleared(ToolItemCardVM item)
@@ -2589,14 +2596,14 @@ public class MainVM : BaseVM
             item.IsSelected = true;
         _appDataM.Save();
         RefreshSelectedSrcStatus(resetAnalysis: true);
-        if (filePaths.Length > 0)
-        {
-            if (AnalyzeSrcVideo.CanExecute(null))
-                AnalyzeSrcVideo.Execute(null);
-        }
-        
-        // Trigger indexing after concat import and analysis complete
-        TriggerLsmashIndexingIfNeeded();
+        if (filePaths.Length == 0) return;
+
+        // Indexing starts after concat analysis has applied its exclusions; if
+        // analysis cannot run, index the imported files directly.
+        if (AnalyzeSrcVideo.CanExecute(null))
+            AnalyzeSrcVideo.Execute(null);
+        else
+            TriggerLsmashIndexingIfNeeded(filePaths);
     }
 
     private void OnSrcConcatCleared()
@@ -2649,7 +2656,12 @@ public class MainVM : BaseVM
         OnSrcAnalysisCompleted(true);
         RefreshSelectedSrcStatus(resetAnalysis: false);
         _appDataM.Save();
-        TriggerLsmashIndexingIfNeeded();
+
+        // The Repart modal is still closing here. Defer indexing to the next
+        // dispatcher turn so closing that modal cannot pop the progress VM.
+        string[] videos = [.. plan.Sources.Select(source => source.FilePath)];
+        _ = Application.Current?.Dispatcher.BeginInvoke(
+            new Action(() => TriggerLsmashIndexingIfNeeded(videos)));
     }
 
     private void OnSrcRepartCleared()
@@ -3966,11 +3978,13 @@ public class MainVM : BaseVM
         };
     }
 
-    private void TriggerLsmashIndexingIfNeeded()
+    private void TriggerLsmashIndexingIfNeeded(IReadOnlyList<string>? videoPaths = null)
     {
         if (!ShouldTriggerLsmashIndexing()) return;
 
-        string[] videos = GetVideosForIndexing();
+        string[] videos = videoPaths == null
+            ? GetVideosForIndexing()
+            : [.. videoPaths.Where(path => !string.IsNullOrWhiteSpace(path))];
         if (videos.Length == 0) return;
 
         // If no frame server is selected, ask user if they want to proceed

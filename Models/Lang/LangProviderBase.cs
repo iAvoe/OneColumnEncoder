@@ -30,6 +30,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// | `FFProbeVideoAnalysisLangProvider.cs` | 5 keys |
 /// | `FFProbeSrcRevisionLangProvider.cs` | 6 keys |
 /// | `EncodingMonitorModalLangProvider.cs` | 65 keys |
+/// | `LsmashIndexLangProvider.cs` | 4 keys |
 /// | `EncoderConfLangProvider.cs` | 77 keys |
 /// | `UICaptionProvider.cs` | Add language code |
 /// </summary>
