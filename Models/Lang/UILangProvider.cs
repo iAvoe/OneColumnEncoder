@@ -212,6 +212,8 @@ public class UILangProvider : LangProviderBase
             ["Hint.AnalyzeRunConditionDuration"] = "Analysis starts upon source import (≈70～100 ms/src, Repart mode takes longer)",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA node CPU usage updates on mouse click or keyboard input event",
             ["Hint.FFmpegOptionalBut"] = "FFmpeg is optional, but needed for video frame previewing and auto MKV muxing",
+            ["Warn.SourceCheck"] = "Source Check Failed",
+
             ["ScriptQueueImport.RejectedPrefix"] = "Import rejected: {0} unmatched basename(s), {1} path mismatch(es).",
             ["ScriptQueueImport.DetailsHeader"] = "Details:",
             ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — no matching video source by basename",
@@ -434,6 +436,8 @@ public class UILangProvider : LangProviderBase
             ["Hint.AnalyzeRunConditionDuration"] = "导入视频后会自动运行分析（≈70～100 ms/源，重分集模式更慢）",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 节点 CPU 占用检测会在鼠标点击或键盘输入事件时更新。",
             ["Hint.FFmpegOptionalBut"] = "FFmpeg 可选，但视频帧预览和自动 MKV 封装功能需要它",
+            ["Warn.SourceCheck"] = "源检查失败",
+
             ["ScriptQueueImport.RejectedPrefix"] = "导入已拒绝：{0} 个基名不匹配，{1} 个路径不匹配。",
             ["ScriptQueueImport.DetailsHeader"] = "详情：",
             ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 按基名找不到匹配的视频源",
@@ -653,6 +657,8 @@ public class UILangProvider : LangProviderBase
             ["Hint.AnalyzeRunConditionDuration"] = "匯入影片後會自動執行分析（≈70～100 ms/源，重分集模式更慢）",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 節點 CPU 占用檢測會在滑鼠點擊或鍵盤輸入事件時更新。",
             ["Hint.FFmpegOptionalBut"] = "FFmpeg 可選，但影片幀預覽和自動 MKV 封裝功能需要它",
+            ["Warn.SourceCheck"] = "來源檢查失敗",
+
             ["ScriptQueueImport.RejectedPrefix"] = "導入已拒絕：{0} 個基名不符，{1} 個路徑不符。",
             ["ScriptQueueImport.DetailsHeader"] = "詳細資料：",
             ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 依基名找不到對應的影片來源",
@@ -906,6 +912,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "L'analyse commence dès l'importation de la source (≈70～100 ms/src, le mode Repart est plus lent)",
         ["Hint.NumaCpuCheckTrigger"] = "La charge CPU du noeud NUMA se met à jour au clic souris ou à la saisie clavier.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg est facultatif, mais nécessaire pour l'aperçu des images vidéo et le multiplexage automatique MKV",
+        ["Warn.SourceCheck"] = "Échec de la vérification de la source",
+
         ["ScriptQueueImport.RejectedPrefix"] = "Import rejeté : {0} nom(s) de base sans correspondance, {1} chemin(s) incorrect(s).",
         ["ScriptQueueImport.DetailsHeader"] = "Détails :",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — aucune source vidéo correspondante via le nom de base",
@@ -1147,6 +1155,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "El análisis comienza tras la importación de la fuente (≈70～100 ms/fuente, el modo Repart tarda más)",
         ["Hint.NumaCpuCheckTrigger"] = "El uso de CPU del nodo NUMA se actualiza con clic de ratón o entrada de teclado.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg es opcional, pero se necesita para previsualizar fotogramas de video y el multiplexado automático MKV",
+        ["Warn.SourceCheck"] = "Error en la comprobación de la fuente",
+
         ["ScriptQueueImport.RejectedPrefix"] = "Importación rechazada: {0} nombre(s) base sin coincidencia, {1} ruta(s) con discrepancia.",
         ["ScriptQueueImport.DetailsHeader"] = "Detalles:",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — no hay vídeo fuente que coincida por nombre base",
@@ -1388,6 +1398,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "分析はソースインポート時に開始されます（≈70～100 ms/ソース、Repartモードはより時間がかかります）",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA ノード CPU 使用率は、マウスクリックまたはキー入力時に更新されます。",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg は任意ですが、動画フレームのプレビューと自動 MKV マージングには必要です",
+        ["Warn.SourceCheck"] = "ソースチェックに失敗しました",
+
         ["ScriptQueueImport.RejectedPrefix"] = "取込を拒否しました：ベース名不一致 {0} 件、パス不一致 {1} 件。",
         ["ScriptQueueImport.DetailsHeader"] = "詳細：",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — ベース名に一致する動画ソースがありません",
@@ -1629,6 +1641,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "Анализ начинается при импорте источника (≈70～100 мс/источник, режим Repart занимает больше времени",
         ["Hint.NumaCpuCheckTrigger"] = "Загрузка CPU NUMA-узла обновляется при клике мыши или вводе с клавиатуры.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg необязателен, но нужен для предпросмотра кадров видео и автоматического мультиплексирования MKV",
+        ["Warn.SourceCheck"] = "Ошибка проверки источника",
+
         ["ScriptQueueImport.RejectedPrefix"] = "Импорт отклонён: {0} несовпадений по базовому имени, {1} несовпадений пути.",
         ["ScriptQueueImport.DetailsHeader"] = "Детали:",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — нет подходящего видеоисточника по базовому имени",
@@ -1870,6 +1884,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "Die Analyse beginnt beim Import der Quelle (≈70～100 ms/Quelle, der Repart-Modus dauert länger)",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA-Knutzen-CPU-Auslastung wird bei Mausklick oder Tastatureingabe aktualisiert.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg ist optional, aber für Videobildvorschau und automatisches MKV-Muxing benötigt",
+        ["Warn.SourceCheck"] = "Quellenprüfung fehlgeschlagen",
+
         ["ScriptQueueImport.RejectedPrefix"] = "Import abgelehnt: {0} Basisname(n) ohne Treffer, {1} Pfad(e) inkorrekt.",
         ["ScriptQueueImport.DetailsHeader"] = "Details:",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — keine passende Videoquelle nach Basisname",
@@ -2111,6 +2127,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "분석은 소스 가져오기 시 시작됩니다 (≈70～100 ms/소스, Repart 모드는 더 오래 걸립니다)",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA 노드 CPU 사용량은 마우스 클릭 또는 키보드 입력 이벤트 시 업데이트됩니다.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg 는 선택 사항이지만, 비디오 프레임 미리보기와 자동 MKV 멀티플렉싱에 필요합니다",
+        ["Warn.SourceCheck"] = "소스 검사 실패",
+
         ["ScriptQueueImport.RejectedPrefix"] = "가져오기가 거부되었습니다: 일치하지 않는 기본 이름 {0}개, 경로 불일치 {1}개.",
         ["ScriptQueueImport.DetailsHeader"] = "세부 정보:",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 기본 이름으로 일치하는 비디오 소스를 찾을 수 없습니다",
@@ -2352,6 +2370,8 @@ public class UILangProvider : LangProviderBase
         ["Hint.AnalyzeRunConditionDuration"] = "A análise começa na importação da fonte (≈70～100 ms/fonte, o modo Repart é mais demorado)",
         ["Hint.NumaCpuCheckTrigger"] = "O uso da CPU do nó NUMA é atualizado em eventos de clique do mouse ou entrada do teclado.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg é opcional, mas necessário para visualização de quadros de vídeo e muxing automático de MKV",
+        ["Warn.SourceCheck"] = "Falha na verificação da fonte",
+
         ["ScriptQueueImport.RejectedPrefix"] = "Importação rejeitada: {0} nome(s) base sem correspondência, {1} caminho(s) incompatível(is).",
         ["ScriptQueueImport.DetailsHeader"] = "Detalhes:",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — nenhuma fonte de vídeo correspondente pelo nome base",
